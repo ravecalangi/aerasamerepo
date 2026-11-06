@@ -1,0 +1,44 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Create blog.html — the public blog listing page. Structure copied from shop.html (same nav, announcement topbar, footer, cart drawer, mobile menu, search overlay). Page-specific content: hero section for featured post, category filter tabs (from Supabase blog_categories), search input, 4-column responsive grid of blog cards, Load More button (9 posts per page), and empty state. Depends on FEAT-002 nav changes being in place (blog.html includes the Blog nav item as active).",
+  "status": "pending",
+  "steps": [
+    "Create c:\\Users\\martq\\Documents\\area-new-main\\blog.html as a new file.",
+    "Copy the full <head> block from shop.html (fonts, meta, viewport). Change <title> to 'Blog | AERA'.",
+    "Copy the full CSS <style> block from shop.html into blog.html. Append the blog-specific CSS rules listed below.",
+    "Copy the announcement topbar HTML (div.topbar) from shop.html verbatim.",
+    "Copy the <header class=\"nav\"> from shop.html. In the .nav-links-center, add <a href=\"blog.html\" class=\"active\">Blog</a> between the About Us nav-dropdown and the AERA Circle nav-dropdown (same position as FEAT-002).",
+    "Write the <main> block: (a) <section class=\"blog-hero\" id=\"blogHero\" style=\"display:none\"> containing a .wrap with a .blog-hero-card anchor linking to blog-post.html. Inside: .blog-hero-img div (background-image set by JS), .blog-hero-body with .blog-cat-badge, h1.blog-hero-title, p.blog-hero-excerpt, .blog-hero-meta. (b) <div class=\"wrap\"> containing: .blog-toolbar div with .blog-cats (one 'All' tab button) and .blog-search input; .blog-grid div#blogGrid; .blog-load-wrap div#blogLoadWrap (hidden) with Load more button; .blog-empty div (hidden).",
+    "Copy newsletter section and footer (contact section + ct-bottom) from shop.html verbatim.",
+    "Copy the policy overlay markup from shop.html.",
+    "Copy the cart overlay + cart drawer markup from shop.html.",
+    "Copy the search overlay markup from shop.html.",
+    "Write the <script> block containing: SUPA_URL and SUPA_KEY constants; supaGet() function (anon fetch with apikey header only, no auth token needed); PAGE_SIZE=9, currentOffset, activeCat, searchQ, allLoaded variables; loadCategories() — fetches /rest/v1/blog_categories?select=id,name,slug&order=name.asc and appends tab buttons to #blogCats; setCat(cat) — resets offset+grid, re-runs loadPosts(true); buildQuery(forCount) — constructs Supabase REST query string with status=eq.published, optional category filter, optional ilike search, limit/offset; loadPosts(reset) — calls supaGet(buildQuery(false)), appends rendered cards, updates Load More visibility; showEmpty() — hides grid and load-more, shows empty state; renderCard(p) — creates .blog-card anchor with .blog-card-img (background-image), .blog-cat-badge, .blog-card-title (Urbanist h3), .blog-card-excerpt (truncated 120 chars), .blog-card-meta; loadFeaturedPost() — fetches featured=eq.true first, falls back to most recent published, populates hero section; event listeners for search input (debounce 300ms is optional), Load More button, category tab buttons; initialization calls: loadCategories(), loadFeaturedPost(), loadPosts(true).",
+    "Copy the topbar-close and sticky-nav JS from shop.html (topbar localStorage, scroll handler, nav active class).",
+    "Copy the policy overlay JS from shop.html.",
+    "Copy the cart JS from shop.html.",
+    "Copy the mobile menu JS from shop.html. In the mm.innerHTML string add <a class=\"m-link\" href=\"blog.html\">Blog</a> after the About Us m-link.",
+
+    "CSS rules to append to the <style> block:\n/* ── BLOG PAGE ── */\n.blog-hero{padding:3rem 0 2rem}\n.blog-hero-card{display:grid;border-radius:20px;overflow:hidden;background:#fff;border:1px solid rgba(56,65,104,.12);text-decoration:none;color:var(--brown);transition:transform .3s}\n.blog-hero-card:hover{transform:translateY(-3px)}\n@media(min-width:768px){.blog-hero-card{grid-template-columns:1.4fr 1fr}}\n.blog-hero-img{min-height:280px;background:#f0ede8 center/cover no-repeat}\n@media(min-width:768px){.blog-hero-img{min-height:420px}}\n.blog-hero-body{padding:2rem;display:flex;flex-direction:column;justify-content:center;gap:.75rem}\n.blog-hero-title{font-family:Urbanist,Arial,sans-serif;font-size:clamp(1.5rem,4vw,2.25rem);font-weight:500;line-height:1.2;margin:0}\n.blog-hero-excerpt{margin:0;line-height:1.7;color:rgba(56,65,104,.7)}\n.blog-hero-meta{display:flex;gap:1rem;font-size:.8rem;color:rgba(56,65,104,.55);flex-wrap:wrap}\n.blog-cat-badge{display:inline-block;padding:.25rem .75rem;border-radius:9999px;background:rgba(56,65,104,.08);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brown)}\n.blog-toolbar{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:2rem 0 1.5rem;justify-content:space-between}\n.blog-cats{display:flex;gap:.4rem;flex-wrap:wrap}\n.blog-search{height:40px;padding:0 1rem;border:1px solid rgba(56,65,104,.2);border-radius:9999px;font:inherit;font-size:.875rem;background:#fff;color:var(--brown);min-width:180px}\n.blog-search:focus{outline:2px solid var(--brown);outline-offset:1px}\n.blog-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;padding-bottom:2rem}\n@media(min-width:640px){.blog-grid{grid-template-columns:repeat(3,1fr)}}\n@media(min-width:1024px){.blog-grid{grid-template-columns:repeat(4,1fr);gap:1.5rem}}\n.blog-card{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#fff;border:1px solid rgba(56,65,104,.12);text-decoration:none;color:var(--brown);transition:transform .3s}\n.blog-card:hover{transform:translateY(-4px)}\n.blog-card-img{aspect-ratio:3/2;background:#f0ede8 center/cover no-repeat}\n.blog-card-body{padding:1rem;display:flex;flex-direction:column;gap:.5rem;flex:1}\n.blog-card-title{font-family:Urbanist,Arial,sans-serif;font-size:1rem;font-weight:500;margin:0;line-height:1.3}\n.blog-card-excerpt{font-size:.8125rem;line-height:1.6;color:rgba(56,65,104,.65);margin:0;flex:1}\n.blog-card-meta{display:flex;gap:.75rem;font-size:.75rem;color:rgba(56,65,104,.5);flex-wrap:wrap;margin-top:auto;padding-top:.5rem}\n.blog-load-wrap{text-align:center;padding:2rem 0 4rem}\n.blog-empty{text-align:center;padding:4rem 1rem;color:rgba(56,65,104,.5)}"
+  ],
+  "acceptance_criteria": [
+    "blog.html exists at the workspace root",
+    "Opening blog.html in a browser shows the AERA nav with Blog marked active",
+    "The hero section populates with the most recent published+featured post (or most recent published if none are featured)",
+    "Category filter tabs appear, loaded from Supabase blog_categories",
+    "Clicking a category tab filters the grid to only posts in that category",
+    "Typing in the search box filters visible cards",
+    "9 posts load per page; Load More button fetches the next 9",
+    "When no posts are published, the empty state message shows",
+    "Footer, newsletter, cart, and mobile menu work identically to shop.html"
+  ],
+  "verification": [
+    "Open blog.html in browser — no JS console errors",
+    "Check Network tab: /rest/v1/blog_categories and /rest/v1/blogs requests return 200",
+    "Open browser DevTools → Network → confirm requests to Supabase complete without 401/403",
+    "Resize to 375px width and confirm 2-column grid and mobile menu work"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

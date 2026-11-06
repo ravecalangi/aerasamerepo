@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Create blog-post.html — the individual article page. Reads ?slug= from URL, fetches the full blog record from Supabase, renders the article body (Quill HTML via innerHTML), sets all meta/OG/Twitter tags dynamically, loads related posts (same category, max 3), and provides social sharing (Facebook, X/Twitter, Copy Link with toast). Depends on FEAT-003 CSS classes (.blog-card, .blog-cat-badge etc.) being defined — the related posts grid reuses those classes.",
+  "status": "pending",
+  "steps": [
+    "Create c:\\Users\\martq\\Documents\\area-new-main\\blog-post.html as a new file.",
+    "Write the <head> block: charset, viewport, <title>Blog | AERA</title> (overwritten by JS). Include static meta tags for description, canonical, og:type=article, og:site_name, og:title, og:description, og:image, og:url, twitter:card=summary_large_image, twitter:title, twitter:description, twitter:image — all with empty content attributes so JS can fill them. Add Quill snow CSS link: <link href=\"https://cdn.quilljs.com/1.3.7/quill.snow.css\" rel=\"stylesheet\"> (for article formatting only, no Quill JS needed). Add Google Fonts (same as shop.html).",
+    "Write the full <style> block: copy all CSS from shop.html (nav, footer, cart, etc.), then append post-specific styles: .post-hero-img (full-width, 16/7 aspect ratio, background center/cover), .post-wrap (max-width:720px, margin:0 auto, padding), .post-back, .post-header h1 (Urbanist, clamp(1.75rem,5vw,3rem)), .post-meta, .post-content (.ql-editor scoped overrides for article readability — font-size 1.0625rem, line-height 1.8, img max-width 100% border-radius 12px, blockquote border-left, h2/h3 Urbanist), .post-share, .post-share-btns, .post-notfound, .related-section, .toast (copy from admin.html toast CSS), also copy .blog-grid, .blog-card, .blog-cat-badge, .blog-card-img, .blog-card-body, .blog-card-title, .blog-card-excerpt, .blog-card-meta from FEAT-003.",
+    "Copy announcement topbar HTML from shop.html.",
+    "Copy nav HTML from shop.html, add Blog link (active on this page).",
+    "Write <main id=\"postMain\">: (a) <div id=\"postLoading\"> spinner/message; (b) <div id=\"postNotFound\" style=\"display:none\"> with 404 message and ← Back to Blog link; (c) <article id=\"postArticle\" style=\"display:none\"> containing: .post-hero-img#postHeroImg (full-width background div), .wrap.post-wrap with: <a href=\"blog.html\" class=\"post-back\">← Back to Blog</a>, <header class=\"post-header\"> with span.blog-cat-badge#postCat, h1#postTitle, .post-meta with #postAuthor and #postDate, <div class=\"ql-editor post-content\" id=\"postContent\"> (article HTML), .post-share div with Facebook/X/Copy buttons, then <section id=\"relatedSection\" style=\"display:none\" class=\"related-section\"> with h2 and .blog-grid#relatedGrid.",
+    "Copy newsletter + footer HTML from shop.html verbatim.",
+    "Copy policy overlay, cart drawer, search overlay HTML from shop.html.",
+    "Add <div class=\"toast\" id=\"toast\"></div> before closing </body>.",
+    "Write the <script> block: SUPA_URL and SUPA_KEY; supaGet() anon helper; setMeta(name,val) helper (queries by meta[name] or meta[property]); toast(msg) function matching admin.html pattern; read slug from new URLSearchParams(location.search).get('slug'); if no slug show notFound; else fetch /rest/v1/blogs?select=*&slug=eq.{slug}&status=eq.published&limit=1; on success: set document.title, call setMeta for all 8 OG/Twitter tags, set canonical href, populate hero img, postCat, postTitle, postAuthor, postDate, set postContent.innerHTML = p.content (raw Quill HTML), set shareFb.href and shareX.href, attach shareCopy click handler (navigator.clipboard.writeText), show postArticle, then fetch related posts (/rest/v1/blogs?select=id,title,slug,excerpt,category,author,featured_image_url,published_at&status=eq.published&category=eq.{cat}&id=neq.{id}&order=published_at.desc&limit=3) and render 3 .blog-card anchors into relatedGrid; on error or empty result show notFound.",
+    "Copy topbar-close JS, sticky-nav JS, policy overlay JS, cart JS, mobile menu JS from shop.html. In mobile menu mm.innerHTML add Blog link after About Us."
+  ],
+  "acceptance_criteria": [
+    "blog-post.html exists at the workspace root",
+    "Navigating to blog-post.html?slug=<published-slug> renders the full article",
+    "document.title is set to '{post title} | AERA'",
+    "og:title, og:description, og:image, og:url meta tags are set correctly",
+    "Article content renders as formatted HTML (Quill HTML via innerHTML)",
+    "blog-post.html?slug=nonexistent shows the 404-style not-found state",
+    "Related posts section shows up to 3 cards in the same category",
+    "Facebook share opens facebook.com/sharer/sharer.php?u=<encoded-url>",
+    "X share opens twitter.com/intent/tweet?url=<url>&text=<title>",
+    "Copy Link button copies location.href and shows toast 'Link copied!'",
+    "Nav shows Blog as active, footer matches other pages"
+  ],
+  "verification": [
+    "Open blog-post.html?slug=<existing-published-slug> in browser — article renders, no console errors",
+    "Check Network tab — Supabase fetch returns 200 with post data",
+    "Open blog-post.html?slug=invalid-slug-xyz — 404 state shown",
+    "Right-click page → View Page Source — confirm og:title meta tag is populated (note: this is JS-set so it won't appear in raw source; use browser DevTools Elements panel to verify)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

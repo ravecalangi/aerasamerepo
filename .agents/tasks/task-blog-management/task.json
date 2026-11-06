@@ -1,0 +1,7 @@
+{
+  "task_id": "task-blog-management",
+  "task_description": "Implement a complete Blog Management System for the AERA e-commerce static site: Supabase schema + storage, nav updates across all pages, public blog listing page (blog.html), single article page (blog-post.html), and admin Blogs tab with full-screen Quill editor.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}

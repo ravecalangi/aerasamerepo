@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
+<title>AERA Circle | AERA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#384168;--deep:#2a3152;--cream:#f0ede8;--px:clamp(1rem,5vw,4rem)}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth;scrollbar-gutter:stable}
+body{margin:0;background:var(--cream);color:var(--brown);font-family:"Instrument Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}h1,h2,h3{font-family:Urbanist,Arial,sans-serif;font-weight:500;margin:0}
+.wrap{max-width:80rem;margin:0 auto;padding:0 var(--px)}
+.head{text-align:center;padding:4.5rem 0 3rem}
+.lbl{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(56,65,104,.6);margin:0 0 .75rem}
+.head h1{font-size:clamp(2.5rem,6vw,4rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.head p{max-width:34rem;margin:0 auto;line-height:1.7;color:rgba(56,65,104,.7)}
+.btn{display:inline-flex;align-items:center;background:var(--brown);color:#fff;font-size:.875rem;font-weight:500;padding:.8rem 1.5rem;border-radius:9999px;transition:background .2s,transform .2s}.btn:hover{background:var(--deep);transform:translateY(-1px)}
+.tabs{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.tab{padding:.5rem 1.1rem;border-radius:9999px;border:1px solid rgba(56,65,104,.3);background:none;color:rgba(56,65,104,.7);font:inherit;font-size:.8125rem;cursor:pointer}.tab.on{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;padding-bottom:6rem}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr);gap:1.5rem}}
+.card{display:flex;flex-direction:column;border-radius:1rem;overflow:hidden;background:rgba(56,65,104,.04);border:1px solid rgba(56,65,104,.15);transition:transform .3s}.card:hover{transform:translateY(-4px)}.card.hide{display:none}
+.ph{position:relative;aspect-ratio:3/4;overflow:hidden}.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.card:hover .ph img{transform:scale(1.06)}
+.notes{position:absolute;inset:auto 0 0;padding:.8rem 1rem;text-align:center;font-size:.85rem;line-height:1.4;height:3rem;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--cream);border-top:1px solid rgba(56,65,104,.15);transform:translateY(100%);transition:transform .35s}.card:hover .notes{transform:none}
+@media(hover:none){.notes{transform:none}}
+.info{padding:.9rem 1rem 1rem;display:flex;flex-direction:column;flex:1}.tag{font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(56,65,104,.55);margin-bottom:.3rem}
+.info h3{font-size:1.05rem}.row{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:auto;padding-top:.75rem}
+.add-to-bag{font:inherit;font-size:.75rem;font-weight:500;padding:.4rem .85rem;border-radius:9999px;background:rgba(56,65,104,.08);border:1px solid rgba(56,65,104,.25);color:var(--brown);cursor:pointer;transition:.2s}.add-to-bag:hover{background:var(--brown);color:var(--cream)}
+.split{display:grid;gap:3rem;align-items:center;padding-bottom:5rem}@media(min-width:900px){.split{grid-template-columns:.9fr 1.1fr;gap:5rem}}
+.pic{aspect-ratio:3/4;max-width:26rem;width:100%;margin:0 auto;border-radius:999px 999px 24px 24px;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.blk{margin-bottom:1.6rem}.blk h3{font-size:1.25rem;margin-bottom:.4rem}.blk p,.split>div>p{margin:0;line-height:1.8;color:rgba(56,65,104,.75)}
+.vals{display:grid;gap:1.25rem;padding-bottom:6rem}@media(min-width:768px){.vals{grid-template-columns:repeat(3,1fr)}}
+.v{padding:1.75rem;border:1px solid rgba(56,65,104,.15);border-radius:20px;background:#fff}.v h3{font-size:1.2rem;margin-bottom:.5rem}.v p{margin:0;line-height:1.7;color:rgba(56,65,104,.7);font-size:.95rem}
+.circ{background:var(--brown);color:var(--cream);border-radius:24px;padding:clamp(2rem,5vw,4rem);margin-bottom:6rem}.circ .lbl{color:rgba(240,237,232,.7)}
+.circ h2{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem}.circ>p{max-width:40rem;line-height:1.8;color:rgba(240,237,232,.8)}
+.tiers,.notes2{display:grid;gap:1.25rem;margin:2.25rem 0}@media(min-width:768px){.tiers{grid-template-columns:repeat(3,1fr)}.notes2{grid-template-columns:1fr 1fr}}
+.t{padding:1.75rem;border:1px solid rgba(240,237,232,.25);border-radius:20px;background:rgba(240,237,232,.06)}.t h3{font-size:1.25rem;margin-bottom:.5rem}.t p{margin:0 0 .75rem;font-size:.95rem;color:rgba(240,237,232,.75)}.t ul{margin:0;padding-left:1.1rem;line-height:1.8;font-size:.95rem}
+.notes2 h3{font-family:inherit;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,237,232,.65);font-weight:600;margin-bottom:.4rem}.notes2 p{margin:0;line-height:1.7;font-size:.95rem;color:rgba(240,237,232,.85)}
+.circ .btn{background:var(--cream);color:var(--brown)}
+
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.form-msg{flex-basis:100%;margin:.25rem 0 0;font-size:.875rem;min-height:1.2em}
+.newsletter{padding:0 1rem 6rem}
+.nl-card{position:relative;overflow:hidden;max-width:80rem;margin:0 auto;background:var(--brown);border-radius:24px;padding:3rem 1.5rem;display:grid;gap:1.75rem;align-items:center}
+.nl-label{margin:0 0 .6rem;font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,237,232,.7)}
+.nl-text h2{margin:0 0 .75rem;font-size:2rem;line-height:1.15;color:var(--cream)}
+.nl-text p:last-child{margin:0;max-width:30rem;line-height:1.6;font-size:.9375rem;color:var(--cream)}
+.nl-form{display:flex;gap:.5rem;flex-wrap:wrap}
+.nl-form input{flex:1 1 220px;height:52px;padding:0 1.25rem;border:1px solid transparent;border-radius:30px;background:var(--cream);color:var(--brown);font:inherit;font-size:.9375rem}
+.nl-form input:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.nl-form button{height:52px;padding:0 2rem;border:0;border-radius:30px;background:var(--cream);color:var(--brown);font:inherit;font-weight:500;cursor:pointer;transition:background .2s}
+.nl-form button:hover{background:#fff}.nl-form .form-msg{color:var(--cream)}
+@media(min-width:900px){.nl-card{grid-template-columns:1.1fr 1fr;padding:3.5rem 4rem;gap:3rem}.nl-text h2{font-size:2.5rem}}
+.contact{background:var(--brown);color:var(--cream);padding:5rem 1rem 0}
+.ct-in{max-width:80rem;margin:0 auto;display:grid;gap:3rem}
+.ct-info .logo{width:120px}
+.ct-info h2{margin:1.5rem 0 .75rem;font-size:2.25rem;line-height:1.15}
+.ct-info>p{margin:0 0 1.75rem;max-width:28rem;line-height:1.7;color:rgba(240,237,232,.75)}
+.ct-list{list-style:none;margin:0 0 1.5rem;padding:0;display:grid;gap:.9rem}
+.ct-list li{display:flex;gap:1rem;align-items:baseline}
+.ct-list span{min-width:4.5rem;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,237,232,.6)}
+.ct-list a:hover{text-decoration:underline}
+.ct-social{display:flex;gap:.5rem;flex-wrap:wrap}
+.ct-social a{padding:.45rem 1rem;border:1px solid rgba(240,237,232,.35);border-radius:9999px;font-size:.8125rem;transition:background .2s,color .2s}
+.ct-social a:hover{background:var(--cream);color:var(--brown)}
+.ct-form{display:grid;gap:.9rem;align-content:start}
+.ct-form label{display:grid;gap:.4rem;font-size:.8125rem;color:rgba(240,237,232,.8)}
+.ct-form input,.ct-form textarea{width:100%;padding:.85rem 1.1rem;border:1px solid rgba(240,237,232,.3);border-radius:16px;background:rgba(240,237,232,.08);color:var(--cream);font:inherit;font-size:.9375rem}
+.ct-form textarea{min-height:120px;resize:vertical}
+.ct-form input::placeholder,.ct-form textarea::placeholder{color:rgba(240,237,232,.45)}
+.ct-form input:focus-visible,.ct-form textarea:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.ct-form button{justify-self:start;height:52px;padding:0 2rem;border:0;border-radius:30px;background:var(--cream);color:var(--brown);font:inherit;font-weight:600;cursor:pointer;transition:background .2s}
+.ct-form button:hover{background:#fff}.contact .form-msg{color:var(--cream)}
+
+
+
+
+
+.ct-bottom{max-width:80rem;margin:2.5rem auto 0;padding:1.5rem 0 2rem;border-top:1px solid rgba(240,237,232,.18);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8125rem;color:rgba(240,237,232,.6)}
+.ct-bottom nav{display:flex;gap:1.25rem;flex-wrap:wrap}.ct-bottom a:hover{color:var(--cream)}
+@media(min-width:900px){.contact{padding:6rem 4rem 0}.ct-in{grid-template-columns:1fr 1fr;gap:5rem}.ct-info h2{font-size:2.75rem}}
+@media(max-width:639px){.nl-card{padding:2.25rem 1.25rem;border-radius:20px}.nl-form input,.nl-form button{flex:1 1 100%;width:100%}.contact{padding-top:3.5rem}.ct-info h2{font-size:2rem}.ct-list li{flex-direction:column;gap:.15rem}.ct-form button{justify-self:stretch}.ct-bottom{flex-direction:column}}
+.pol-overlay{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s linear .25s;padding:1rem}
+.pol-overlay.open{opacity:1;visibility:visible;transition:opacity .25s}
+.pol-box{position:relative;width:min(560px,100%);max-height:80vh;overflow-y:auto;background:#fff;border-radius:20px;padding:2rem 1.75rem;color:var(--brown)}
+.pol-box h3{margin:0 0 1rem;font-size:1.5rem}.pol-box p{margin:0 0 .9rem;font-size:.9375rem;line-height:1.7;color:rgba(56,65,104,.8)}
+.pol-x{position:absolute;top:.75rem;right:.75rem;border:0;background:none;cursor:pointer;width:32px;height:32px;border-radius:50%;font-size:1.4rem;color:var(--brown)}.pol-x:hover{background:rgba(56,65,104,.08)}
+
+.logo{display:block;width:60px;height:auto}
+.nav .logo,.m-menu .logo{filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+.topbar{position:relative;display:flex;align-items:center;justify-content:center;min-height:32px;padding:5px 52px;background:var(--brown);font-size:13px;font-weight:400;letter-spacing:-.01em;text-align:center;color:var(--cream)}
+.topbar a{display:inline-block}.topbar a:hover{text-decoration:underline}
+.tb-close{position:absolute;right:clamp(12px,1.7vw,24px);top:50%;transform:translateY(-50%);width:28px;height:28px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--cream);cursor:pointer;display:grid;place-items:center;transition:background .2s}
+.tb-close:hover{background:rgba(240,237,232,.15)}.tb-close svg{width:14px;height:14px}
+@media(max-width:639px){.topbar{font-size:12.5px;padding:8px 44px}}
+.nav{position:sticky;z-index:500;top:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 clamp(16px,2.5vw,40px);height:68px;pointer-events:none;transition:background .2s,box-shadow .2s}
+.nav.sticky{background:rgba(253,248,243,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(42,49,82,.1);box-shadow:0 2px 12px rgba(42,49,82,.06)}
+.nav-logo-wrap{pointer-events:auto;justify-self:start}
+.nav-links-center{pointer-events:auto;display:flex;align-items:center;gap:clamp(16px,2.5vw,36px);font-size:.875rem;color:var(--brown)}
+.nav-links-center a{opacity:1;letter-spacing:.03em;transition:opacity .2s}.nav-links-center a:hover{opacity:.65}
+.nav-links-center a.active{font-weight:600;opacity:1}
+.nav-icons-right{pointer-events:auto;justify-self:end;display:flex;align-items:center;gap:10px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.08);background:rgba(253,248,243,.7);display:grid;place-items:center;cursor:pointer;transition:background .2s;backdrop-filter:blur(4px);color:var(--brown);padding:0}
+.nav-icon-btn:hover{background:#fdf8f3}
+.nav-dropdown{display:flex;align-items:center;height:68px}
+.dd{display:inline-flex;align-items:center}
+.dd::after{content:"";display:block;width:5px;height:5px;margin:-4px 0 0 7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
+.dropdown-panel{display:grid;position:absolute;top:100%;left:50%;margin-top:6px;width:min(860px,90vw);background:#fdf8f3;border-radius:16px;box-shadow:0 8px 40px rgba(42,49,82,.14);padding:2rem;grid-template-columns:repeat(4,1fr);gap:1.5rem;z-index:600;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-8px);transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s}
+.dropdown-panel::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
+.nav-dropdown:hover .dropdown-panel,.nav-dropdown:focus-within .dropdown-panel{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);transition:opacity .22s ease,transform .22s ease,visibility 0s}
+.dropdown-heading{margin:0 0 .75rem;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(56,65,104,.55)}
+.dropdown-panel a{display:block;font-size:.875rem;color:var(--brown);padding:.3rem 0;transition:opacity .15s}.dropdown-panel a:hover{opacity:.5}
+.dropdown-featured .dropdown-sub{margin:0 0 1rem;font-size:.8125rem;color:rgba(56,65,104,.65);line-height:1.5}
+.dropdown-cta{display:inline-flex !important;align-items:center;height:36px;padding:0 1.25rem !important;background:var(--brown);color:#fff !important;border-radius:9999px;font-size:.8125rem !important;font-weight:500;transition:background .2s !important}
+.dropdown-cta:hover{background:var(--deep);opacity:1 !important}
+.cart-btn{position:relative}
+.cart-count{position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:var(--brown);color:#fff;font-size:9px;font-weight:700;display:grid;place-items:center;line-height:1}
+.m-burger,.m-menu{display:none}
+@media(max-width:1023px){
+.nav{grid-template-columns:1fr auto}.nav-links-center{display:none}
+.m-burger{display:grid;width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.08);background:rgba(253,248,243,.7);place-items:center;cursor:pointer;color:var(--brown);padding:0}
+.m-menu{position:fixed;inset:0;z-index:800;background:#fdf8f3;padding:0 1.5rem 2rem;flex-direction:column;overflow-y:auto;display:flex;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+.m-menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease,visibility 0s}
+.m-menu-head{display:flex;align-items:center;justify-content:space-between;height:68px;flex-shrink:0;border-bottom:1px solid rgba(56,65,104,.12);margin-top:1rem}
+.m-menu-head .m-link{border-bottom:none!important;padding:0!important}
+.m-close{width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.15);background:none;display:grid;place-items:center;cursor:pointer;color:var(--brown);padding:0}
+.m-menu a.m-link{display:block;padding:1rem 0;font-family:Urbanist,Arial,sans-serif;font-size:1.75rem;font-weight:500;color:var(--brown);border-bottom:1px solid rgba(56,65,104,.12)}
+.m-menu .m-sub{display:flex;flex-wrap:wrap;gap:.5rem;padding:.9rem 0 .4rem}
+.m-menu .m-sub a{font-size:.8125rem;padding:.4rem .9rem;border:1px solid rgba(56,65,104,.3);border-radius:9999px;color:var(--brown)}
+.m-menu .m-cta{margin-top:1.75rem;align-self:flex-start}}
+@media(min-width:640px) and (max-width:1023px){.nav{padding:0 2rem}}
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.cart-overlay.open{opacity:1;visibility:visible;transition:opacity .3s}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:#fff;z-index:901;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.12)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(56,65,104,.1)}
+.cart-drawer-head h3{margin:0;font-family:"Instrument Sans",sans-serif;font-size:1rem;font-weight:600;letter-spacing:.04em}
+.cart-close{background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;display:grid;place-items:center;transition:background .2s;color:var(--brown)}.cart-close:hover{background:rgba(56,65,104,.08)}
+.cart-body{flex:1;overflow-y:auto;padding:1.5rem}.cart-empty{text-align:center;color:rgba(56,65,104,.5);margin-top:4rem;font-size:.9375rem}
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid rgba(56,65,104,.1)}
+.cart-footer button{width:100%;height:48px;border:none;border-radius:9999px;background:var(--brown);color:#fff;font:inherit;font-size:.9375rem;font-weight:600;cursor:pointer;transition:background .2s}.cart-footer button:hover{background:var(--deep)}
+.cart-line{display:flex;justify-content:space-between;align-items:baseline;font-size:.9375rem;margin-bottom:.5rem}.cart-line strong{font-size:1.0625rem}
+.cart-ship{color:rgba(56,65,104,.65);font-size:.875rem}.cart-note{margin:0 0 1rem;font-size:.8125rem;color:rgba(56,65,104,.55);line-height:1.5}
+.srch-overlay{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.45);display:flex;justify-content:center;align-items:flex-start;padding:10vh 1rem 1rem;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s linear .25s}
+.srch-overlay.open{opacity:1;visibility:visible;transition:opacity .25s}
+.srch-box{width:min(640px,100%);background:#fdf8f3;border-radius:20px;padding:1rem;box-shadow:0 12px 48px rgba(42,49,82,.25);max-height:80vh;display:flex;flex-direction:column}
+.srch-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .6rem;border-bottom:1px solid rgba(56,65,104,.12);color:var(--brown)}
+.srch-row input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;font-size:1rem;color:var(--brown);padding:.6rem 0}
+.srch-x{border:0;background:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--brown);font-size:1.4rem;line-height:1;padding:0}.srch-x:hover{background:rgba(56,65,104,.08)}
+.srch-list{list-style:none;margin:.5rem 0 0;padding:0;overflow-y:auto}
+.srch-list button{width:100%;display:flex;align-items:center;gap:.85rem;padding:.6rem;border:0;background:none;border-radius:12px;cursor:pointer;text-align:left;font:inherit;color:var(--brown)}.srch-list button:hover{background:rgba(56,65,104,.07)}
+.srch-list img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.srch-list span{flex:1;min-width:0;display:flex;flex-direction:column}.srch-list b{font-weight:500;font-size:.9375rem}.srch-list small{font-size:.75rem;color:rgba(56,65,104,.6)}.srch-list em{font-style:normal;font-size:.875rem;color:rgba(56,65,104,.7)}
+.srch-empty{padding:1.25rem .6rem;color:rgba(56,65,104,.6);font-size:.9375rem}
+.card.flash{border-color:var(--brown);box-shadow:0 0 0 3px rgba(56,65,104,.25)}
+
+/* ---------- TOUCH DEVICES: remove the default blue/gray tap flash ---------- */
+a,button,input,textarea,.tab,.add-to-bag,.m-burger,.m-close,.cart-close,.srch-x,.pol-x{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
+.tab,.add-to-bag,.btn,.m-burger,.m-close{-webkit-user-select:none;user-select:none}
+</style></head><body>
+<div class="topbar" id="topbar"><a href="shop.html">Bloom is here: our garden-party launch collection</a><button class="tb-close" id="tbClose" type="button" aria-label="Close announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+<header class="nav" id="mainNav">
+<div class="nav-logo-wrap"><a href="index.html" aria-label="AERA home"><img src="images/aera-logo-black.png" class="logo" alt="AERA"></a></div>
+<nav class="nav-links-center"><a href="index.html">Home</a>
+<div class="nav-dropdown"><a href="shop.html" class="dd">Shop</a><div class="dropdown-panel">
+<div class="dropdown-col"><p class="dropdown-heading">Hair &amp; Body Mists</p><a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">No Fixed Plans</a><a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">White Shirt</a><a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">First Flowers</a><a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">Open Windows</a><a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">After Hours</a></div>
+<div class="dropdown-col"><p class="dropdown-heading">Soaps</p><a href="shop.html#soap" onclick="try{sessionStorage.setItem('aera-shop-filter','soap')}catch(e){}">Tea Tree Soap</a><a href="shop.html#soap" onclick="try{sessionStorage.setItem('aera-shop-filter','soap')}catch(e){}">Triple Whitening Soap</a></div>
+<div class="dropdown-col"><p class="dropdown-heading">Body Serum</p><a href="shop.html#serum" onclick="try{sessionStorage.setItem('aera-shop-filter','serum')}catch(e){}">Second Skin Body Serum</a></div>
+<div class="dropdown-col dropdown-featured"><p class="dropdown-heading">Featured</p><p class="dropdown-sub">New arrivals and bestsellers from AERA.</p><a href="shop.html" class="dropdown-cta">Shop All</a></div></div></div>
+<div class="nav-dropdown"><a href="about.html" class="dd">About Us</a><div class="dropdown-panel" style="grid-template-columns:repeat(3,1fr)">
+<div class="dropdown-col"><p class="dropdown-heading">About AERA</p><a href="about.html">How it started</a><a href="about.html">Our ingredients</a><a href="about.html">Sustainability</a></div>
+<div class="dropdown-col"><p class="dropdown-heading">Our Mission</p><a href="about.html">Scent &amp; self-care</a><a href="about.html">Made in the Philippines</a></div>
+<div class="dropdown-col dropdown-featured"><p class="dropdown-heading">Get to know us</p><p class="dropdown-sub">AERA is built for everyday moments worth lingering in.</p><a href="about.html" class="dropdown-cta">Read about us</a></div></div></div>
+<a href="blog.html">Blog</a><a href="track-order.html">Track my order</a>
+<div class="nav-dropdown"><a href="circle.html" class="dd">AERA Circle</a><div class="dropdown-panel" style="grid-template-columns:repeat(3,1fr)">
+<div class="dropdown-col"><p class="dropdown-heading">Membership</p><a href="circle.html">What is AERA Circle?</a><a href="circle.html">Benefits &amp; perks</a><a href="circle.html">How to join</a></div>
+<div class="dropdown-col"><p class="dropdown-heading">Community</p><a href="circle.html">Events</a><a href="circle.html">Member exclusives</a></div>
+<div class="dropdown-col dropdown-featured"><p class="dropdown-heading">Join the circle</p><p class="dropdown-sub">Be the first to know about new drops and member-only offers.</p><a href="circle.html" class="dropdown-cta">Join now</a></div></div></div>
+</nav>
+<div class="nav-icons-right"><button class="nav-icon-btn" aria-label="Search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
+<button class="nav-icon-btn cart-btn" aria-label="Shopping bag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count">0</span></button></div>
+</header>
+<main><div class="wrap"><div class="head"><p class="lbl">AERA Circle</p><h1>Join the Circle.</h1><p>Share AERA with your own community through our reseller program.</p></div>
+<div class="circ"><p class="lbl">Reseller program</p><h2>Pick your tier.</h2><p>AERA Circle is our reseller program for individuals and businesses who want to share AERA with their own community. Applying and ordering are separate from regular retail shopping.</p>
+<div class="tiers"><div class="t"><h3>1st Tier</h3><p>For new resellers starting out.</p><ul><li>Up to 15% off retail prices</li><li>Starter kit with product samples</li><li>Minimum net PO: &#8369;6,000</li></ul></div><div class="t"><h3>2nd Tier</h3><p>For active sellers building a steady customer base.</p><ul><li>Up to 20% off retail prices</li><li>Priority restocks on new scents</li><li>Minimum net PO: &#8369;15,000</li></ul></div><div class="t"><h3>3rd Tier</h3><p>For high-volume sellers and bulk buyers.</p><ul><li>Up to 30% off retail prices</li><li>Early access to new launches</li><li>Minimum net PO: &#8369;25,000</li></ul></div></div>
+<div class="notes2"><div><h3>Bulk orders</h3><p>For purchases over &#8369;50,000, email us at <a href="mailto:contactaeraofficial@gmail.com" style="color:inherit;text-decoration:underline">contactaeraofficial@gmail.com</a> so we can assist you directly.</p></div><h3>Ordering expectations</h3><p>Apply through the form, and once approved you&rsquo;ll receive the reseller price list. Orders are placed directly with our team, packed within 3&ndash;5 business days and paid in full before shipping via bank transfer or e-wallet.</p></div>
+<div><h3>Policy notes</h3><p>Resellers agree to keep prices at or above AERA&rsquo;s minimum advertised price, to use official product photos and descriptions, and not to make medical claims about any product.</p></div></div>
+<a class="btn" href="mailto:contactaeraofficial@gmail.com?subject=AERA%20Circle%20Application">Apply to AERA Circle</a></div></div></main>
+<section class="newsletter" id="newsletter"><div class="nl-card"><div class="nl-text"><p class="nl-label">Newsletter</p><h2>Join our newsletter</h2><p>Be the first to hear about new scents, promotions and what&#8217;s blooming next at AERA. No spam, just a little something nice.</p></div>
+<form class="nl-form" id="nlForm"><label class="sr-only" for="nlEmail">Email address</label><input id="nlEmail" type="email" placeholder="Your email address" required><button type="submit">Subscribe</button><p class="form-msg" id="nlMsg" role="status"></p></form></div></section>
+<footer class="contact" id="contact"><div class="ct-in"><div class="ct-info"><img src="images/aera-logo-black.png" class="logo" alt="AERA" style="filter:invert(1)"><h2>Contact us</h2><p>Questions about our products, how to order, or AERA Circle? Send us a message and we&#8217;ll get back to you.</p>
+<ul class="ct-list"><li><span>Email</span><a href="mailto:contactaeraofficial@gmail.com">contactaeraofficial@gmail.com</a></li></ul>
+<div class="ct-social"><a href="https://www.instagram.com/aeraclucofficial" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" rel="noopener">TikTok</a><a href="https://www.facebook.com/thisisaera" target="_blank" rel="noopener">Facebook</a></div></div>
+<form class="ct-form" id="ctForm"><label>Your name<input type="text" name="name" placeholder="Name" required></label><label>Phone<input type="tel" name="phone" placeholder="+63 ..." required></label><label>Message<textarea name="message" placeholder="Tell us about your question or order"></textarea></label><button type="submit">Send message</button><p class="form-msg" id="ctMsg" role="status"></p></form></div>
+</div>
+<div class="ct-bottom"><span>&#169; 2026 AERA. All rights reserved.</span><nav><a href="#" data-policy="privacy">Privacy Policy</a><a href="#" data-policy="ordering">Ordering Policy</a><a href="about.html">About Us</a><a href="circle.html">AERA Circle</a><a href="index.html#faq">FAQs</a></nav></div></footer>
+<div class="pol-overlay" id="polOverlay" aria-hidden="true"><div class="pol-box" role="dialog" aria-modal="true" aria-labelledby="polTitle"><button class="pol-x" id="polClose" type="button" aria-label="Close">&times;</button><h3 id="polTitle"></h3><div id="polBody"></div></div></div>
+<script>
+(function(){
+function wire(a,b,t){var f=document.getElementById(a),m=document.getElementById(b);f.addEventListener("submit",function(e){e.preventDefault();m.textContent=t;f.reset()})}
+wire("nlForm","nlMsg","Thanks for subscribing!");wire("ctForm","ctMsg","Thanks! We got your message and will get back to you soon.");
+var POL={privacy:{t:"Privacy Policy",b:["We collect only the information you give us, such as your name, contact details and delivery address, to process orders and answer your messages.","We do not sell your personal information. We share it only with the partners needed to deliver your order and process payment.","You can ask us to update or delete your information anytime by emailing contactaeraofficial@gmail.com."]},ordering:{t:"Ordering Policy",b:["Orders are confirmed once payment is received. You will get an order confirmation and delivery updates using the contact details you provide.","Shipping fees are calculated at checkout based on your delivery address. Please make sure your address and phone number are correct.","For concerns about a received order, contact us within 7 days of delivery with your order details and photos."]}};
+var po=document.getElementById("polOverlay"),pt=document.getElementById("polTitle"),pb=document.getElementById("polBody");
+function open(k){var d=POL[k];pt.textContent=d.t;pb.innerHTML="";d.b.forEach(function(x){var p=document.createElement("p");p.textContent=x;pb.appendChild(p)});po.classList.add("open");po.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
+function close(){po.classList.remove("open");po.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+document.querySelectorAll("[data-policy]").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();open(a.dataset.policy)})});
+document.getElementById("polClose").addEventListener("click",close);po.addEventListener("click",function(e){if(e.target===po)close()});document.addEventListener("keydown",function(e){if(e.key==="Escape")close()});
+})();
+</script>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-modal="true"><div class="cart-drawer-head"><h3>Your Bag <span class="cart-count-label">(0)</span></h3><button class="cart-close" id="cartClose" aria-label="Close cart"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+<div class="cart-body" id="cartBody"><p class="cart-empty">Your bag is empty.</p></div>
+<div class="cart-footer"><div class="cart-line"><span>Subtotal</span><strong id="cartSubtotal">&#8369;0</strong></div><div class="cart-line cart-ship"><span>Shipping</span><span>Calculated at checkout</span></div><p class="cart-note">Your delivery address determines the shipping fee.</p><button type="button" onclick="window.location.href='checkout.html'">Checkout</button></div></div>
+<div class="srch-overlay" id="srchOverlay" aria-hidden="true"><div class="srch-box" role="dialog" aria-modal="true" aria-label="Search products"><div class="srch-row"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="srchInput" type="search" placeholder="Search products" autocomplete="off" aria-label="Search products"><button class="srch-x" id="srchClose" type="button" aria-label="Close search">&times;</button></div><ul class="srch-list" id="srchList"></ul></div></div>
+<script>
+(function(){
+var PRODUCTS=[{"cat": "mist", "name": "No Fixed Plans", "tag": "Hair & Body Mist · 110mL", "price": 299, "img": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&auto=format&fit=crop&q=80"}, {"cat": "mist", "name": "White Shirt", "tag": "Hair & Body Mist · 110mL", "price": 299, "img": "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200&auto=format&fit=crop&q=80"}, {"cat": "mist", "name": "First Flowers", "tag": "Hair & Body Mist · 110mL", "price": 299, "img": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&auto=format&fit=crop&q=80"}, {"cat": "mist", "name": "Open Windows", "tag": "Hair & Body Mist · 110mL", "price": 299, "img": "https://images.unsplash.com/photo-1617897903246-719242758050?w=200&auto=format&fit=crop&q=80"}, {"cat": "mist", "name": "After Hours", "tag": "Hair & Body Mist · 110mL", "price": 329, "img": "https://images.unsplash.com/photo-1619994403073-2cec844b8e63?w=200&auto=format&fit=crop&q=80"}, {"cat": "soap", "name": "Tea Tree Soap", "tag": "Soap · 90g", "price": 129, "img": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&auto=format&fit=crop&q=80"}, {"cat": "soap", "name": "Triple Whitening Soap", "tag": "Soap · 90g", "price": 149, "img": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&auto=format&fit=crop&q=80"}, {"cat": "serum", "name": "Second Skin Body Serum", "tag": "Body Serum · 100mL", "price": 449, "img": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&auto=format&fit=crop&q=80"}];
+var tb=document.getElementById("topbar");(function(){if(localStorage.getItem('aera-topbar-closed')==='1'){tb.style.display='none';}document.getElementById("tbClose").addEventListener("click",function(){tb.style.display="none";localStorage.setItem('aera-topbar-closed','1');});window.addEventListener('storage',function(e){if(e.key==='aera-topbar-closed'){tb.style.display=e.newValue==='1'?'none':'';}});})();
+(function(){var SURL='https://vhyveinrqamzycixhjsu.supabase.co',SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';fetch(SURL+'/rest/v1/site_content?select=key,value&key=in.(topbar_text,topbar_active)',{headers:{'apikey':SKEY,'Authorization':'Bearer '+SKEY}}).then(function(r){return r.json();}).then(function(rows){if(!Array.isArray(rows))return;rows.forEach(function(row){if(row.key==='topbar_active'&&row.value==='false'){var t=document.getElementById('topbar');if(t)t.style.display='none';}if(row.key==='topbar_text'){var a=document.querySelector('#topbar a');if(a)a.textContent=row.value;}});}).catch(function(){});})();
+var nav=document.getElementById("mainNav");function upd(){nav.classList.toggle("sticky",window.scrollY>8)}window.addEventListener("scroll",upd,{passive:true});upd();
+(function(){var p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav-links-center a.dd, .nav-links-center > a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('active')});})();/* cart */
+var items=[];try{items=JSON.parse(localStorage.getItem("aeraCart")||"[]")}catch(e){}
+var cd=document.getElementById("cartDrawer"),co=document.getElementById("cartOverlay");
+function openCart(){cd.classList.add("open");co.classList.add("open");document.body.style.overflow="hidden"}
+function closeCart(){cd.classList.remove("open");co.classList.remove("open");document.body.style.overflow=""}
+document.querySelector(".cart-btn").addEventListener("click",function(e){e.preventDefault();openCart()});
+document.getElementById("cartClose").addEventListener("click",closeCart);co.addEventListener("click",closeCart);
+function save(){try{localStorage.setItem("aeraCart",JSON.stringify(items))}catch(e){}}
+function ui(){var b=document.getElementById("cartBody"),t=items.reduce(function(s,i){return s+i.qty},0),sub=items.reduce(function(s,i){return s+i.price*i.qty},0);
+document.getElementById("cartSubtotal").textContent="\u20B1"+sub.toLocaleString("en-PH");
+document.querySelectorAll(".cart-count").forEach(function(e){e.textContent=t});document.querySelector(".cart-count-label").textContent="("+t+")";
+if(!items.length){b.innerHTML='<p class="cart-empty">Your bag is empty.</p>';return}
+b.innerHTML="";items.forEach(function(it,idx){var d=document.createElement("div");d.style.cssText="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(56,65,104,.08)";
+d.innerHTML='<img style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0"><div style="flex:1;min-width:0"><p style="margin:0;font-size:.9rem;font-weight:500"></p><p style="margin:2px 0 0;font-size:.8rem;color:rgba(56,65,104,.5)"></p><p style="margin:4px 0 0;font-size:.85rem;font-weight:500"></p><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><button data-d="-1" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(56,65,104,.2);background:none;cursor:pointer;color:inherit">\u2212</button><span style="font-size:.9rem;font-weight:500"></span><button data-d="1" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(56,65,104,.2);background:none;cursor:pointer;color:inherit">+</button></div></div><button data-rm style="background:none;border:none;cursor:pointer;padding:4px;opacity:.4;color:inherit">\u2715</button>';
+var im=d.querySelector("img");im.src=it.img;im.alt=it.name;var p=d.querySelectorAll("p");p[0].textContent=it.name;p[1].textContent=it.meta;p[2].textContent="\u20B1"+it.price.toLocaleString("en-PH");d.querySelector("span").textContent=it.qty;
+d.querySelectorAll("[data-d]").forEach(function(x){x.onclick=function(){it.qty+=+x.dataset.d;if(it.qty<=0)items.splice(idx,1);save();ui()}});d.querySelector("[data-rm]").onclick=function(){items.splice(idx,1);save();ui()};b.appendChild(d)})}
+window.addToCart=function(n,m,p,img){var e=items.filter(function(i){return i.name===n})[0];if(e)e.qty++;else items.push({name:n,meta:m,price:p,img:img,qty:1});save();ui();openCart()};
+ui();
+/* mobile menu */
+var icons=document.querySelector(".nav-icons-right"),bg=document.createElement("button");bg.className="m-burger";bg.type="button";bg.setAttribute("aria-label","Open menu");bg.setAttribute("aria-expanded","false");
+bg.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';icons.appendChild(bg);
+var mm=document.createElement("div");mm.className="m-menu";mm.setAttribute("aria-hidden","true");
+mm.innerHTML='<div class="m-menu-head"><a class="m-link" href="index.html">Home</a><button class="m-close" type="button" aria-label="Close menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div><a class="m-link" href="shop.html">Shop</a><div class="m-sub"><a href="shop.html#mist">Hair &amp; Body Mists</a><a href="shop.html#soap">Soaps</a><a href="shop.html#serum">Body Serum</a></div><a class="m-link" href="about.html">About Us</a><a class="m-link" href="blog.html">Blog</a><a class="m-link" href="track-order.html">Track my order</a><a class="m-link" href="circle.html">AERA Circle</a><a class="dropdown-cta m-cta" href="shop.html" style="display:inline-flex;align-items:center;height:44px;padding:0 1.5rem;background:var(--brown);color:#fff;border-radius:9999px;font-size:.875rem;font-weight:500">Shop All</a>';
+document.body.appendChild(mm);
+function mo(o){mm.classList.toggle("open",o);mm.setAttribute("aria-hidden",o?"false":"true");bg.setAttribute("aria-expanded",o?"true":"false");document.body.style.overflow=o?"hidden":""}
+bg.addEventListener("click",function(){mo(true)});mm.querySelector(".m-close").addEventListener("click",function(){mo(false)});mm.addEventListener("click",function(e){if(e.target.closest("a"))mo(false)});
+window.addEventListener("resize",function(){if(innerWidth>=1024)mo(false)});
+/* search */
+var so=document.getElementById("srchOverlay"),si=document.getElementById("srchInput"),sl=document.getElementById("srchList"),onShop=!!document.getElementById("prodGrid");
+function rs(q){q=q.trim().toLowerCase();sl.innerHTML="";var n=0;PRODUCTS.forEach(function(p){if(q&&(p.name+" "+p.tag).toLowerCase().indexOf(q)<0)return;n++;
+var li=document.createElement("li"),b=document.createElement("button");b.type="button";var im=document.createElement("img");im.src=p.img;im.alt="";
+var sp=document.createElement("span"),b1=document.createElement("b"),s1=document.createElement("small");b1.textContent=p.name;s1.textContent=p.tag;sp.appendChild(b1);sp.appendChild(s1);
+var em=document.createElement("em");em.textContent="\u20B1"+p.price;b.appendChild(im);b.appendChild(sp);b.appendChild(em);
+b.addEventListener("click",function(){cs();if(!onShop){location.href="shop.html#"+p.cat;return}var all=document.querySelector('.tab[data-c="all"]');if(all)all.click();
+setTimeout(function(){var c=[].slice.call(document.querySelectorAll("#prodGrid .card")).filter(function(x){return x.querySelector("h3").textContent===p.name})[0];if(c){c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.add("flash");setTimeout(function(){c.classList.remove("flash")},1800)}},60)});
+li.appendChild(b);sl.appendChild(li)});if(!n){var d=document.createElement("li");d.className="srch-empty";d.textContent="No products found.";sl.appendChild(d)}}
+function os(){rs("");si.value="";so.classList.add("open");so.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";setTimeout(function(){si.focus()},50)}
+function cs(){so.classList.remove("open");so.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+document.querySelector('.nav-icon-btn[aria-label="Search"]').addEventListener("click",os);si.addEventListener("input",function(){rs(si.value)});
+document.getElementById("srchClose").addEventListener("click",cs);so.addEventListener("click",function(e){if(e.target===so)cs()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeCart();cs();mo(false)}});
+})();
+</script>
+
+
+<!-- ============================================================
+     AERA CHAT WIDGET
+     ============================================================ -->
+<style>
+:root{--kmc-bg:#ffffff;--kmc-bg2:#f9f9fb;--kmc-text:#111111;--kmc-text3:#888899;--kmc-border:#e8e8ef;--kmc-card:#ffffff;}
+[data-theme="dark"]{--kmc-bg:#0f0f0f;--kmc-bg2:#1a1a1a;--kmc-text:#f0f0f0;--kmc-text3:#666677;--kmc-border:#2a2a2a;--kmc-card:#161616;}
+.kmc-toggle-wrapper,.kmc-panel,.kmc-toggle-wrapper *,.kmc-panel *{box-sizing:border-box;font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,sans-serif;}
+.kmc-toggle-wrapper{position:fixed;bottom:28px;right:28px;z-index:9998;display:flex;align-items:center;gap:12px;}
+.kmc-toggle-label{background:var(--kmc-card);color:var(--kmc-text);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:500;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid var(--kmc-border);white-space:nowrap;opacity:0;transform:translateX(8px);pointer-events:none;transition:opacity .25s ease,transform .25s ease;}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn:hover) .kmc-toggle-label{opacity:1;transform:translateX(0);}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn.open) .kmc-toggle-label{opacity:0;transform:translateX(8px);}
+.kmc-toggle-btn{width:52px;height:52px;border-radius:50%;background:#384168;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(56,65,104,.4);transition:transform .25s ease,box-shadow .25s ease;flex-shrink:0;position:relative;padding:0;-webkit-tap-highlight-color:transparent;}
+.kmc-toggle-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 20px rgba(56,65,104,.5);}
+.kmc-toggle-btn svg{width:20px;height:20px;transition:opacity .2s ease,transform .2s ease;}
+.kmc-toggle-btn .kmc-icon-close{position:absolute;opacity:0;transform:scale(.7) rotate(90deg);}
+.kmc-toggle-btn.open .kmc-icon-chat{opacity:0;transform:scale(.7) rotate(-90deg);}
+.kmc-toggle-btn.open .kmc-icon-close{opacity:1;transform:scale(1) rotate(0deg);}
+.kmc-icon-chat{animation:kmcFlowerIdle 4s ease-in-out infinite;}
+.kmc-toggle-btn.open .kmc-icon-chat{animation:none;}
+@keyframes kmcFlowerIdle{0%{transform:rotate(0deg) scale(1);}20%{transform:rotate(15deg) scale(1.12);}40%{transform:rotate(-10deg) scale(1.08);}60%{transform:rotate(8deg) scale(1.1);}80%{transform:rotate(-5deg) scale(1.05);}100%{transform:rotate(0deg) scale(1);}}
+.kmc-toggle-btn::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(56,65,104,.35);animation:kmcRingPulse 3s ease-in-out infinite;pointer-events:none;}
+.kmc-toggle-btn.open::before{animation:none;opacity:0;}
+@keyframes kmcRingPulse{0%,100%{transform:scale(1);opacity:.5;}50%{transform:scale(1.18);opacity:0;}}
+.kmc-panel{position:fixed;bottom:100px;right:28px;width:360px;max-width:calc(100vw - 40px);height:500px;max-height:calc(100vh - 140px);background:var(--kmc-card);color:var(--kmc-text);border-radius:20px;border:1px solid var(--kmc-border);box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9998;display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .25s cubic-bezier(.22,1,.36,1),transform .25s cubic-bezier(.22,1,.36,1);}
+.kmc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.kmc-header{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--kmc-border);background:var(--kmc-bg2);flex-shrink:0;}
+.kmc-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:#384168;display:flex;align-items:center;justify-content:center;border:2px solid var(--kmc-card);box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;}
+.kmc-avatar img{width:26px;height:auto;display:block;filter:brightness(0) invert(1);}
+.kmc-header-info{flex:1;min-width:0;}
+.kmc-header-name{font-size:14px;font-weight:600;color:var(--kmc-text);}
+.kmc-header-sub{font-size:12px;color:var(--kmc-text3);margin-top:1px;display:flex;align-items:center;gap:6px;}
+.kmc-body{flex:1;overflow-y:auto;padding:24px 16px 18px;display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;}
+.kmc-body::-webkit-scrollbar{width:5px;}
+.kmc-body::-webkit-scrollbar-thumb{background:var(--kmc-border);border-radius:10px;}
+.kmc-row{display:flex;animation:kmcMsgIn .28s cubic-bezier(.22,1,.36,1);margin-bottom:6px;}
+.kmc-row.bot{justify-content:flex-start;}
+.kmc-row.user{justify-content:flex-end;}
+@keyframes kmcMsgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.kmc-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;}
+.kmc-row.bot .kmc-bubble{background:var(--kmc-bg2);color:var(--kmc-text);border-bottom-left-radius:4px;}
+.kmc-row.user .kmc-bubble{background:#384168;color:#fff;border-bottom-right-radius:4px;}
+.kmc-typing{display:inline-flex;align-items:center;gap:4px;background:var(--kmc-bg2);padding:12px 14px;border-radius:14px;border-bottom-left-radius:4px;}
+.kmc-typing span{width:6px;height:6px;border-radius:50%;background:var(--kmc-text3);animation:kmcBounce 1.2s infinite ease-in-out;}
+.kmc-typing span:nth-child(2){animation-delay:.15s;}
+.kmc-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes kmcBounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-4px);opacity:1;}}
+.kmc-options{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+.kmc-option-btn{text-align:left;padding:10px 14px;background:var(--kmc-card);border:1.5px solid var(--kmc-border);border-radius:12px;font-size:13px;color:var(--kmc-text);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;opacity:0;animation:kmcMsgIn .3s cubic-bezier(.22,1,.36,1) forwards;-webkit-tap-highlight-color:transparent;}
+.kmc-option-btn:nth-child(1){animation-delay:.02s;}
+.kmc-option-btn:nth-child(2){animation-delay:.08s;}
+.kmc-option-btn:nth-child(3){animation-delay:.14s;}
+.kmc-option-btn:nth-child(4){animation-delay:.20s;}
+.kmc-option-btn:hover{border-color:#384168;background:var(--kmc-bg2);transform:translateX(2px);}
+.kmc-footer{padding:12px 16px 16px;border-top:1px solid var(--kmc-border);flex-shrink:0;background:var(--kmc-card);}
+.kmc-footer-note{font-size:11px;color:var(--kmc-text3);text-align:center;margin:0 0 10px;line-height:1.5;}
+.kmc-footer-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 16px;background:#384168;color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;}
+.kmc-footer-cta:hover{opacity:.85;transform:translateY(-1px);}
+@media(max-width:768px){.kmc-toggle-wrapper{bottom:20px;right:20px;}.kmc-toggle-label{display:none;}}
+@media(max-width:480px){.kmc-panel{right:16px;left:16px;width:auto;bottom:92px;height:60vh;}.kmc-toggle-wrapper{right:16px;bottom:20px;}}
+</style>
+
+<div class="kmc-toggle-wrapper">
+  <div class="kmc-toggle-label">Have a question?</div>
+  <button class="kmc-toggle-btn" id="kmcToggleBtn" aria-label="Open chat">
+    <svg class="kmc-icon-chat" width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="50" cy="27" rx="10" ry="19"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(72 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(144 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(216 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="6"/></svg>
+    <svg class="kmc-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div class="kmc-panel" id="kmcPanel">
+  <div class="kmc-header">
+    <div class="kmc-avatar"><img src="images/aera-logo-black.png" alt="AERA"></div>
+    <div class="kmc-header-info">
+      <div class="kmc-header-name">AERA</div>
+      <div class="kmc-header-sub">Replies instantly</div>
+    </div>
+  </div>
+  <div class="kmc-body" id="kmcBody"></div>
+  <div class="kmc-footer">
+    <p class="kmc-footer-note">Have more questions? Message us directly.</p>
+    <button class="kmc-footer-cta" id="kmcContactBtn">
+      Message us directly
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+var CONTACT_TARGET='#contact';
+var chatFlow={
+  start:{bot:["Hi! Welcome to AERA. \uD83D\uDC4B","We make hair & body mists, soaps and a body serum for everyday moments worth lingering in. What would you like to know?"],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Shipping & delivery",next:"shipping"},{label:"AERA Circle reseller program",next:"circle"}]},
+  products:{bot:["We have three product lines:","• Hair & Body Mists — 5 scents, 110mL (\u20B1299\u2013\u20B1329)\n• Soaps — 2 variants, 90g (\u20B1129\u2013\u20B1149)\n• Second Skin Body Serum — 100mL (\u20B1449)","Our mists: No Fixed Plans, White Shirt, First Flowers, Open Windows, and After Hours."],options:[{label:"How do I place an order?",next:"ordering"},{label:"What payment methods do you accept?",next:"payment"},{label:"Back to main menu",next:"start"}]},
+  ordering:{bot:["Ordering is easy — no account needed!","1. Add items to your bag\n2. Go to checkout\n3. Enter your contact & delivery details\n4. Pay via GCash, BPI or Maribank\n5. Upload your receipt\n6. Tap Place Order to confirm","Your order isn't reserved until you complete Step 6."],options:[{label:"What payment methods do you accept?",next:"payment"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
+  payment:{bot:["We accept:","• GCash\n• BPI\n• Maribank","After paying, upload a clear screenshot of your receipt showing the amount, date and reference number. Then tap Place Order."],options:[{label:"Can I cancel or return my order?",next:"returns"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
+  shipping:{bot:["Shipping fees by area:","• Metro Manila — \u20B180\n• Luzon (outside MM) — \u20B1120\n• Visayas — \u20B1150\n• Mindanao — \u20B1150","Orders are packed within 3\u20135 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
+  returns:{bot:["Once your order is placed, it cannot be cancelled or refunded.","For damaged or wrong items, contact us within 7 days of delivery with your order number and photos or an unboxing video.","Email us at contactaeraofficial@gmail.com and we'll help you right away."],options:[{label:"How do I place an order?",next:"ordering"},{label:"AERA Circle reseller program",next:"circle"},{label:"Back to main menu",next:"start"}]},
+  circle:{bot:["AERA Circle is our reseller program with three tiers:","• 1st Tier — 15% off, min. net PO \u20B16,000\n• 2nd Tier — 20% off, min. net PO \u20B115,000\n• 3rd Tier — 30% off, min. net PO \u20B125,000","For orders over \u20B150,000, email us at contactaeraofficial@gmail.com.","Apply by emailing contactaeraofficial@gmail.com with subject \"AERA Circle Application\"."],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Back to main menu",next:"start"}]}
+};
+var toggleBtn=document.getElementById('kmcToggleBtn'),panel=document.getElementById('kmcPanel'),body=document.getElementById('kmcBody'),contactBtn=document.getElementById('kmcContactBtn'),pendingTimeouts=[],started=false,isOpen=false;
+function scrollBottom(){body.scrollTop=body.scrollHeight;}
+function addBot(text){var row=document.createElement('div');row.className='kmc-row bot';var b=document.createElement('div');b.className='kmc-bubble';b.textContent=text;b.style.whiteSpace='pre-line';row.appendChild(b);body.appendChild(row);scrollBottom();}
+function addUser(text){var row=document.createElement('div');row.className='kmc-row user';var b=document.createElement('div');b.className='kmc-bubble';b.textContent=text;row.appendChild(b);body.appendChild(row);scrollBottom();}
+function showTyping(){var row=document.createElement('div');row.className='kmc-row bot';row.id='kmcTypingRow';row.innerHTML='<div class="kmc-typing"><span></span><span></span><span></span></div>';body.appendChild(row);scrollBottom();}
+function removeTyping(){var r=document.getElementById('kmcTypingRow');if(r)r.remove();}
+function removeOptions(){var o=body.querySelector('.kmc-options');if(o)o.remove();}
+function renderOptions(options){removeOptions();var wrap=document.createElement('div');wrap.className='kmc-options';options.forEach(function(opt){var btn=document.createElement('button');btn.className='kmc-option-btn';btn.type='button';btn.textContent=opt.label;btn.addEventListener('click',function(){addUser(opt.label);removeOptions();goToNode(opt.next,false);});wrap.appendChild(btn);});body.appendChild(wrap);scrollBottom();}
+function goToNode(nodeId,isInitial){var node=chatFlow[nodeId];if(!node)return;pendingTimeouts.forEach(clearTimeout);pendingTimeouts=[];removeTyping();if(!isInitial)removeOptions();showTyping();var delay=500;node.bot.forEach(function(line,i){var t=setTimeout(function(){removeTyping();addBot(line);if(i<node.bot.length-1)showTyping();if(i===node.bot.length-1){pendingTimeouts.push(setTimeout(function(){renderOptions(node.options);},250));}},delay);pendingTimeouts.push(t);delay+=550;});}
+function openChat(){isOpen=true;panel.classList.add('open');toggleBtn.classList.add('open');toggleBtn.setAttribute('aria-label','Close chat');if(!started){started=true;goToNode('start',true);}}
+function closeChat(){isOpen=false;panel.classList.remove('open');toggleBtn.classList.remove('open');toggleBtn.setAttribute('aria-label','Open chat');}
+toggleBtn.addEventListener('click',function(){isOpen?closeChat():openChat();});
+(function(){var cd=document.getElementById('cartDrawer');if(cd){var mo=new MutationObserver(function(){var wrapper=document.querySelector('.kmc-toggle-wrapper');if(wrapper){wrapper.style.display=cd.classList.contains('open')?'none':'';}});mo.observe(cd,{attributes:true,attributeFilter:['class']});}})();
+contactBtn.addEventListener('click',function(){closeChat();var el=document.querySelector(CONTACT_TARGET);if(el)el.scrollIntoView({behavior:'smooth'});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeChat();});
+})();
+</script></body>
+</html>

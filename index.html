@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
+<title>AERA | Stay a little longer</title>
+<meta name="description" content="AERA hair & body mists, soaps and body serum. Scent and body care for everyday moments worth lingering in.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+/* OPTIONAL: paste your original @font-face "Nauryz" here */
+
+:root{--charcoal:#384168;--cream:#f0ede8;--ink:#384168;
+  --panel:100vh;
+  --hero-h:100vh;
+  --overlap:140px;
+  --ribbon-shift:40px;
+  --sans:"Instrument Sans","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+
+  /* Primary palette — AERA blue, with brown as accent */
+  --brown:         #384168;
+  --brown-deep:    #2a3152;
+  --brown-soft:    rgba(56,65,104,.75);
+  --accent:        #5a3a29;
+  --accent-deep:   #46291b;
+  --banner-cream:  250,240,228;
+  --px:1rem}
+@media(min-width:768px){:root{--px:3rem}}
+@media(min-width:1024px){:root{--px:4rem}}
+@media(min-width:1280px){:root{--px:6rem}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* ══════════════ HERO SLIDER ══════════════ */
+.hero{position:relative;width:100%;height:calc(100vh - var(--topbar-h,0px));height:calc(100dvh - var(--topbar-h,0px));min-height:560px;overflow:visible;z-index:20;background:rgb(var(--banner-cream))}
+
+/* ===== BANNER WHIRL =====
+   --hw-pull : negative = whirl sits below the banner; positive = climbs into the banner */
+.ribbon-wrap{
+  --hw-pull:-8.5vw;
+  --whirl-rotate:8deg;--whirl-width:166%;--whirl-left:-3%;
+  position:absolute;left:0;right:0;top:calc(100% - var(--hw-pull));
+  height:clamp(260px,34vw,560px);z-index:3;pointer-events:none;
+}
+.ribbon-wrap .ribbon{
+  position:absolute;display:block;height:auto;overflow:visible;pointer-events:none;
+  left:var(--whirl-left);width:var(--whirl-width);top:0;
+  transform:rotate(var(--whirl-rotate));transform-origin:50% 50%;
+}
+/* whirl text (cream on brown) */
+.rt{fill:#f0ede8;font-family:Urbanist,"Instrument Sans",Arial,sans-serif;font-size:22px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;dominant-baseline:central}
+.panel{position:absolute;inset:0;background:rgb(var(--banner-cream));overflow:hidden;z-index:1}
+
+:where(.hero) :where(h1,p,button){margin:0;padding:0}
+:where(.hero) button{border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.slide-content svg,.hero-arrow svg{display:block;flex-shrink:0}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .9s ease,visibility .9s;
+}
+.slide.active{opacity:1;visibility:visible;z-index:1}
+
+.slide-bg{
+  position:absolute;inset:0;
+  background-image:var(--bg-img);
+  background-size:cover;background-position:center;
+  transform:scale(1.06);
+  transition:transform 7s ease-out;
+}
+.slide.active .slide-bg{transform:scale(1)}
+
+.slide::before{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 55% 60% at 50% 52%, rgba(var(--banner-cream),.78) 0%, rgba(var(--banner-cream),.35) 60%, rgba(var(--banner-cream),0) 100%),
+    linear-gradient(180deg, rgba(var(--banner-cream),.35) 0%, rgba(var(--banner-cream),.1) 40%, rgba(var(--banner-cream),.25) 100%);
+}
+
+.slide-content{
+  position:relative;z-index:2;line-height:1.5;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+  width:100%;max-width:56rem;margin:0 auto;padding:0 var(--px);
+}
+@media(min-width:1280px){.slide-content{max-width:64rem}}
+/* lift hero text by the topbar height so it looks centered; resets to 0 when the topbar is closed */
+.slide-content{transform:translateY(calc(var(--topbar-h,0px) * -1));transition:transform .3s ease}
+.slide-content > *{
+  opacity:0;transform:translateY(24px);
+  transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1);
+}
+.slide.active .slide-content > *{opacity:1;transform:none}
+.slide.active .slide-content > *:nth-child(1){transition-delay:.15s}
+.slide.active .slide-content > *:nth-child(2){transition-delay:.25s}
+.slide.active .slide-content > *:nth-child(3){transition-delay:.35s}
+.slide.active .slide-content > *:nth-child(4){transition-delay:.45s}
+
+.badge{
+  display:inline-flex;align-items:center;gap:.6rem;border-radius:9999px;
+  background:rgba(253,248,243,.35);
+  border:1px solid rgba(56,65,104,.25);
+  padding:.5rem 1rem;color:var(--brown-soft);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.badge p{font-size:.75rem;letter-spacing:.1em}
+
+.slide h1{
+  font-family:Urbanist,Arial,sans-serif;
+  font-size:3.2rem;line-height:1.1;font-weight:500;
+  color:var(--brown);max-width:30rem;margin-top:1rem;
+}
+@media(min-width:768px){.slide h1{font-size:68px}}
+
+.slide .sub{
+  font-size:.875rem;color:var(--brown-soft);
+  margin-top:.75rem;max-width:27rem;line-height:1.7;
+}
+@media(min-width:768px){.slide .sub{font-size:1rem}}
+
+.hero-btns{display:flex;align-items:center;margin-top:1.75rem;gap:.875rem;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:var(--brown);color:#fff;
+  font-size:.875rem;font-weight:500;
+  padding:.75rem 1.375rem;border-radius:9999px;letter-spacing:.02em;
+  transition:background .2s,transform .2s;
+}
+.btn-primary:hover{background:var(--brown-deep);transform:translateY(-1px)}
+.btn-primary svg{transition:transform .2s}
+.btn-primary:hover svg{transform:translateX(4px)}
+.btn-ghost{
+  border:1px solid rgba(56,65,104,.45);border-radius:9999px;
+  padding:.75rem 1.375rem;color:var(--brown);font-size:.875rem;
+  background:rgba(253,248,243,.12);
+  transition:border-color .2s,background .2s;
+}
+.btn-ghost:hover{border-color:var(--brown);background:rgba(253,248,243,.4)}
+
+.hero-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:2.9rem;height:2.9rem;border-radius:9999px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(253,248,243,.72);color:var(--brown);
+  border:1px solid rgba(56,65,104,.06);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  transition:background .2s,transform .2s;
+}
+.hero-arrow:hover{background:#fdf8f3;transform:translateY(-50%) scale(1.06)}
+.hero-arrow.prev{left:1rem}
+.hero-arrow.next{right:1rem}
+@media(min-width:768px){.hero-arrow.prev{left:2.25rem}.hero-arrow.next{right:2.25rem}}
+
+.hero-dots{
+  position:absolute;bottom:2.25rem;left:50%;transform:translateX(-50%);
+  z-index:5;display:flex;gap:.7rem;
+}
+.hero-dot{
+  width:.7rem;height:.7rem;border-radius:9999px;
+  background:rgba(56,65,104,.3);padding:0;
+  transition:background .25s,transform .25s;
+}
+.hero-dot:hover{background:rgba(56,65,104,.55)}
+.hero-dot.active{background:var(--brown);transform:scale(1.15)}
+
+/* ── TOP BAR ── */
+.topbar{position:relative;display:flex;align-items:center;justify-content:center;min-height:32px;padding:5px 52px;background:var(--brown);border-bottom:none;font-size:13px;font-weight:400;letter-spacing:-.01em;text-align:center;color:var(--cream)}
+.topbar a{display:inline-block}
+.topbar a:hover{text-decoration:underline}
+.tb-close{position:absolute;right:clamp(12px,1.7vw,24px);top:50%;transform:translateY(-50%);width:28px;height:28px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--cream);cursor:pointer;display:grid;place-items:center;transition:background .2s}
+.tb-close:hover{background:rgba(240,237,232,.15)}
+.tb-close svg{width:14px;height:14px}
+@media(max-width:639px){.topbar{font-size:12.5px;padding:8px 44px}}
+
+/* ── NAV ── */
+.nav{position:absolute;z-index:500;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 clamp(16px,2.5vw,40px);height:68px;pointer-events:none}
+.nav.sticky{position:fixed;background:rgba(253,248,243,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(42,49,82,.1);box-shadow:0 2px 12px rgba(42,49,82,.06)}
+.nav-logo-wrap{pointer-events:auto;justify-self:start}
+.nav-links-center{pointer-events:auto;display:flex;align-items:center;gap:clamp(16px,2.5vw,36px);font-size:.875rem;color:var(--brown)}
+.nav-links-center a{opacity:1;letter-spacing:.03em;transition:opacity .2s}.nav-links-center a:hover{opacity:.65}
+.nav-links-center a.active{font-weight:600;opacity:1}
+.nav-icons-right{pointer-events:auto;justify-self:end;display:flex;align-items:center;gap:10px}
+.nav-icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.08);background:rgba(253,248,243,.7);display:grid;place-items:center;cursor:pointer;transition:background .2s;backdrop-filter:blur(4px);color:var(--brown)}
+.nav-icon-btn:hover{background:#fdf8f3}
+
+.nav-dropdown{display:flex;align-items:center;height:68px}
+.dd{display:inline-flex;align-items:center}
+.dd::after{content:"";display:block;width:5px;height:5px;margin:-4px 0 0 7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
+/* Panel is anchored to the nav (not the viewport), so it always sits right under the header */
+.dropdown-panel{display:grid;position:absolute;top:100%;left:50%;margin-top:6px;width:min(860px,90vw);background:#fdf8f3;border-radius:16px;box-shadow:0 8px 40px rgba(42,49,82,.14);padding:2rem;grid-template-columns:repeat(4,1fr);gap:1.5rem;z-index:600;
+  opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-8px);
+  transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s}
+/* invisible bridge so the hover doesn't break between the link and the panel */
+.dropdown-panel::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
+.nav-dropdown:hover .dropdown-panel,.nav-dropdown:focus-within .dropdown-panel{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);transition:opacity .22s ease,transform .22s ease,visibility 0s}
+.dropdown-heading{margin:0 0 .75rem;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(56,65,104,.55)}
+.dropdown-panel a{display:block;font-size:.875rem;color:var(--brown);padding:.3rem 0;transition:opacity .15s}
+.dropdown-panel a:hover{opacity:.5}
+.dropdown-featured .dropdown-sub{margin:0 0 1rem;font-size:.8125rem;color:rgba(56,65,104,.65);line-height:1.5}
+.dropdown-cta{display:inline-flex !important;align-items:center;height:36px;padding:0 1.25rem !important;background:var(--brown);color:#ffffff !important;border-radius:9999px;font-size:.8125rem !important;font-weight:500;transition:background .2s !important}
+.dropdown-cta:hover{background:var(--brown-deep);opacity:1 !important}
+
+.cart-btn{position:relative}
+.cart-count{position:absolute;top:-4px;right:-4px;width:15px;height:15px;border-radius:50%;background:var(--brown);color:#ffffff;font-size:9px;font-weight:700;display:grid;place-items:center;line-height:1}
+
+/* Logo */
+.logo{display:block;width:60px;height:auto;filter:none}
+.nav-sticky-logo{filter:none}
+.nav-search input::placeholder{color:rgba(255,255,255,.6)}
+.logo{display:block;width:60px;height:auto;color:var(--charcoal);filter:invert(1);}
+.nav .logo{filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+.ct-info .logo{filter:none}
+.nav .ic{display:block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="aera-logo" viewBox="0 0 1119 221">
+    <text x="0" y="195" font-size="240" font-family="'Playfair Display',Georgia,serif" font-weight="600" textLength="1119" lengthAdjust="spacing" fill="currentColor">AERA</text>
+  </symbol>
+  <symbol id="heart" viewBox="0 0 100 100">
+    <path fill-rule="evenodd" d="m50.008 23.211c3.9023-9.1055 12.918-15.695 23.324-15.695 13.938 0 25.68 10.949 25.68 24.82 0 5.3594 0 14.891-12.621 31.535-8.4141 11.094-20.543 20.828-36.391 29.199-16.133-8.8828-28.266-18.711-36.391-29.492-12.188-16.172-12.621-24.516-12.621-30.367 0-13.871 11.594-26.281 25.535-26.281 10.438 0 19.562 6.9609 23.484 16.281z" fill="currentColor"/>
+  </symbol>
+  <symbol id="flower" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="50" cy="27" rx="10" ry="19"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(72 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(144 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(216 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="6"/></g></symbol>
+  <symbol id="sprig" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M50 95 C48 70 52 45 60 12"/><path d="M51 78 C36 74 28 64 26 52 C40 54 49 62 51 78Z"/><path d="M53 58 C68 54 76 44 78 32 C64 34 55 42 53 58Z"/><path d="M57 36 C48 32 44 24 44 16 C52 18 57 26 57 36Z"/></g></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="currentColor"/></symbol>
+</svg>
+
+<div class="topbar" id="topbar">
+  <a href="shop.html" id="topbar_text">Bloom is here: our garden-party launch collection</a>
+  <button class="tb-close" id="tbClose" type="button" aria-label="Close announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+</div>
+
+<section class="hero" id="home" aria-roledescription="carousel" aria-label="Featured collections">
+  <header class="nav" id="mainNav">
+    <div class="nav-logo-wrap">
+      <a href="#" aria-label="AERA home"><img src="images/aera-logo-black.png" class="logo" alt="AERA"></a>
+    </div>
+    <nav class="nav-links-center">
+      <a href="index.html">Home</a>
+      <div class="nav-dropdown">
+        <a href="shop.html" class="dd">Shop</a>
+        <div class="dropdown-panel">
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Hair &amp; Body Mists</p>
+            <a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">No Fixed Plans</a>
+            <a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">White Shirt</a>
+            <a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">First Flowers</a>
+            <a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">Open Windows</a>
+            <a href="shop.html#mist" onclick="try{sessionStorage.setItem('aera-shop-filter','mist')}catch(e){}">After Hours</a>
+          </div>
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Soaps</p>
+            <a href="shop.html#soap" onclick="try{sessionStorage.setItem('aera-shop-filter','soap')}catch(e){}">Tea Tree Soap</a>
+            <a href="shop.html#soap" onclick="try{sessionStorage.setItem('aera-shop-filter','soap')}catch(e){}">Triple Whitening Soap</a>
+          </div>
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Body Serum</p>
+            <a href="shop.html#serum" onclick="try{sessionStorage.setItem('aera-shop-filter','serum')}catch(e){}">Second Skin Body Serum</a>
+          </div>
+          <div class="dropdown-col dropdown-featured">
+            <p class="dropdown-heading">Featured</p>
+            <p class="dropdown-sub">New arrivals and bestsellers from AERA.</p>
+            <a href="shop.html" class="dropdown-cta">Shop All</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="about.html" class="dd">About Us</a>
+        <div class="dropdown-panel" style="grid-template-columns:repeat(3,1fr)">
+          <div class="dropdown-col">
+            <p class="dropdown-heading">About AERA</p>
+            <a href="#story">How it started</a>
+            <a href="#story">Our ingredients</a>
+            <a href="#story">Sustainability</a>
+          </div>
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Our Mission</p>
+            <a href="#story">Scent &amp; self-care</a>
+            <a href="#story">Made in the Philippines</a>
+          </div>
+          <div class="dropdown-col dropdown-featured">
+            <p class="dropdown-heading">Get to know us</p>
+            <p class="dropdown-sub">AERA is built for everyday moments worth lingering in.</p>
+            <a href="#story" class="dropdown-cta">Read about us</a>
+          </div>
+        </div>
+      </div>
+      <a href="blog.html">Blog</a>
+      <a href="track-order.html">Track my order</a>
+      <div class="nav-dropdown">
+        <a href="circle.html" class="dd">AERA Circle</a>
+        <div class="dropdown-panel" style="grid-template-columns:repeat(3,1fr)">
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Membership</p>
+            <a href="#circle">What is AERA Circle?</a>
+            <a href="#circle">Benefits &amp; perks</a>
+            <a href="#circle">How to join</a>
+          </div>
+          <div class="dropdown-col">
+            <p class="dropdown-heading">Community</p>
+            <a href="#circle">Events</a>
+            <a href="#circle">Member exclusives</a>
+          </div>
+          <div class="dropdown-col dropdown-featured">
+            <p class="dropdown-heading">Join the circle</p>
+            <p class="dropdown-sub">Be the first to know about new drops and member-only offers.</p>
+            <a href="#circle" class="dropdown-cta">Join now</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="nav-icons-right">
+      <button class="nav-icon-btn" aria-label="Search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      </button>
+      <button class="nav-icon-btn cart-btn" aria-label="Shopping bag">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- BANNER SLIDER: change the cover photo by editing url() in --bg-img of each slide -->
+  <div class="panel">
+
+    <div class="slide active" style="--bg-img:url('images/banner-photo.png')">
+      <div class="slide-bg"></div>
+      <div class="slide-content">
+        <div class="badge"><p id="slide1_badge">HAIR &amp; BODY MISTS · 110ML</p></div>
+        <h1 id="slide1_title">Scents worth wandering in.</h1>
+        <p class="sub" id="slide1_sub">Five mists, one for every mood — light enough for every day, memorable enough to follow you out the door.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="go('collection')">
+            <span id="slide1_btn1">Shop AERA</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <button class="btn-ghost" onclick="go('circle')" id="slide1_btn2">Join AERA Circle</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" style="--bg-img:url('images/banner-photo.png')">
+      <div class="slide-bg"></div>
+      <div class="slide-content">
+        <div class="badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5v.5a5 5 0 0 1-5 5A5 5 0 0 1 7 7.5V7a5 5 0 0 1 5-5z"/><path d="M6.5 17.5A7.5 7.5 0 0 0 12 20a7.5 7.5 0 0 0 5.5-2.5"/></svg>
+          <p id="slide2_badge">BLOOM : THE GARDEN-PARTY COLLECTION</p>
+        </div>
+        <h1 id="slide2_title">Stay a little longer.</h1>
+        <p class="sub" id="slide2_sub">Hair &amp; body mists, soaps and a lightweight body serum that make everyday routines feel good enough to linger in.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="go('collection')">
+            Shop AERA
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <button class="btn-ghost" onclick="go('circle')">Join AERA Circle</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide" style="--bg-img:url('images/banner-photo.png')">
+      <div class="slide-bg"></div>
+      <div class="slide-content">
+        <div class="badge"><p id="slide3_badge">SECOND SKIN BODY SERUM · 100ML</p></div>
+        <h1 id="slide3_title">Soft, light, all yours.</h1>
+        <p class="sub" id="slide3_sub">A lightweight, water-based serum that sinks in fast and leaves skin feeling like itself — only better.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="go('collection')">
+            Shop AERA
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <button class="btn-ghost" onclick="go('circle')">Join AERA Circle</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="hero-arrow prev" id="heroPrev" aria-label="Previous slide">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button class="hero-arrow next" id="heroNext" aria-label="Next slide">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+
+    <div class="hero-dots" id="heroDots"></div>
+  </div>
+
+  <div class="ribbon-wrap">
+    <svg class="ribbon" viewBox="0 0 3092 888" aria-hidden="true"><path fill="#384168" d="M3041.19,632.87c-26.73,18.27-124.01,81.25-253.21,124.65-56.93,19.12-112.09,31.72-163.94,37.45-58.59,6.47-113.27,4.16-162.53-6.87-49.25-11.03-94.1-31.08-133.29-59.58-43.6-31.71-81.62-74.89-112.99-128.36-17.64-30.06-34.09-66.06-51.5-104.16-40.15-87.85-85.65-187.43-168.28-267.48-96.72-93.7-223.9-140.52-388.81-143.13-189.9-3.01-346.47,97.78-484.61,186.69-81.87,52.7-159.21,102.48-232.96,124.18-36.6,10.77-69.85,13.93-101.68,9.67-35.31-4.73-69.23-18.58-103.71-42.34-18.56-12.79-31.4-28.84-40.23-45.55,29.17-16.49,55.6-34.71,78.45-54.17,44.16-37.62,73.57-78.45,85.03-118.07,8.56-29.6,6.85-58.07-4.94-82.35-8.55-17.59-26.77-41.58-65.05-55.94-34.24-12.84-70.76-9.1-102.85,10.53-25.76,15.76-48.53,41.62-65.84,74.79-27.08,51.88-38.67,116.12-31.79,176.23,.03,.29,.07,.58,.1,.87-4.91,2.01-9.91,3.99-15,5.92-65.89,25.02-139.21,40.5-217.92,46.01-90.64,6.35-186.66-.81-285.36-21.27L0,388.69c106.78,22.14,211.05,29.85,309.92,22.92,87.5-6.13,169.44-23.51,243.57-51.65,2.88-1.09,5.75-2.2,8.6-3.33,.77,1.51,1.55,3.02,2.35,4.52,16.63,31.07,39.56,56.82,68.16,76.53,87.48,60.28,179.67,74.97,281.86,44.9,86.17-25.35,168.79-78.54,256.27-134.84,131.74-84.8,267.89-172.44,427.58-172.44,2.29,0,4.59,.02,6.9,.05,75.54,1.2,142.53,13.08,199.09,35.32,49.16,19.33,91.19,46.3,128.51,82.46,70.45,68.25,110.41,155.69,149.05,240.25,18.4,40.25,35.77,78.28,55.74,112.31,72.66,123.81,175.02,201.27,304.24,230.21,37.55,8.41,77.39,12.63,119.06,12.62,23.77,0,48.14-1.37,73.01-4.12,58.23-6.43,119.71-20.42,182.72-41.59,136.35-45.8,237.97-110.12,275.33-135.65l-50.78-74.31ZM648.03,134.46c9.62-18.43,21.35-32.52,33.03-39.66,5.95-3.64,10.89-4.87,15.12-4.87,3.48,0,6.48,.83,9.15,1.83,16.46,6.17,19.86,12.68,15.14,29.01-8.22,28.42-40.48,67.24-95.69,103.33,1.5-31.66,9.6-63.5,23.25-89.64Z"/><path id="rlA" fill="none" d="M6.2 342.5 C14 344 39 350 55 353 C72 356 89 359 105 361 C122 363 139 364 155 366 C172 367 189 368 206 369 C222 370 239 372 256 372 C273 372 289 370 306 369 C323 367 339 365 356 362 C373 360 389 357 406 354 C422 351 439 348 455 344 C471 340 488 335 503 330 C519 324 535 317 550 310"/><path id="rlB" fill="none" d="M640.2 265.7 C655 257 669 248 682 238 C695 227 708 216 719 204 C731 192 743 179 751 165 C759 151 767 133 767 118 C767 102 761 83 751 71 C741 60 723 50 708 47 C692 45 673 48 659 55 C645 62 633 77 623 90 C613 103 605 119 599 134 C592 149 588 166 584 182 C581 199 579 216 580 232 C580 249 583 266 586 282 C590 298 594 315 601 330 C608 345 616 360 627 373 C638 386 651 396 665 406 C679 415 694 423 709 430 C725 436 741 442 757 446 C773 449 790 452 807 453 C824 453 840 452 857 449 C874 447 890 443 906 438 C922 434 938 427 953 421 C969 414 984 407 999 399 C1014 392 1028 383 1043 375 C1057 366 1072 357 1086 348 C1100 339 1114 330 1128 321 C1142 312 1156 303 1171 295 C1185 286 1201 279 1215 270 C1229 261 1240 248 1255 239 C1269 230 1284 224 1299 216 C1314 209 1329 201 1345 194 C1360 187 1375 180 1391 174 C1406 167 1422 161 1438 156 C1454 151 1470 147 1486 143 C1503 139 1519 136 1536 134 C1553 132 1570 131 1586 131 C1603 130 1620 130 1637 131 C1653 132 1670 134 1687 136 C1703 138 1720 141 1737 144 C1753 148 1769 152 1785 157 C1801 162 1817 167 1833 174 C1848 181 1863 188 1878 196 C1892 204 1906 214 1920 224 C1934 233 1947 244 1959 255 C1971 267 1983 279 1994 292 C2005 305 2015 318 2024 332 C2034 345 2043 360 2052 374 C2061 388 2071 402 2079 417 C2086 432 2090 448 2097 463 C2104 479 2112 493 2120 508 C2127 524 2133 539 2141 554 C2148 569 2156 584 2164 599 C2172 614 2180 629 2189 643 C2198 657 2207 671 2218 684 C2228 697 2240 710 2252 721 C2264 732 2278 743 2291 752 C2305 762 2319 770 2334 779 C2349 787 2364 794 2379 801 C2395 808 2410 814 2426 818 C2443 823 2459 826 2476 828 C2492 830 2509 830 2526 830 C2543 830 2560 829 2576 829 C2593 828 2610 827 2627 826 C2644 826 2660 824 2677 823 C2694 821 2711 820 2727 817 C2744 815 2760 812 2777 808 C2793 804 2809 798 2825 793 C2840 787 2856 781 2871 774 C2887 768 2902 761 2918 754 C2933 747 2948 739 2963 731 C2978 724 2992 716 3007 707 C3021 699 3036 690 3050 681 C3064 673 3086 660 3093 655"/><text class="rt" xml:space="preserve"><textPath href="#rlA" startOffset="70">STAY A LITTLE LONGER</textPath></text><text class="rt" xml:space="preserve"><textPath href="#rlB">&#8211; BLOOM          STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            </textPath></text></svg>
+  </div>
+</section>
+
+<!-- COLLECTION SECTION -->
+<section class="products-section" id="shop">
+  <div class="products-in">
+    <div class="cat-feature">
+      <svg class="doodle dd-tl" aria-hidden="true"><use href="#flower"/></svg>
+      <svg class="doodle dd-tr dd-rot" aria-hidden="true"><use href="#sprig"/></svg>
+      <div class="products-header">
+        <p class="section-label" id="collection_label">Shop by category</p>
+        <h2 id="collection_title">Find your ritual.</h2>
+        <p class="section-sub" id="collection_sub">Pick a scent, a daily cleanser or a body-care essential.</p>
+      </div>
+      <div class="cat-cards">
+        <a class="cat-card" href="#collection" data-go-cat="mist">
+          <div class="cat-card-img"><img id="cat1_img" src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+          <span class="cat-card-label"><small class="cat-tag" id="cat1_tag">Fragrance</small><b id="cat1_title">Hair &amp; Body Mists</b><small class="cat-meta" id="cat1_meta">5 scents &#183; 110mL</small></span>
+        </a>
+        <a class="cat-card" href="#collection" data-go-cat="soap">
+          <div class="cat-card-img"><img id="cat2_img" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+          <span class="cat-card-label"><small class="cat-tag" id="cat2_tag">Skincare</small><b id="cat2_title">Soaps</b><small class="cat-meta" id="cat2_meta">2 soaps &#183; 90g</small></span>
+        </a>
+        <a class="cat-card" href="#collection" data-go-cat="serum">
+          <div class="cat-card-img"><img id="cat3_img" src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+          <span class="cat-card-label"><small class="cat-tag" id="cat3_tag">Body Care</small><b id="cat3_title">Body Serum</b><small class="cat-meta" id="cat3_meta">Second Skin &#183; 100mL</small></span>
+        </a>
+      </div>
+    </div>
+    <div class="products-header" id="collection">
+      <p class="section-label" id="products_label">All products</p>
+      <h2 id="products_title">Meet the collection.</h2>
+      <p class="section-sub" id="products_sub">Our launch collection: hair &amp; body mists, soaps and a body serum for everyday moments worth lingering in.</p>
+    </div>
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="all">All</button>
+      <button class="cat-tab" data-cat="mist">Hair &amp; Body Mists</button>
+      <button class="cat-tab" data-cat="soap">Soaps</button>
+      <button class="cat-tab" data-cat="serum">Body Serum</button>
+    </div>
+    <div class="prod-grid" id="prodGrid">
+      <!-- skeleton cards shown while loading -->
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+      <div class="prod-card prod-skeleton"></div>
+    </div>
+    <div class="view-all-wrap">
+      <a href="shop.html" class="view-all-btn">View all products <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- BOTTOM RIBBON (cloned from the hero ribbon by script) -->
+<div class="bottom-whirl-outer" aria-hidden="true">
+  <div class="bottom-whirl-wrap" id="bottomWhirl"></div>
+</div>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="rv-in">
+    <div class="rv-head">
+      <h2>What Our Customers Say</h2>
+      <p>Scents and body care made for everyday moments worth lingering in. Here's what our customers have to say.</p>
+    </div>
+    <div class="rv-grid">
+
+      <article class="rv-card">
+        <div class="rv-top">
+          <div>
+            <h3 class="rv-name" id="review1_name">Maria Santos</h3>
+            <span class="stars" aria-label="5 out of 5 stars"><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg></span>
+          </div>
+          <div class="rv-avatar" aria-hidden="true"><img id="review1_img" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Maria Santos"></div>
+        </div>
+        <p class="rv-text" id="review1_text">No Fixed Plans is my new everyday scent. It's soft, clean and it actually lasts through the whole day. I spray it on my hair before heading out and keep getting compliments. I already want the rest of the mists in the collection!</p>
+      </article>
+
+      <article class="rv-card">
+        <div class="rv-top">
+          <div>
+            <h3 class="rv-name" id="review2_name">Kyla Reyes</h3>
+            <span class="stars" aria-label="5 out of 5 stars"><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg></span>
+          </div>
+          <div class="rv-avatar" aria-hidden="true"><img id="review2_img" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Kyla Reyes"></div>
+        </div>
+        <p class="rv-text" id="review2_text">The Second Skin Body Serum is so lightweight. It sinks in within seconds, no sticky feeling, and my skin stays soft the whole day even in this humid weather. It's the one product I now put on right after every shower.</p>
+      </article>
+
+      <article class="rv-card">
+        <div class="rv-top">
+          <div>
+            <h3 class="rv-name" id="review3_name">Jasmine Cruz</h3>
+            <span class="stars" aria-label="5 out of 5 stars"><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg><svg class="star" aria-hidden="true"><use href="#star"/></svg></span>
+          </div>
+          <div class="rv-avatar" aria-hidden="true"><img id="review3_img" src="https://randomuser.me/api/portraits/women/27.jpg" alt="Jasmine Cruz"></div>
+        </div>
+        <p class="rv-text" id="review3_text">White Shirt smells like fresh laundry and a clean morning. Super comforting and not overpowering. I also tried the Tea Tree Soap and it's gentle on my skin. Packaging is so pretty too. Definitely ordering again.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- OUR STORY -->
+<section class="ns" id="story">
+  <svg class="doodle dd-tr" aria-hidden="true"><use href="#flower"/></svg>
+  <div class="ns-in story-grid">
+    <div class="story-photo" style="border:0;padding:0;background:none">
+      <img id="story_img" src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&auto=format&fit=crop&q=80" alt="AERA Second Skin Body Serum" loading="lazy">
+    </div>
+    <div>
+      <p class="ns-label" id="story_label">About Us</p>
+      <h2 id="story_title">A little pleasure, every day.</h2>
+      <p id="story_intro">AERA is a beauty and personal care brand that brings a little pleasure into everyday routines through scent and body care. Thoughtful, playful and approachable, it is made for ordinary moments that feel good enough to linger in.</p>
+      <div class="story-blocks">
+        <div class="story-block">
+          <h3 id="story_block1_title">Made for everyday moments</h3>
+          <p id="story_block1_text">AERA is built for the small rituals that make a day feel good — the spray before you head out, the soap that smells just right, the serum that actually sinks in. Simple things, done well.</p>
+        </div>
+        <div class="story-block">
+          <h3 id="story_block2_title">Why AERA exists</h3>
+          <p id="story_block2_text">Good body care shouldn&rsquo;t feel like a chore or cost a fortune. AERA was created to bring a little pleasure into ordinary routines with mists, soaps and a serum that are easy to love, easy to use and made for our warm, humid weather.</p>
+        </div>
+        <div class="story-block">
+          <h3 id="story_block3_title">What &ldquo;Stay a little longer&rdquo; means</h3>
+          <p id="story_block3_text">It&rsquo;s the feeling we want to create: a routine, a scent or a quiet moment that&rsquo;s good enough to make you pause and stay a little longer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AERA CIRCLE -->
+<section class="ns" id="circle" style="padding-top:0">
+  <div class="ns-in">
+    <div class="circle-wrap" style="position:relative;overflow:hidden">
+      <svg class="doodle dd-br dd-rot" style="color:#f0ede8;opacity:.18;width:150px;height:150px" aria-hidden="true"><use href="#flower"/></svg>
+      <p class="ns-label">AERA Circle</p>
+      <h2 id="circle_title">Join the Circle.</h2>
+      <p class="circle-intro" id="circle_intro">AERA Circle is our reseller program for individuals and businesses who want to share AERA with their own community. Applying and ordering are separate from regular retail shopping.</p>
+      <div class="tier-grid">
+        <div class="tier-card">
+          <h3 id="tier1_title">1st Tier</h3>
+          <p id="tier1_desc">For new resellers starting out.</p>
+          <ul id="tier1_bullets"><li>Up to 15% off retail prices</li><li>Starter kit with product samples</li><li>Minimum net PO: &#8369;6,000</li></ul>
+        </div>
+        <div class="tier-card">
+          <h3 id="tier2_title">2nd Tier</h3>
+          <p id="tier2_desc">For active sellers building a steady customer base.</p>
+          <ul id="tier2_bullets"><li>Up to 20% off retail prices</li><li>Priority restocks on new scents</li><li>Minimum net PO: &#8369;15,000</li></ul>
+        </div>
+        <div class="tier-card">
+          <h3 id="tier3_title">3rd Tier</h3>
+          <p id="tier3_desc">For high-volume sellers and bulk buyers.</p>
+          <ul id="tier3_bullets"><li>Up to 30% off retail prices</li><li>Early access to new launches</li><li>Minimum net PO: &#8369;25,000</li></ul>
+        </div>
+      </div>
+      <div class="circle-notes">
+        <div><h3>Bulk orders</h3><p>For purchases over &#8369;50,000, email us at <a href="mailto:contactaeraofficial@gmail.com" style="color:inherit;text-decoration:underline">contactaeraofficial@gmail.com</a> so we can assist you directly.</p></div>
+        <div><h3>Ordering expectations</h3><p>Apply through the form, and once approved you&rsquo;ll receive the reseller price list. Orders are placed directly with our team, packed within 3&ndash;5 business days and paid in full before shipping via bank transfer or e-wallet.</p></div>
+        <div><h3>Policy notes</h3><p>Resellers agree to keep prices at or above AERA&rsquo;s minimum advertised price, to use official product photos and descriptions, and not to make medical claims about any product.</p></div>
+      </div>
+      <a class="ns-btn" href="mailto:contactaeraofficial@gmail.com?subject=AERA%20Circle%20Application" rel="noopener">Apply to AERA Circle</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQs -->
+<section class="ns" id="faq" style="padding-top:0">
+  <svg class="doodle dd-tr dd-rot" aria-hidden="true"><use href="#sprig"/></svg>
+  <div class="ns-in faq-grid">
+    <div>
+      <p class="ns-label">FAQs</p>
+      <h2>Questions? We&rsquo;ve got answers.</h2>
+      <p>Can&rsquo;t find what you&rsquo;re looking for? Send us a message and our team will help.</p>
+      <a class="ns-btn" href="#contact">Contact us</a>
+    </div>
+    <div class="faq-list" id="faq_list">
+      <details><summary id="faq1_q">How do I order?</summary><p id="faq1_a">Pick your products, tap Add to Bag, then check out as a guest. Enter your contact details and delivery address, review your order and pay.</p></details>
+      <details><summary id="faq2_q">What products do you offer?</summary><p id="faq2_a">Our launch collection has eight products: five hair &amp; body mists (110mL), two soaps (90g) and the Second Skin Body Serum (100mL).</p></details>
+      <details><summary id="faq3_q">How much is shipping?</summary><p id="faq3_a">The shipping fee is calculated at checkout based on your delivery address.</p></details>
+      <details><summary id="faq4_q">How do I become a reseller?</summary><p id="faq4_a">Join AERA Circle, our reseller program. Check the tiers and benefits above, then tap Apply to AERA Circle to send your application.</p></details>
+      <details><summary id="faq5_q">Who do I contact for support?</summary><p id="faq5_a">Use the contact form or email us at contactaeraofficial@gmail.com for product questions, how to order and order support.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="nl-card">
+    <div class="nl-text">
+      <p class="nl-label">Newsletter</p>
+      <h2 id="newsletter_title">Join our newsletter</h2>
+      <p id="newsletter_sub">Be the first to hear about new scents, promotions and what&#8217;s blooming next at AERA. No spam, just a little something nice.</p>
+    </div>
+    <form class="nl-form" id="nlForm">
+      <label class="sr-only" for="nlEmail">Email address</label>
+      <input id="nlEmail" type="email" placeholder="Your email address" required>
+      <button type="submit">Subscribe</button>
+      <p class="form-msg" id="nlMsg" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<!-- CONTACT US -->
+<footer class="contact" id="contact">
+  <div class="ct-in">
+    <div class="ct-info">
+      <img src="images/aera-logo-black.png" class="logo" alt="AERA" style="filter:invert(1)">
+      <h2>Contact us</h2>
+      <p>Questions about our products, how to order, or AERA Circle? Send us a message and we&#8217;ll get back to you.</p>
+      <ul class="ct-list">
+        <li><span>Email</span><a id="contact_email" href="mailto:contactaeraofficial@gmail.com">contactaeraofficial@gmail.com</a></li>
+      </ul>
+      <div class="ct-social">
+        <a id="contact_instagram" href="https://www.instagram.com/aeraclucofficial" target="_blank" rel="noopener">Instagram</a>
+        <a id="contact_tiktok" href="https://www.tiktok.com/@aeraclucofficial" target="_blank" rel="noopener">TikTok</a>
+        <a id="contact_facebook" href="https://www.facebook.com/thisisaera" target="_blank" rel="noopener">Facebook</a>
+      </div>
+    </div>
+    <form class="ct-form" id="ctForm">
+      <label>Your name<input type="text" name="name" placeholder="Name" required></label>
+      <label>Subject<input type="text" name="subject" placeholder="How can we help?" required></label>
+      <label>Phone<input type="tel" name="phone" placeholder="+63 ..." required></label>
+      <label>Message<textarea name="message" placeholder="Tell us about your question or order"></textarea></label>
+      <button type="submit">Send message</button>
+      <p class="form-msg" id="ctMsg" role="status"></p>
+    </form>
+  </div>
+  <div class="ct-bottom">
+    <span>&#169; 2026 AERA. All rights reserved.</span>
+    <nav><a href="#" data-policy="privacy">Privacy Policy</a><a href="#" data-policy="ordering">Ordering Policy</a><a href="#story">About Us</a><a href="#circle">AERA Circle</a><a href="#faq">FAQs</a></nav>
+  </div>
+</footer>
+
+<style>
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.form-msg{flex-basis:100%;margin:.25rem 0 0;font-size:.875rem;min-height:1.2em}
+
+/* ===== REVIEWS ===== */
+.reviews{background:var(--cream);padding:6rem 1rem;margin-top:-12rem}
+.rv-in{max-width:80rem;margin:0 auto}
+.rv-head{text-align:center;max-width:42rem;margin:0 auto 4rem}
+.rv-head h2{margin:0 0 1.25rem;font-family:Urbanist,Arial,sans-serif;font-size:clamp(2.25rem,5vw,3.5rem);font-weight:500;letter-spacing:-.035em;line-height:1.1;color:var(--ink)}
+.rv-head p{margin:0;font-size:1.0625rem;line-height:1.8;color:rgba(56,65,104,.65)}
+.rv-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+.rv-card{display:flex;flex-direction:column;padding:1.9rem;border:1px solid rgba(56,65,104,.15);border-radius:20px;background:#fff}
+.rv-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.rv-name{margin:0 0 .6rem;font-family:Urbanist,Arial,sans-serif;font-size:1.125rem;font-weight:500;color:var(--ink)}
+.stars{display:inline-flex;gap:3px;color:var(--brown)}
+.star{width:22px;height:22px}
+.rv-avatar{flex-shrink:0;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:rgba(56,65,104,.1);color:var(--brown);font-weight:600;font-size:1.05rem;letter-spacing:.04em;overflow:hidden}
+.rv-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.rv-text{margin:1.75rem 0 0;font-size:1rem;line-height:1.7;color:rgba(56,65,104,.7)}
+@media(min-width:768px){.rv-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.newsletter{background:var(--cream);padding:0 1rem 6rem}
+.nl-card{position:relative;overflow:hidden;max-width:80rem;margin:0 auto;background:var(--charcoal);border-radius:24px;padding:3rem 1.5rem;display:grid;gap:1.75rem;align-items:center}
+.nl-card::after{display:none}
+.nl-text,.nl-form{position:relative;z-index:1}
+.nl-label{margin:0 0 .6rem;font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,237,232,.7)}
+.nl-text h2{margin:0 0 .75rem;font-family:Urbanist,Arial,sans-serif;font-size:2rem;font-weight:500;line-height:1.15;color:var(--cream)}
+.nl-text p:last-child{margin:0;max-width:30rem;line-height:1.6;font-size:.9375rem;color:var(--cream)}
+.nl-form{display:flex;gap:.5rem;flex-wrap:wrap}
+.nl-form input{flex:1 1 220px;height:52px;padding:0 1.25rem;border:1px solid transparent;border-radius:30px;background:var(--cream);color:var(--ink);font:inherit;font-size:.9375rem}
+.nl-form input:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.nl-form button{height:52px;padding:0 2rem;border:0;border-radius:30px;background:var(--cream);color:var(--brown);font:inherit;font-weight:500;cursor:pointer;transition:background .2s;font-family:inherit}
+.nl-form button:hover{background:#fff}
+.nl-form .form-msg{color:var(--cream)}
+@media(min-width:900px){.nl-card{grid-template-columns:1.1fr 1fr;padding:3.5rem 4rem;gap:3rem}.nl-text h2{font-size:2.5rem}}
+
+.contact{background:var(--charcoal);color:var(--cream);padding:5rem 1rem 0}
+.ct-in{max-width:80rem;margin:0 auto;display:grid;gap:3rem}
+.ct-info .logo{width:120px;color:var(--cream)}
+.ct-info h2{margin:1.5rem 0 .75rem;font-family:Urbanist,Arial,sans-serif;font-size:2.25rem;font-weight:500;line-height:1.15}
+.ct-info>p{margin:0 0 1.75rem;max-width:28rem;line-height:1.7;color:rgba(240,237,232,.75)}
+.ct-list{list-style:none;margin:0 0 1.5rem;padding:0;display:grid;gap:.9rem}
+.ct-list li{display:flex;gap:1rem;align-items:baseline}
+.ct-list span{min-width:4.5rem;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,237,232,.6)}
+.ct-list a:hover{text-decoration:underline}
+.ct-social{display:flex;gap:.5rem;flex-wrap:wrap}
+.ct-social a{padding:.45rem 1rem;border:1px solid rgba(240,237,232,.35);border-radius:9999px;font-size:.8125rem;transition:background .2s,color .2s}
+.ct-social a:hover{background:var(--cream);color:var(--brown)}
+.ct-form{display:grid;gap:.9rem;align-content:start}
+.ct-form label{display:grid;gap:.4rem;font-size:.8125rem;color:rgba(240,237,232,.8)}
+.ct-form input,.ct-form textarea{width:100%;padding:.85rem 1.1rem;border:1px solid rgba(240,237,232,.3);border-radius:16px;background:rgba(240,237,232,.08);color:var(--cream);font:inherit;font-size:.9375rem}
+.ct-form textarea{min-height:120px;resize:vertical}
+.ct-form input::placeholder,.ct-form textarea::placeholder{color:rgba(240,237,232,.45)}
+.ct-form input:focus-visible,.ct-form textarea:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.ct-form button{justify-self:start;height:52px;padding:0 2rem;border:0;border-radius:30px;background:var(--cream);color:var(--brown);font:inherit;font-weight:600;cursor:pointer;transition:background .2s}
+.ct-form button:hover{background:#fff}
+.contact .form-msg{color:var(--cream)}
+.ct-bottom{max-width:80rem;margin:4rem auto 0;padding:1.5rem 0 2rem;border-top:1px solid rgba(240,237,232,.18);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.8125rem;color:rgba(240,237,232,.6)}
+.ct-bottom nav{display:flex;gap:1.25rem;flex-wrap:wrap}
+.ct-bottom a:hover{color:var(--cream)}
+@media(min-width:900px){.contact{padding:6rem 4rem 0}.ct-in{grid-template-columns:1fr 1fr;gap:5rem}.ct-info h2{font-size:2.75rem}}
+</style>
+
+<style>
+.products-section{position:relative;z-index:1;width:100%;margin-top:calc(var(--overlap) * -1);padding:calc(0.5rem + var(--overlap) + var(--ribbon-shift) + clamp(40px,10vw,200px) + 17vw) 1rem 8rem;background:var(--cream);border-top:1px solid rgba(56,65,104,.15)}
+.products-in{max-width:96rem;margin:0 auto;overflow:hidden}
+.products-header{text-align:center;margin-bottom:3rem}
+.section-label{font-size:.75rem;letter-spacing:.15em;color:rgba(56,65,104,.6);text-transform:uppercase;margin-bottom:.75rem}
+.products-header h2{font-family:Urbanist,Arial,sans-serif;font-size:2.5rem;font-weight:500;color:var(--ink);line-height:1.15;margin-bottom:.875rem}
+.section-sub{font-size:.9375rem;color:rgba(56,65,104,.6);max-width:30rem;margin:0 auto;line-height:1.7}
+.view-all-wrap{text-align:center;margin-top:2.5rem}
+.view-all-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.375rem;border-radius:9999px;border:1px solid rgba(56,65,104,.35);color:var(--brown);font-size:.875rem;font-weight:500;transition:background .2s,border-color .2s,transform .2s}
+.view-all-btn:hover{background:var(--brown);color:#fff;border-color:var(--brown);transform:translateY(-1px)}
+.view-all-btn svg{transition:transform .2s}
+.view-all-btn:hover svg{transform:translateX(4px)}.cat-tabs{display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:3rem}
+.cat-tab{padding:.5rem 1.125rem;border-radius:9999px;font-size:.8125rem;font-weight:500;letter-spacing:.03em;border:1px solid rgba(56,65,104,.3);color:rgba(56,65,104,.6);background:transparent;cursor:pointer;transition:all .2s}
+.cat-tab:hover{color:var(--charcoal);border-color:var(--charcoal)}
+.cat-tab.active{background:var(--charcoal);color:var(--cream);border-color:var(--charcoal)}
+.prod-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem}
+.prod-card{display:flex;flex-direction:column;border-radius:1rem;overflow:hidden;background:rgba(56,65,104,.04);border:1px solid rgba(56,65,104,.15);transition:transform .3s;min-width:0}
+.prod-card:hover{transform:translateY(-4px)}
+.prod-skeleton{aspect-ratio:3/4;pointer-events:none;background:linear-gradient(90deg,rgba(56,65,104,.06) 25%,rgba(56,65,104,.12) 50%,rgba(56,65,104,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border:none}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.prod-card.hidden{display:none}
+.prod-img-wrap{position:relative;overflow:hidden;aspect-ratio:3/4}
+.prod-img-wrap img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.prod-card:hover .prod-img-wrap img{transform:scale(1.06)}
+.prod-notes{position:absolute;left:0;right:0;bottom:0;margin:0;padding:.75rem 1rem;text-align:center;font-size:.8125rem;line-height:1.4;height:3rem;display:flex;align-items:center;justify-content:center;overflow:hidden;background:rgba(240,237,232,.95);color:var(--ink);transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.prod-card:hover .prod-notes,.prod-card:focus-within .prod-notes{transform:translateY(0)}
+.prod-info{padding:.9rem 1rem 1rem;display:flex;flex-direction:column;flex:1}
+.prod-cat-tag{display:block;font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(56,65,104,.55);margin-bottom:.3rem}
+.prod-info h3{font-family:Urbanist,Arial,sans-serif;font-size:1.05rem;font-weight:500;color:var(--ink)}
+.prod-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.75rem;gap:.5rem}
+.prod-price{font-size:.9375rem;font-weight:500;color:rgba(56,65,104,.6);white-space:nowrap}
+.add-to-bag{font-size:.75rem;font-weight:500;letter-spacing:.03em;padding:.375rem .875rem;border-radius:9999px;background:rgba(56,65,104,.08);border:1px solid rgba(56,65,104,.25);color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s,transform .15s;white-space:nowrap}
+.add-to-bag:hover{background:var(--charcoal);color:var(--cream);border-color:var(--charcoal);transform:translateY(-1px)}
+@media(min-width:640px){.products-section{padding-left:2rem;padding-right:2rem}.prod-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:768px){.products-header h2{font-size:3rem}.prod-info h3{font-size:1.0625rem}}
+@media(min-width:1024px){.products-section{padding-left:2rem;padding-right:2rem}.prod-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem}}
+@media(prefers-reduced-motion:reduce){.prod-card,.prod-img-wrap img,.prod-notes{transition:none}}
+
+.nav-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E") center/contain no-repeat;cursor:pointer;opacity:.8}
+.nav-search input::-webkit-search-cancel-button:hover{opacity:1}
+
+/* Cart Drawer */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.cart-overlay.open{opacity:1;visibility:visible;transition:opacity .3s}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:#ffffff;z-index:901;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.12)}
+.cart-drawer.open{transform:translateX(0)}
+.cart-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(56,65,104,.1)}
+.cart-drawer-head h3{margin:0;font-size:1rem;font-weight:600;letter-spacing:.04em}
+.cart-close{background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;display:grid;place-items:center;transition:background .2s}
+.cart-close:hover{background:rgba(56,65,104,.08)}
+.cart-body{flex:1;overflow-y:auto;padding:1.5rem}
+.cart-empty{text-align:center;color:rgba(56,65,104,.5);margin-top:4rem;font-size:.9375rem}
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid rgba(56,65,104,.1)}
+.cart-footer button{width:100%;height:48px;border:none;border-radius:9999px;background:var(--brown);color:#ffffff;font:inherit;font-size:.9375rem;font-weight:600;cursor:pointer;transition:background .2s}
+.cart-footer button:hover{background:var(--brown-deep)}
+
+/* ===== BOTTOM RIBBON (clone of the hero ribbon) ===== */
+.bottom-whirl-outer{
+  --whirl-shift:0px;
+  --whirl-rotate:8deg;
+  --whirl-width:166%;
+  --whirl-left:-3%;
+  position:relative;z-index:10;left:0;right:0;pointer-events:none;
+  height:clamp(260px,34vw,560px);
+}
+.bottom-whirl-wrap{position:absolute;inset:0;pointer-events:none}
+.bottom-whirl-wrap .ribbon-bottom{
+  position:absolute;display:block;height:auto;overflow:visible;pointer-events:none;
+  left:var(--whirl-left);width:var(--whirl-width);top:0;
+  transform:translateY(var(--whirl-shift)) rotate(var(--whirl-rotate));
+  transform-origin:50% 50%;
+}
+</style>
+
+<!-- NEW SECTIONS: About Us, AERA Circle, Where to Buy -->
+<style>
+#story,#circle,#where-to-buy{scroll-margin-top:68px}
+.ns{background:var(--cream);padding:6rem 1rem;position:relative}
+.ns-in{max-width:80rem;margin:0 auto}
+.ns-label{margin:0 0 .75rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(56,65,104,.6)}
+.ns h2{margin:0 0 1.25rem;font-family:Urbanist,Arial,sans-serif;font-size:clamp(2.25rem,5vw,3.5rem);font-weight:500;letter-spacing:-.035em;line-height:1.1;color:var(--ink)}
+.ns p{margin:0 0 1rem;font-size:1.0625rem;line-height:1.8;color:rgba(56,65,104,.75)}
+.ns-btn{display:inline-flex;align-items:center;gap:.6rem;background:var(--brown);color:#fff;font-size:.875rem;font-weight:500;padding:.8rem 1.5rem;border-radius:9999px;letter-spacing:.02em;transition:background .2s,transform .2s}
+.ns-btn:hover{background:var(--brown-deep);transform:translateY(-1px)}
+.ns-btn.ghost{background:transparent;color:var(--brown);border:1px solid rgba(56,65,104,.45)}
+.ns-btn.ghost:hover{background:rgba(56,65,104,.08)}
+.ph-note{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(56,65,104,.45)}
+
+/* OUR STORY */
+.story-grid{display:grid;gap:3rem;align-items:center}
+.story-photo{aspect-ratio:3/4;max-width:26rem;width:100%;margin:0 auto;border-radius:999px 999px 24px 24px;background:rgba(56,65,104,.08);border:1px dashed rgba(56,65,104,.3);display:grid;place-items:center;text-align:center;padding:2rem;overflow:hidden}
+.story-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.story-blocks{display:grid;gap:1.75rem;margin-top:1.5rem}
+.story-block h3{margin:0 0 .4rem;font-family:Urbanist,Arial,sans-serif;font-size:1.25rem;font-weight:500;color:var(--ink)}
+.story-block p{margin:0;font-size:1rem}
+@media(min-width:900px){.story-grid{grid-template-columns:.9fr 1.1fr;gap:5rem}}
+
+/* AERA CIRCLE */
+.circle-wrap{background:var(--brown);color:var(--cream);border-radius:24px;padding:3rem 1.5rem}
+.circle-wrap .ns-label{color:rgba(240,237,232,.7)}
+.circle-wrap h2{color:var(--cream)}
+.circle-wrap .circle-intro{max-width:40rem;color:rgba(240,237,232,.8)}
+.tier-grid{display:grid;gap:1.25rem;margin:2.5rem 0}
+.tier-card{padding:1.75rem;border:1px solid rgba(240,237,232,.25);border-radius:20px;background:rgba(240,237,232,.06)}
+.tier-card h3{margin:0 0 .5rem;font-family:Urbanist,Arial,sans-serif;font-size:1.25rem;font-weight:500;color:var(--cream)}
+.tier-card p{margin:0 0 .75rem;font-size:.9375rem;line-height:1.6;color:rgba(240,237,232,.75)}
+.tier-card ul{margin:0;padding-left:1.1rem;font-size:.9375rem;line-height:1.8;color:rgba(240,237,232,.85)}
+.circle-notes{display:grid;gap:1.25rem;margin-bottom:2.5rem}
+.circle-notes h3{margin:0 0 .4rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,237,232,.65);font-weight:600}
+.circle-notes p{margin:0;font-size:.9375rem;line-height:1.7;color:rgba(240,237,232,.85)}
+.circle-wrap .ns-btn{background:var(--cream);color:var(--brown)}
+.circle-wrap .ns-btn:hover{background:#fff}
+@media(min-width:768px){.tier-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.circle-notes{grid-template-columns:1fr 1fr}.circle-wrap{padding:4rem}}
+
+/* WHERE TO BUY */
+.wtb-head{text-align:center;max-width:42rem;margin:0 auto 3rem}
+.wtb-grid{display:grid;gap:1.25rem;grid-template-columns:1fr}
+.wtb-card{display:flex;flex-direction:column;gap:.5rem;padding:1.75rem;border:1px solid rgba(56,65,104,.15);border-radius:20px;background:#fff;transition:transform .3s,border-color .3s}
+.wtb-card:hover{transform:translateY(-4px);border-color:rgba(56,65,104,.35)}
+.wtb-card h3{margin:0;font-family:Urbanist,Arial,sans-serif;font-size:1.25rem;font-weight:500;color:var(--ink)}
+.wtb-card p{margin:0 0 1rem;font-size:.9375rem;line-height:1.6}
+.wtb-card .ns-btn{align-self:flex-start;margin-top:auto}
+@media(min-width:640px){.wtb-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1024px){.wtb-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+
+<script>
+(function(){
+/* cat tabs are now wired after Supabase fetch */
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  window.go = function (id) {
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  var heroEl = document.getElementById('home');
+  var slides = heroEl.querySelectorAll('.slide');
+  var dotsWrap = document.getElementById('heroDots');
+  var current = 0;
+  var timer = null;
+  var INTERVAL = 6500;
+
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', function () { show(i); restart(); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = dotsWrap.querySelectorAll('.hero-dot');
+
+  function show(n) {
+    current = (n + slides.length) % slides.length;
+    slides.forEach(function (s, i) { s.classList.toggle('active', i === current); });
+    dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+  }
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+  function start() {
+    clearInterval(timer); // prevent stacked intervals (cause of the speed-up bug)
+    if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    timer = setInterval(next, INTERVAL);
+  }
+  function stop() { clearInterval(timer); timer = null; }
+  function restart() { stop(); start(); }
+
+  document.getElementById('heroNext').addEventListener('click', function () { next(); restart(); });
+  document.getElementById('heroPrev').addEventListener('click', function () { prev(); restart(); });
+  heroEl.addEventListener('mouseenter', stop);
+  heroEl.addEventListener('mouseleave', start);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { next(); restart(); }
+    if (e.key === 'ArrowLeft') { prev(); restart(); }
+  });
+
+  var tx = null;
+  heroEl.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  heroEl.addEventListener('touchend', function (e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); restart(); }
+    tx = null;
+  });
+  start();
+})();
+</script>
+
+<script>
+/* ── Supabase content fetch ── */
+(function(){
+  var SUPA_URL='https://vhyveinrqamzycixhjsu.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';
+  fetch(SUPA_URL+'/rest/v1/site_content?select=*',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  })
+  .then(function(r){return r.json();})
+  .then(function(rows){
+    if(!Array.isArray(rows)) return;
+    rows.forEach(function(row){
+      var k=row.key, v=row.value||'';
+      if(k==='theme_primary'){document.documentElement.style.setProperty('--brown',v);document.documentElement.style.setProperty('--charcoal',v);document.documentElement.style.setProperty('--ink',v);}
+      if(k==='theme_deep'){document.documentElement.style.setProperty('--brown-deep',v);document.documentElement.style.setProperty('--accent-deep',v);}
+      if(k==='theme_background') document.documentElement.style.setProperty('--cream',v);
+      if(k==='swirl_mart_supporting_text'){
+        document.querySelectorAll('.rt').forEach(function(text){text.textContent=v;});
+        return;
+      }
+
+      /* topbar active toggle */
+      if(k==='topbar_active'){
+        if(v==='false'){ var tb=document.getElementById('topbar'); if(tb) tb.style.display='none'; }
+        return;
+      }
+
+      /* banner slide background images */
+      if(k==='slide1_img'||k==='slide2_img'||k==='slide3_img'){
+        var idx={'slide1_img':0,'slide2_img':1,'slide3_img':2}[k];
+        var slides=document.querySelectorAll('.slide');
+        if(slides[idx]) slides[idx].style.setProperty('--bg-img',"url('"+v+"')");
+        return;
+      }
+
+      /* story image */
+      if(k==='story_img'){
+        var img=document.getElementById('story_img');
+        if(img) img.src=v;
+        return;
+      }
+
+      /* review images */
+      if(k==='review1_img'||k==='review2_img'||k==='review3_img'){
+        var img=document.getElementById(k);
+        if(img){ img.src=v; img.alt=v; }
+        return;
+      }
+
+      /* tier bullets — pipe-separated */
+      if(k==='tier1_bullets'||k==='tier2_bullets'||k==='tier3_bullets'){
+        var ul=document.getElementById(k);
+        if(ul){ ul.innerHTML=v.split('|').map(function(b){ return '<li>'+b.trim()+'</li>'; }).join(''); }
+        return;
+      }
+
+      /* social links */
+      if(k==='contact_instagram'||k==='contact_tiktok'||k==='contact_facebook'){
+        var a=document.getElementById(k);
+        if(a){ a.href=v; }
+        return;
+      }
+
+      /* contact email */
+      if(k==='contact_email'){
+        var a=document.getElementById(k);
+        if(a){ a.href='mailto:'+v; a.textContent=v; }
+        return;
+      }
+
+      /* all other text fields */
+      var el=document.getElementById(k);
+      if(el) el.textContent=v;
+    });
+  })
+  .catch(function(){/* fail silently */});
+})();
+
+/* ── Homepage product grid — always exactly 8 from Supabase ── */
+(function(){
+  var SUPA_URL='https://vhyveinrqamzycixhjsu.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';
+  var CATN={mist:'Hair &amp; Body Mist',soap:'Soap',serum:'Body Serum'};
+  var peso=function(n){return '&#8369;'+Number(n).toLocaleString('en-PH');};
+
+  fetch(SUPA_URL+'/rest/v1/products?select=*&active=eq.true&order=created_at.asc&limit=8',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(!Array.isArray(data)||!data.length) return;
+    /* always take exactly 8 — slice if somehow more, pad with first items if less */
+    while(data.length < 8) data = data.concat(data).slice(0,8);
+    var products = data.slice(0,8);
+    var grid = document.getElementById('prodGrid');
+    grid.innerHTML = products.map(function(p){
+      var cat = p.category||'';
+      var tag = (CATN[cat]||cat)+(p.size?' &#183; '+p.size:'');
+      var outOfStock = p.stock <= 0;
+      
+      /* Calculate discounted price if discount exists */
+      var discount = p.discount || 0;
+      var originalPrice = p.price;
+      var finalPrice = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
+      
+      /* Build price display HTML */
+      var priceHTML = '';
+      if(discount > 0){
+        priceHTML = '<span style="display:flex;align-items:center;gap:.5rem">'
+          +'<span style="text-decoration:line-through;color:rgba(56,65,104,.5);font-size:.875rem">'+peso(originalPrice)+'</span>'
+          +'<span style="font-weight:700;color:#384168">'+peso(finalPrice)+'</span>'
+          +'</span>';
+      } else {
+        priceHTML = '<span>'+peso(originalPrice)+'</span>';
+      }
+      
+      return '<div class="prod-card" data-cat="'+cat+'">'
+        +'<a href="product.html?p='+p.id+'" class="prod-img-wrap" style="display:block;text-decoration:none">'
+          +'<img src="'+(p.img||'')+'" alt="'+p.name+'" loading="lazy">'
+          +(p.notes?'<p class="prod-notes">'+p.notes+'</p>':'')
+        +'</a>'
+        +'<div class="prod-info">'
+          +'<span class="prod-cat-tag">'+tag+'</span>'
+          +'<a href="product.html?p='+p.id+'" style="text-decoration:none;color:inherit"><h3>'+p.name+'</h3></a>'
+          +'<div class="prod-bottom">'
+            +'<span class="prod-price">'+priceHTML+'</span>'
+            +'<button class="add-to-bag"'+(outOfStock?' disabled':'')+' data-name="'+p.name+'" data-meta="'+tag.replace(/&amp;/g,'&')+'" data-price="'+finalPrice+'" data-img="'+(p.thumb||p.img||'')+'">'+( outOfStock?'Out of stock':'Add to Bag')+'</button>'
+          +'</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+
+    /* re-wire add-to-bag buttons */
+    grid.querySelectorAll('.add-to-bag').forEach(function(b){
+      if(b.disabled) return;
+      b.addEventListener('click',function(){ window.addToCart(b.dataset.name,b.dataset.meta,Number(b.dataset.price),b.dataset.img); });
+    });
+
+    /* re-wire cat tabs */
+    var tabs=document.querySelectorAll('.cat-tab');
+    var cards=[].slice.call(grid.querySelectorAll('.prod-card'));
+    tabs.forEach(function(tab){
+      tab.addEventListener('click',function(){
+        tabs.forEach(function(t){t.classList.remove('active');});
+        tab.classList.add('active');
+        var cat=tab.dataset.cat;
+        cards.forEach(function(c){c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none';});
+      });
+    });
+  })
+  .catch(function(){/* fail silently — grid stays empty */});
+})();
+
+// keep the banner exactly full-screen (device height) with or without the topbar
+function setTopbarH(){var t=document.getElementById('topbar');document.documentElement.style.setProperty('--topbar-h',(t&&t.style.display!=='none'?t.offsetHeight:0)+'px');}
+(function(){var t=document.getElementById('topbar');if(localStorage.getItem('aera-topbar-closed')==='1'){t.style.display='none';}setTopbarH();window.addEventListener('resize',setTopbarH);window.addEventListener('load',setTopbarH);document.getElementById('tbClose').addEventListener('click',function(){t.style.display='none';localStorage.setItem('aera-topbar-closed','1');setTopbarH();});window.addEventListener('storage',function(e){if(e.key==='aera-topbar-closed'){t.style.display=e.newValue==='1'?'none':'';setTopbarH();}});})();
+(function(){
+  var AERA_API='https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api',SUPA_KEY='******';
+  function wire(formId,msgId,text){
+    var f=document.getElementById(formId),m=document.getElementById(msgId);
+    f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('button');b.disabled=true;m.textContent='Sending…';var data=new FormData(f),payload={action:formId==='nlForm'?'subscribe':'contact'};data.forEach(function(v,k){payload[k]=v;});fetch(AERA_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify(payload)}).then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Unable to send.');return x;});}).then(function(x){m.textContent=x.message||text;f.reset();}).catch(function(err){m.textContent=err.message;}).finally(function(){b.disabled=false;});});
+  }
+  wire('nlForm','nlMsg','Thanks for subscribing!');
+  wire('ctForm','ctMsg','Thanks! We got your message and will get back to you soon.');
+})();
+</script>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-modal="true">
+  <div class="cart-drawer-head">
+    <h3>Your Bag <span class="cart-count-label">(0)</span></h3>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <p class="cart-empty">Your bag is empty.</p>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-line"><span>Subtotal</span><strong id="cartSubtotal">&#8369;0</strong></div>
+    <div class="cart-line cart-ship"><span>Shipping</span><span>Calculated at checkout</span></div>
+    <p class="cart-note">Your delivery address determines the shipping fee.</p>
+    <button type="button" onclick="window.location.href='checkout.html'">Checkout</button>
+  </div>
+</div>
+
+<script>
+// Sticky nav
+const nav = document.querySelector('.nav');
+const hero = document.querySelector('.hero');
+
+function updateNav(){
+  const heroTop = hero ? hero.getBoundingClientRect().top : 0;
+  const navOffset = window.matchMedia('(max-width:639px)').matches ? 10 : 20;
+  nav.classList.toggle('sticky', heroTop + navOffset <= 8);
+}
+
+window.addEventListener('scroll', updateNav, {passive:true});
+window.addEventListener('resize', updateNav);
+updateNav();
+(function(){var p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav-links-center a.dd, .nav-links-center > a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('active')});})();
+
+// Cart
+(function(){
+var PRODUCTS=[{"id":"no-fixed-plans","name":"No Fixed Plans","tag":"Hair & Body Mist · 110mL","price":450,"img":"https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&auto=format&fit=crop&q=80"},{"id":"white-shirt","name":"White Shirt","tag":"Hair & Body Mist · 110mL","price":450,"img":"https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=200&auto=format&fit=crop&q=80"},{"id":"first-flowers","name":"First Flowers","tag":"Hair & Body Mist · 110mL","price":450,"img":"https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=200&auto=format&fit=crop&q=80"},{"id":"open-windows","name":"Open Windows","tag":"Hair & Body Mist · 110mL","price":450,"img":"https://images.unsplash.com/photo-1617897903246-719242758050?w=200&auto=format&fit=crop&q=80"},{"id":"after-hours","name":"After Hours","tag":"Hair & Body Mist · 110mL","price":450,"img":"https://images.unsplash.com/photo-1619994403073-2cec844b8e63?w=200&auto=format&fit=crop&q=80"},{"id":"tea-tree-soap","name":"Tea Tree Soap","tag":"Soap · 90g","price":139,"img":"https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&auto=format&fit=crop&q=80"},{"id":"triple-whitening-soap","name":"Triple Whitening Soap","tag":"Soap · 90g","price":169,"img":"https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&auto=format&fit=crop&q=80"},{"id":"second-skin-body-serum","name":"Second Skin Body Serum","tag":"Body Serum · 100mL","price":599,"img":"https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&auto=format&fit=crop&q=80"}];
+var items=[];try{items=JSON.parse(localStorage.getItem("aeraCart")||"[]")}catch(e){}
+var cd=document.getElementById("cartDrawer"),co=document.getElementById("cartOverlay");
+function openCart(){cd.classList.add("open");co.classList.add("open");document.body.style.overflow="hidden"}
+function closeCart(){cd.classList.remove("open");co.classList.remove("open");document.body.style.overflow=""}
+document.querySelector(".cart-btn").addEventListener("click",function(e){e.preventDefault();openCart()});
+document.getElementById("cartClose").addEventListener("click",closeCart);co.addEventListener("click",closeCart);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeCart()});
+function save(){try{localStorage.setItem("aeraCart",JSON.stringify(items))}catch(e){}}
+function ui(){var b=document.getElementById("cartBody"),t=items.reduce(function(s,i){return s+i.qty},0),sub=items.reduce(function(s,i){return s+i.price*i.qty},0);
+document.getElementById("cartSubtotal").textContent="\u20B1"+sub.toLocaleString("en-PH");
+document.querySelectorAll(".cart-count").forEach(function(e){e.textContent=t});document.querySelector(".cart-count-label").textContent="("+t+")";
+if(!items.length){b.innerHTML='<p class="cart-empty">Your bag is empty.</p>';return}
+b.innerHTML="";items.forEach(function(it,idx){var d=document.createElement("div");d.style.cssText="display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(56,65,104,.08)";
+d.innerHTML='<img style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0"><div style="flex:1;min-width:0"><p style="margin:0;font-size:.9rem;font-weight:500"></p><p style="margin:2px 0 0;font-size:.8rem;color:rgba(56,65,104,.5)"></p><p style="margin:4px 0 0;font-size:.85rem;font-weight:500"></p><div style="display:flex;align-items:center;gap:8px;margin-top:8px"><button data-d="-1" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(56,65,104,.2);background:none;cursor:pointer;color:inherit">\u2212</button><span style="font-size:.9rem;font-weight:500"></span><button data-d="1" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(56,65,104,.2);background:none;cursor:pointer;color:inherit">+</button></div></div><button data-rm style="background:none;border:none;cursor:pointer;padding:4px;opacity:.4;color:inherit">\u2715</button>';
+var im=d.querySelector("img");im.src=it.img;im.alt=it.name;var p=d.querySelectorAll("p");p[0].textContent=it.name;p[1].textContent=it.meta;p[2].textContent="\u20B1"+it.price.toLocaleString("en-PH");d.querySelector("span").textContent=it.qty;
+d.querySelectorAll("[data-d]").forEach(function(x){x.onclick=function(){it.qty+=+x.dataset.d;if(it.qty<=0)items.splice(idx,1);save();ui()}});d.querySelector("[data-rm]").onclick=function(){items.splice(idx,1);save();ui()};b.appendChild(d)})}
+window.addToCart=function(n,m,p,img){var e=items.filter(function(i){return i.name===n})[0];if(e)e.qty++;else items.push({name:n,meta:m,price:p,img:img,qty:1});save();ui();openCart()};
+ui();
+})();
+
+document.querySelectorAll('.add-to-bag').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    window.addToCart(btn.dataset.name,btn.dataset.meta,Number(btn.dataset.price),btn.dataset.img);
+  });
+});
+
+// Reuse the hero ribbon at the bottom (single source of truth for the SVG)
+(function(){
+  var src = document.querySelector('.hero .ribbon');
+  var wrap = document.getElementById('bottomWhirl');
+  if(!src || !wrap) return;
+  var c = src.cloneNode(true);
+  c.classList.remove('ribbon');
+  c.classList.add('ribbon-bottom');
+  c.removeAttribute('style');
+  c.querySelectorAll('[id]').forEach(function(el){ el.id = el.id + '-b'; });
+  c.querySelectorAll('textPath').forEach(function(tp){
+    var h = tp.getAttribute('href') || tp.getAttribute('xlink:href');
+    if(h) tp.setAttribute('href', h + '-b');
+  });
+  wrap.appendChild(c);
+})();
+
+// Whirl text: news-ticker marquee (moves left to right, seamless loop).
+// The ribbon crosses itself: the first strand's text goes "behind" the
+// second strand, so the two texts never collide at the crossing.
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var SPEED = 45;  // px per second. Higher = faster
+  var BAND  = 92;  // ribbon thickness: back text is hidden where the front strand covers it
+  var UNIT  = 'STAY A LITTLE LONGER \u2013 BLOOM' + '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
+  var NS    = 'http://www.w3.org/2000/svg';
+  // centerline of the front strand at the crossing
+  var FRONT = 'M584 182 C581 199 579 216 580 232 C580 249 583 266 586 282 C590 298 594 315 601 330 C608 345 616 360 627 373';
+  // where the loop is split: before = back strand text, after = front strand text
+  var SPLIT = ' C692 45 673 48 659 55';
+
+  function mk(tag, attrs){
+    var e = document.createElementNS(NS, tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  function setup(svg){
+    var tp1   = svg.querySelector('textPath[href^="#rlB"]');
+    var pathA = svg.querySelector('path[id^="rlA"]');
+    var pathB = svg.querySelector('path[id^="rlB"]');
+    var tpA   = svg.querySelector('textPath[href^="#rlA"]');
+    if(!tp1 || !pathA || !pathB) return null;
+    var dB = pathB.getAttribute('d');
+    var cut = dB.indexOf(SPLIT);
+    if(cut < 0) return null;
+    var sfx = pathB.id.slice(3); // '' or '-b' (bottom clone)
+
+    // path 1 = start curve + first half of the loop (back strand)
+    var p1 = mk('path', {id:'rlC'+sfx, fill:'none',
+      d: pathA.getAttribute('d') + ' L640.2 265.7 ' + dB.slice(dB.indexOf('C'), cut)});
+    // path 2 = rest of the ribbon (front strand)
+    var p2 = mk('path', {id:'rlD'+sfx, fill:'none', d:'M708 47' + dB.slice(cut)});
+    svg.appendChild(p1); svg.appendChild(p2);
+    var len1 = p1.getTotalLength(), len2 = p2.getTotalLength();
+
+    // mask: hides the back text wherever the front strand passes over it
+    var mask = mk('mask', {id:'rlMask'+sfx, maskUnits:'userSpaceOnUse', x:'-500', y:'-500', width:'4200', height:'2000'});
+    mask.appendChild(mk('rect', {x:'-500', y:'-500', width:'4200', height:'2000', fill:'#fff'}));
+    mask.appendChild(mk('path', {d:FRONT, fill:'none', stroke:'#000', 'stroke-width':BAND}));
+    svg.appendChild(mask);
+
+    // measure one repeating unit (incl. letter-spacing)
+    var probe = mk('text', {'class':'rt'});
+    probe.style.whiteSpace = 'pre';
+    svg.appendChild(probe);
+    probe.textContent = UNIT;        var one = probe.getComputedTextLength();
+    probe.textContent = UNIT + UNIT; var two = probe.getComputedTextLength();
+    svg.removeChild(probe);
+    var period = two - one;
+    if(!(period > 0)) return null;
+
+    var n = Math.ceil((len1 + len2) / period) + 3;
+    var str = new Array(n + 1).join(UNIT);
+
+    // back text (existing element, now on path 1 + masked)
+    var t1 = tp1.parentNode;
+    tp1.setAttribute('href', '#' + p1.id);
+    tp1.textContent = str;
+    t1.setAttribute('mask', 'url(#' + mask.id + ')');
+    // front text (new element on path 2, drawn on top)
+    var t2 = t1.cloneNode(true);
+    t2.removeAttribute('mask');
+    var tp2 = t2.querySelector('textPath');
+    tp2.setAttribute('href', '#' + p2.id);
+    t1.parentNode.appendChild(t2);
+
+    if(tpA) tpA.parentNode.style.display = 'none'; // hide old static text
+    return {tp1:tp1, tp2:tp2, len1:len1, period:period, visible:true, svg:svg};
+  }
+
+  function init(){
+    var items = [document.querySelector('.hero .ribbon'), document.querySelector('#bottomWhirl svg')]
+      .map(function(s){ return s && setup(s); })
+      .filter(Boolean);
+    if(!items.length) return;
+
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          items.forEach(function(it){ if(it.svg === e.target) it.visible = e.isIntersecting; });
+        });
+      });
+      items.forEach(function(it){ io.observe(it.svg); });
+    }
+
+    var last = performance.now(), pos = 0;
+    function tick(now){
+      pos += (now - last) / 1000 * SPEED;
+      last = now;
+      items.forEach(function(it){
+        if(!it.visible) return;
+        var off = (pos % it.period) - it.period;
+        it.tp1.setAttribute('startOffset', off);
+        it.tp2.setAttribute('startOffset', off - it.len1);
+      });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(init);
+})();
+
+</script>
+
+<!-- ===== RESPONSIVE PATCH (mobile / tablet / iPad) — desktop ≥1024px untouched ===== -->
+<style>
+/* hidden on desktop */
+.m-burger{display:none}
+.m-menu{display:none}
+
+/* ---------- TABLET + MOBILE (<1024px): hamburger nav ---------- */
+@media(max-width:1023px){
+  .nav{grid-template-columns:1fr auto}
+  .nav-links-center{display:none}
+  .m-burger{display:grid;width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.08);background:rgba(253,248,243,.7);place-items:center;cursor:pointer;color:var(--brown);padding:0}
+  .m-menu{position:fixed;inset:0;z-index:800;background:#fdf8f3;padding:0 1.5rem 2rem;flex-direction:column;overflow-y:auto;
+    display:flex;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+  .m-menu.open{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease,visibility 0s}
+  .m-menu-head{display:flex;align-items:center;justify-content:space-between;height:68px;flex-shrink:0;border-bottom:1px solid rgba(56,65,104,.12);margin-top:1rem}
+  .m-menu-head .logo{width:60px}
+  .m-menu-head .m-link{border-bottom:none!important;padding:0!important}
+  .m-close{width:36px;height:36px;border-radius:50%;border:1px solid rgba(56,65,104,.15);background:none;display:grid;place-items:center;cursor:pointer;color:var(--brown);padding:0}
+  .m-menu a.m-link{display:block;padding:1rem 0;font-family:Urbanist,Arial,sans-serif;font-size:1.75rem;font-weight:500;color:var(--brown);border-bottom:1px solid rgba(56,65,104,.12)}
+  .m-menu .m-sub{display:flex;flex-wrap:wrap;gap:.5rem;padding:.9rem 0 .4rem}
+  .m-menu .m-sub a{font-size:.8125rem;padding:.4rem .9rem;border:1px solid rgba(56,65,104,.3);border-radius:9999px;color:var(--brown)}
+  .m-menu .m-cta{margin-top:1.75rem;align-self:flex-start}
+
+  .slide-content{transform:none}   /* desktop lifts the text by the topbar height; on mobile/tablet that pushed it above center */
+  .hero-arrow.prev{left:.75rem}.hero-arrow.next{right:.75rem}
+  .ns{padding:4.5rem 1.25rem}
+  .products-section{padding-bottom:5rem}
+  .reviews{padding-bottom:4.5rem}
+}
+
+/* ---------- TABLET (640–1023px) ---------- */
+@media(min-width:640px) and (max-width:1023px){
+  .slide h1{font-size:clamp(3rem,7vw,4.25rem)}
+  .nav{padding:0 2rem}
+
+  /* Reviews: 3 cramped columns -> 2 columns, third card centered below */
+  .reviews{padding-left:2rem;padding-right:2rem}
+  .rv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem}
+  .rv-card{padding:1.6rem}
+  .rv-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - .625rem)}
+  .rv-text{margin-top:1.25rem}
+  .story-photo{max-width:22rem}
+  .ct-in{grid-template-columns:1fr 1fr;gap:3rem}
+  .contact{padding:5rem 2rem 0}
+  .nl-card{grid-template-columns:1fr 1fr;padding:3rem 2.5rem;gap:2rem}
+  .ct-list li{flex-wrap:wrap}
+}
+
+/* ---------- MOBILE (<640px) ---------- */
+@media(max-width:639px){
+  .hero-arrow{display:none}                      /* swipe + dots still work */
+  .hero-dots{bottom:1.25rem}
+  .slide-content{padding:0 1.25rem}
+  .slide h1{font-size:clamp(2.25rem,11vw,3rem);max-width:100%}
+  .slide .sub{font-size:.9rem;line-height:1.6}
+  .badge{padding:.4rem .85rem;max-width:100%}
+  .badge p{font-size:.6875rem;letter-spacing:.06em;line-height:1.4}
+  .hero-btns{flex-direction:column;width:100%;max-width:18rem;gap:.7rem}
+  .hero-btns .btn-primary,.hero-btns .btn-ghost{width:100%;justify-content:center}
+
+  /* ribbon text was ~4px on phones: scale it up */
+  .rt{font-size:38px;letter-spacing:.14em}
+
+  .products-header h2{font-size:2.1rem}
+  .cat-tabs{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;gap:.5rem;margin-left:-1rem;margin-right:-1rem;padding:0 1rem .25rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .cat-tabs::-webkit-scrollbar{display:none}
+  .cat-tab{flex-shrink:0;white-space:nowrap}
+  .prod-grid{gap:.875rem}
+  .prod-info{padding:.75rem .75rem .85rem}
+  .prod-bottom{flex-wrap:wrap}
+  .add-to-bag{padding:.4rem .75rem}
+  .rv-head{margin-bottom:2.5rem}
+  .rv-card{padding:1.4rem}
+  .circle-wrap{padding:2.25rem 1.25rem;border-radius:20px}
+  .circle-wrap .ns-btn,.wtb-card .ns-btn{width:100%;justify-content:center}
+  .wtb-card .ns-btn{align-self:stretch}
+
+  .nl-card{padding:2.25rem 1.25rem;border-radius:20px}
+  .nl-form input,.nl-form button{flex:1 1 100%;width:100%}
+  .contact{padding-top:3.5rem}
+  .ct-info h2{font-size:2rem}
+  .ct-list li{flex-direction:column;gap:.15rem}
+  .ct-list a{word-break:break-word}
+  .ct-form button{justify-self:stretch}
+  .ct-bottom{flex-direction:column;margin-top:2.5rem}
+  .cart-drawer{width:100vw}
+}
+
+/* ---------- SMALL PHONES (≤360px) ---------- */
+@media(max-width:360px){
+  .prod-grid{grid-template-columns:1fr}
+  .topbar{font-size:11.5px}
+}
+
+/* ---------- LANDSCAPE PHONES (short screens) ---------- */
+@media(max-height:500px) and (orientation:landscape) and (max-width:1023px){
+  .hero{min-height:460px}
+  .slide h1{font-size:2rem;margin-top:.5rem}
+  .slide .sub{margin-top:.4rem;font-size:.8125rem}
+  .hero-btns{flex-direction:row;max-width:none;margin-top:1rem}
+  .hero-btns .btn-primary,.hero-btns .btn-ghost{width:auto}
+  .badge{display:none}
+}
+
+/* ---------- TOUCH DEVICES: remove the default blue/gray tap flash ---------- */
+a,button,input,textarea,.prod-card,.wtb-card,.cat-tab,.hero-dot,.hero-arrow,.nav-icon-btn,.m-burger,.m-close{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
+.hero,.slide,.slide-content{-webkit-touch-callout:none}
+.hero-btns button,.hero-arrow,.hero-dot,.cat-tab,.add-to-bag,.m-burger,.m-close{-webkit-user-select:none;user-select:none}
+
+/* ---------- TOUCH DEVICES: disable card lift on hover (stuck-hover fix) ---------- */
+@media(hover:none){
+  .prod-card:hover{transform:none}
+  .prod-card:hover .prod-img-wrap img{transform:none}
+  .prod-notes{transform:translateY(0)}
+}</style>
+
+<script>
+// Mobile / tablet menu (builds itself from the existing nav; does nothing on desktop)
+(function(){
+  var icons=document.querySelector('.nav-icons-right');
+  if(!icons) return;
+
+  var burger=document.createElement('button');
+  burger.className='m-burger';burger.type='button';
+  burger.setAttribute('aria-label','Open menu');burger.setAttribute('aria-expanded','false');
+  burger.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  icons.appendChild(burger);
+
+  var menu=document.createElement('div');
+  menu.className='m-menu';menu.id='mMenu';menu.setAttribute('aria-hidden','true');
+  menu.innerHTML=
+    '<div class="m-menu-head">'+
+    '<a class="m-link" href="index.html">Home</a>'+
+    '<button class="m-close" type="button" aria-label="Close menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>'+
+    '<a class="m-link" href="shop.html">Shop</a>'+
+    '<div class="m-sub"><a href="shop.html#mist" onclick="try{sessionStorage.setItem(\'aera-shop-filter\',\'mist\')}catch(e){}">Hair &amp; Body Mists</a><a href="shop.html#soap" onclick="try{sessionStorage.setItem(\'aera-shop-filter\',\'soap\')}catch(e){}">Soaps</a><a href="shop.html#serum" onclick="try{sessionStorage.setItem(\'aera-shop-filter\',\'serum\')}catch(e){}">Body Serum</a></div>'+
+    '<a class="m-link" href="about.html">About Us</a>'+
+    '<a class="m-link" href="blog.html">Blog</a>'+
+    '<a class="m-link" href="track-order.html">Track my order</a>'+
+    '<a class="m-link" href="circle.html">AERA Circle</a>'+
+    '<a class="m-link" href="track-order.html">Track Order</a>'+
+    '<a class="m-link" href="reseller.html">Reseller Login</a>'+
+    '<a class="dropdown-cta m-cta" href="shop.html" style="display:inline-flex;align-items:center;height:44px;padding:0 1.5rem;background:var(--brown);color:#fff;border-radius:9999px;font-size:.875rem;font-weight:500">Shop All</a>';
+  document.body.appendChild(menu);
+
+  function setOpen(o){
+    menu.classList.toggle('open',o);
+    menu.setAttribute('aria-hidden',o?'false':'true');
+    burger.setAttribute('aria-expanded',o?'true':'false');
+    document.body.style.overflow=o?'hidden':'';
+  }
+  burger.addEventListener('click',function(){setOpen(true);});
+  menu.querySelector('.m-close').addEventListener('click',function(){setOpen(false);});
+  menu.addEventListener('click',function(e){if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false);});
+  window.addEventListener('resize',function(){if(window.innerWidth>=1024)setOpen(false);});
+})();
+</script>
+
+
+<!-- ===== HOMEPAGE ADDITIONS (categories, FAQ, search, policies, cart totals) ===== -->
+<style>
+#faq,#collection{scroll-margin-top:90px}
+#collection{margin-top:5rem}
+.doodle{position:absolute;width:88px;height:88px;pointer-events:none;color:var(--brown);opacity:.28;z-index:0}
+.dd-tl{top:0;left:2%}.dd-tr{top:0;right:2%}.dd-br{bottom:1.5rem;right:1.5rem}.dd-rot{transform:rotate(-14deg)}
+.ns .ns-in,.circle-wrap>*:not(.doodle){position:relative;z-index:1}
+@media(max-width:639px){.doodle{width:56px;height:56px}}
+
+/* ===== SHOP BY CATEGORY (image on top, text below) ===== */
+.cat-feature{position:relative}
+.cat-feature .products-header{position:relative;z-index:1}
+.cat-cards{display:flex;gap:1.25rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 0 .75rem;-webkit-overflow-scrolling:touch}
+.cat-cards::-webkit-scrollbar{display:none}
+.cat-card{min-width:82%;scroll-snap-align:start}
+.cat-card{display:flex;flex-direction:column;overflow:hidden;border-radius:.75rem;background:#fcfbfa;border:1px solid rgba(56,65,104,.15);transition:transform .3s,border-color .3s}
+.cat-card:hover{transform:translateY(-4px);border-color:rgba(56,65,104,.35)}
+.cat-card-img{aspect-ratio:5/4;overflow:hidden;background:rgba(56,65,104,.06)}
+.cat-card-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.cat-card:hover .cat-card-img img{transform:scale(1.05)}
+.cat-card-label{display:flex;flex-direction:column;gap:.4rem;padding:1.25rem 1.5rem 1.5rem;text-align:left}
+.cat-card-label small{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(56,65,104,.6)}
+.cat-card-label b{font-family:Urbanist,Arial,sans-serif;font-weight:500;font-size:1.5rem;line-height:1.2;color:var(--ink)}
+@media(min-width:640px){
+  .cat-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;overflow:visible;padding:0}
+  .cat-card{min-width:0}
+}
+.prod-card.flash{border-color:var(--brown);box-shadow:0 0 0 3px rgba(56,65,104,.25)}
+
+/* FAQ */
+.faq-grid{display:grid;gap:2.5rem}
+.faq-list details{border-bottom:1px solid rgba(56,65,104,.18);padding:1.1rem 0}
+.faq-list details:first-child{border-top:1px solid rgba(56,65,104,.18)}
+.faq-list summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;font-family:Urbanist,Arial,sans-serif;font-size:1.125rem;font-weight:500;color:var(--ink)}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{content:"+";font-size:1.5rem;line-height:1;flex-shrink:0;transition:transform .2s}
+.faq-list details[open] summary::after{transform:rotate(45deg)}
+.faq-list details p{margin:.75rem 0 0;font-size:1rem;line-height:1.7}
+@media(min-width:900px){.faq-grid{grid-template-columns:.8fr 1.2fr;gap:5rem}}
+
+/* Footer: where to buy */
+.ct-wtb{max-width:80rem;margin:3.5rem auto 0;padding-top:2rem;border-top:1px solid rgba(240,237,232,.18)}
+.ct-wtb h3{margin:0 0 .9rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:rgba(240,237,232,.6)}
+.ct-wtb-links{display:flex;flex-wrap:wrap;gap:.5rem}
+.ct-wtb-links a{padding:.5rem 1.1rem;border:1px solid rgba(240,237,232,.35);border-radius:9999px;font-size:.8125rem;transition:background .2s,color .2s}
+.ct-wtb-links a:hover{background:var(--cream);color:var(--brown)}
+.ct-wtb+.ct-bottom{margin-top:2.5rem}
+
+/* Cart totals */
+.cart-line{display:flex;justify-content:space-between;align-items:baseline;font-size:.9375rem;margin-bottom:.5rem}
+.cart-line strong{font-size:1.0625rem}
+.cart-ship{color:rgba(56,65,104,.65);font-size:.875rem}
+.cart-note{margin:0 0 1rem;font-size:.8125rem;color:rgba(56,65,104,.55);line-height:1.5}
+
+/* Overlays: search + policies */
+.srch-overlay,.pol-overlay{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.45);display:flex;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s linear .25s;padding:1rem}
+.srch-overlay.open,.pol-overlay.open{opacity:1;visibility:visible;transition:opacity .25s}
+.srch-overlay{align-items:flex-start;padding-top:10vh}
+.pol-overlay{align-items:center}
+.srch-box{width:min(640px,100%);background:#fdf8f3;border-radius:20px;padding:1rem;box-shadow:0 12px 48px rgba(42,49,82,.25);max-height:80vh;display:flex;flex-direction:column}
+.srch-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .6rem;border-bottom:1px solid rgba(56,65,104,.12);color:var(--brown)}
+.srch-row input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;font-size:1rem;color:var(--ink);padding:.6rem 0}
+.srch-x,.pol-x{border:0;background:none;cursor:pointer;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--brown);font-size:1.4rem;line-height:1;padding:0}
+.srch-x:hover,.pol-x:hover{background:rgba(56,65,104,.08)}
+.srch-list{list-style:none;margin:.5rem 0 0;padding:0;overflow-y:auto}
+.srch-list button{width:100%;display:flex;align-items:center;gap:.85rem;padding:.6rem;border:0;background:none;border-radius:12px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.srch-list button:hover{background:rgba(56,65,104,.07)}
+.srch-list img{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.srch-list span{flex:1;min-width:0;display:flex;flex-direction:column}
+.srch-list b{font-weight:500;font-size:.9375rem}
+.srch-list small{font-size:.75rem;color:rgba(56,65,104,.6)}
+.srch-list em{font-style:normal;font-size:.875rem;color:rgba(56,65,104,.7)}
+.srch-empty{padding:1.25rem .6rem;color:rgba(56,65,104,.6);font-size:.9375rem}
+.pol-box{position:relative;width:min(560px,100%);max-height:80vh;overflow-y:auto;background:#fff;border-radius:20px;padding:2rem 1.75rem;color:var(--ink)}
+.pol-box h3{margin:0 0 1rem;font-family:Urbanist,Arial,sans-serif;font-size:1.5rem;font-weight:500}
+.pol-box p{margin:0 0 .9rem;font-size:.9375rem;line-height:1.7;color:rgba(56,65,104,.8)}
+.pol-x{position:absolute;top:.75rem;right:.75rem}
+
+/* Gap between category cards and "Meet the collection" (mobile) */
+@media(max-width:639px){#collection{margin-top:3.5rem}}
+</style>
+
+<div class="srch-overlay" id="srchOverlay" aria-hidden="true">
+  <div class="srch-box" role="dialog" aria-modal="true" aria-label="Search products">
+    <div class="srch-row">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <input id="srchInput" type="search" placeholder="Search products" autocomplete="off" aria-label="Search products">
+      <button class="srch-x" id="srchClose" type="button" aria-label="Close search">&times;</button>
+    </div>
+    <ul class="srch-list" id="srchList"></ul>
+  </div>
+</div>
+
+<div class="pol-overlay" id="polOverlay" aria-hidden="true">
+  <div class="pol-box" role="dialog" aria-modal="true" aria-labelledby="polTitle">
+    <button class="pol-x" id="polClose" type="button" aria-label="Close">&times;</button>
+    <h3 id="polTitle"></h3>
+    <div id="polBody"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* category cards -> filter + scroll to the collection */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('[data-go-cat]'); if(!a) return;
+    e.preventDefault();
+    var t=document.querySelector('.cat-tab[data-cat="'+a.dataset.goCat+'"]'); if(t) t.click();
+    var el=document.getElementById('collection'); if(el) el.scrollIntoView({behavior:'smooth'});
+  });
+
+  /* policy modals (UI only) */
+  var POL={
+    privacy:{t:'Privacy Policy',b:['We collect only the information you give us, such as your name, contact details and delivery address, to process orders and answer your messages.','We do not sell your personal information. We share it only with the partners needed to deliver your order and process payment.','You can ask us to update or delete your information anytime by emailing contactaeraofficial@gmail.com.']},
+    ordering:{t:'Ordering Policy',b:['Orders are confirmed once payment is received. You will get an order confirmation and delivery updates using the contact details you provide.','Shipping fees are calculated at checkout based on your delivery address. Please make sure your address and phone number are correct.','For concerns about a received order, contact us within 7 days of delivery with your order details and photos.']}
+  };
+  var po=document.getElementById('polOverlay'),pt=document.getElementById('polTitle'),pb=document.getElementById('polBody');
+  function openPol(k){var d=POL[k]; if(!d) return; pt.textContent=d.t; pb.innerHTML=''; d.b.forEach(function(x){var p=document.createElement('p');p.textContent=x;pb.appendChild(p);}); po.classList.add('open'); po.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';}
+  function closePol(){po.classList.remove('open'); po.setAttribute('aria-hidden','true'); document.body.style.overflow='';}
+  document.querySelectorAll('[data-policy]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();openPol(a.dataset.policy);});});
+  document.getElementById('polClose').addEventListener('click',closePol);
+  po.addEventListener('click',function(e){if(e.target===po)closePol();});
+
+  /* search (UI only: filters the product names on the page) */
+  var so=document.getElementById('srchOverlay'),si=document.getElementById('srchInput'),sl=document.getElementById('srchList');
+  var cards=[].slice.call(document.querySelectorAll('#prodGrid .prod-card'));
+  function render(q){
+    q=q.trim().toLowerCase(); sl.innerHTML=''; var n=0;
+    cards.forEach(function(c){
+      var name=c.querySelector('h3').textContent,tag=c.querySelector('.prod-cat-tag').textContent,price=c.querySelector('.prod-price').textContent;
+      if(q && (name+' '+tag).toLowerCase().indexOf(q)<0) return;
+      n++;
+      var li=document.createElement('li'),b=document.createElement('button'); b.type='button';
+      var im=document.createElement('img'); im.src=c.querySelector('img').src; im.alt='';
+      var sp=document.createElement('span'),b1=document.createElement('b'),s1=document.createElement('small');
+      b1.textContent=name; s1.textContent=tag; sp.appendChild(b1); sp.appendChild(s1);
+      var em=document.createElement('em'); em.textContent=price;
+      b.appendChild(im); b.appendChild(sp); b.appendChild(em);
+      b.addEventListener('click',function(){
+        closeSearch();
+        var all=document.querySelector('.cat-tab[data-cat="all"]'); if(all) all.click();
+        setTimeout(function(){c.scrollIntoView({behavior:'smooth',block:'center'}); c.classList.add('flash'); setTimeout(function(){c.classList.remove('flash');},1800);},60);
+      });
+      li.appendChild(b); sl.appendChild(li);
+    });
+    if(!n){var d=document.createElement('li'); d.className='srch-empty'; d.textContent='No products found.'; sl.appendChild(d);}
+  }
+  function openSearch(){render(''); si.value=''; so.classList.add('open'); so.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(function(){si.focus();},50);}
+  function closeSearch(){so.classList.remove('open'); so.setAttribute('aria-hidden','true'); document.body.style.overflow='';}
+  var sb=document.querySelector('.nav-icon-btn[aria-label="Search"]'); if(sb) sb.addEventListener('click',openSearch);
+  si.addEventListener('input',function(){render(si.value);});
+  document.getElementById('srchClose').addEventListener('click',closeSearch);
+  so.addEventListener('click',function(e){if(e.target===so)closeSearch();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeSearch();closePol();}});
+})();
+</script>
+
+<!-- ============================================================
+     AERA CHAT WIDGET
+     ============================================================ -->
+<style>
+:root{--kmc-bg:#ffffff;--kmc-bg2:#f9f9fb;--kmc-text:#111111;--kmc-text3:#888899;--kmc-border:#e8e8ef;--kmc-card:#ffffff;}
+[data-theme="dark"]{--kmc-bg:#0f0f0f;--kmc-bg2:#1a1a1a;--kmc-text:#f0f0f0;--kmc-text3:#666677;--kmc-border:#2a2a2a;--kmc-card:#161616;}
+.kmc-toggle-wrapper,.kmc-panel,.kmc-toggle-wrapper *,.kmc-panel *{box-sizing:border-box;font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,sans-serif;}
+.kmc-toggle-wrapper{position:fixed;bottom:28px;right:28px;z-index:9998;display:flex;align-items:center;gap:12px;}
+.kmc-toggle-label{background:var(--kmc-card);color:var(--kmc-text);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:500;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid var(--kmc-border);white-space:nowrap;opacity:0;transform:translateX(8px);pointer-events:none;transition:opacity .25s ease,transform .25s ease;}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn:hover) .kmc-toggle-label{opacity:1;transform:translateX(0);}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn.open) .kmc-toggle-label{opacity:0;transform:translateX(8px);}
+.kmc-toggle-btn{width:52px;height:52px;border-radius:50%;background:#384168;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(56,65,104,.4);transition:transform .25s ease,box-shadow .25s ease;flex-shrink:0;position:relative;padding:0;-webkit-tap-highlight-color:transparent;}
+.kmc-toggle-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 20px rgba(56,65,104,.5);}
+.kmc-toggle-btn svg{width:20px;height:20px;transition:opacity .2s ease,transform .2s ease;}
+.kmc-toggle-btn .kmc-icon-close{position:absolute;opacity:0;transform:scale(.7) rotate(90deg);}
+.kmc-toggle-btn.open .kmc-icon-chat{opacity:0;transform:scale(.7) rotate(-90deg);}
+.kmc-toggle-btn.open .kmc-icon-close{opacity:1;transform:scale(1) rotate(0deg);}
+/* Idle flower animation */
+.kmc-icon-chat{animation:kmcFlowerIdle 4s ease-in-out infinite;}
+.kmc-toggle-btn.open .kmc-icon-chat{animation:none;}
+@keyframes kmcFlowerIdle{
+  0%  {transform:rotate(0deg)   scale(1);}
+  20% {transform:rotate(15deg)  scale(1.12);}
+  40% {transform:rotate(-10deg) scale(1.08);}
+  60% {transform:rotate(8deg)   scale(1.1);}
+  80% {transform:rotate(-5deg)  scale(1.05);}
+  100%{transform:rotate(0deg)   scale(1);}
+}
+/* Pulse ring around the button */
+.kmc-toggle-btn::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(56,65,104,.35);
+  animation:kmcRingPulse 3s ease-in-out infinite;
+  pointer-events:none;
+}
+.kmc-toggle-btn.open::before{animation:none;opacity:0;}
+@keyframes kmcRingPulse{
+  0%,100%{transform:scale(1);opacity:.5;}
+  50%{transform:scale(1.18);opacity:0;}
+}
+.kmc-panel{position:fixed;bottom:100px;right:28px;width:360px;max-width:calc(100vw - 40px);height:500px;max-height:calc(100vh - 140px);background:var(--kmc-card);color:var(--kmc-text);border-radius:20px;border:1px solid var(--kmc-border);box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9998;display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .25s cubic-bezier(.22,1,.36,1),transform .25s cubic-bezier(.22,1,.36,1);}
+.kmc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.kmc-header{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--kmc-border);background:var(--kmc-bg2);flex-shrink:0;}
+.kmc-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:#384168;display:flex;align-items:center;justify-content:center;border:2px solid var(--kmc-card);box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;}
+.kmc-avatar img{width:26px;height:auto;display:block;filter:brightness(0) invert(1);}
+.kmc-header-info{flex:1;min-width:0;}
+.kmc-header-name{font-size:14px;font-weight:600;color:var(--kmc-text);}
+.kmc-header-sub{font-size:12px;color:var(--kmc-text3);margin-top:1px;display:flex;align-items:center;gap:6px;}
+.kmc-body{flex:1;overflow-y:auto;padding:24px 16px 18px;display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;}
+.kmc-body::-webkit-scrollbar{width:5px;}
+.kmc-body::-webkit-scrollbar-thumb{background:var(--kmc-border);border-radius:10px;}
+.kmc-row{display:flex;animation:kmcMsgIn .28s cubic-bezier(.22,1,.36,1);margin-bottom:6px;}
+.kmc-row.bot{justify-content:flex-start;}
+.kmc-row.user{justify-content:flex-end;}
+@keyframes kmcMsgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.kmc-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;}
+.kmc-row.bot .kmc-bubble{background:var(--kmc-bg2);color:var(--kmc-text);border-bottom-left-radius:4px;}
+.kmc-row.user .kmc-bubble{background:#384168;color:#fff;border-bottom-right-radius:4px;}
+.kmc-typing{display:inline-flex;align-items:center;gap:4px;background:var(--kmc-bg2);padding:12px 14px;border-radius:14px;border-bottom-left-radius:4px;}
+.kmc-typing span{width:6px;height:6px;border-radius:50%;background:var(--kmc-text3);animation:kmcBounce 1.2s infinite ease-in-out;}
+.kmc-typing span:nth-child(2){animation-delay:.15s;}
+.kmc-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes kmcBounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-4px);opacity:1;}}
+.kmc-options{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+.kmc-option-btn{text-align:left;padding:10px 14px;background:var(--kmc-card);border:1.5px solid var(--kmc-border);border-radius:12px;font-size:13px;color:var(--kmc-text);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;opacity:0;animation:kmcMsgIn .3s cubic-bezier(.22,1,.36,1) forwards;-webkit-tap-highlight-color:transparent;}
+.kmc-option-btn:nth-child(1){animation-delay:.02s;}
+.kmc-option-btn:nth-child(2){animation-delay:.08s;}
+.kmc-option-btn:nth-child(3){animation-delay:.14s;}
+.kmc-option-btn:nth-child(4){animation-delay:.20s;}
+.kmc-option-btn:hover{border-color:#384168;background:var(--kmc-bg2);transform:translateX(2px);}
+.kmc-footer{padding:12px 16px 16px;border-top:1px solid var(--kmc-border);flex-shrink:0;background:var(--kmc-card);}
+.kmc-footer-note{font-size:11px;color:var(--kmc-text3);text-align:center;margin:0 0 10px;line-height:1.5;}
+.kmc-footer-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 16px;background:#384168;color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;}
+.kmc-footer-cta:hover{opacity:.85;transform:translateY(-1px);}
+@media(max-width:768px){.kmc-toggle-wrapper{bottom:20px;right:20px;}.kmc-toggle-label{display:none;}}
+@media(max-width:480px){.kmc-panel{right:16px;left:16px;width:auto;bottom:92px;height:60vh;}.kmc-toggle-wrapper{right:16px;bottom:20px;}}
+</style>
+
+<div class="kmc-toggle-wrapper">
+  <div class="kmc-toggle-label">Have a question?</div>
+  <button class="kmc-toggle-btn" id="kmcToggleBtn" aria-label="Open chat">
+    <svg class="kmc-icon-chat" width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="50" cy="27" rx="10" ry="19"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(72 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(144 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(216 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="6"/></svg>
+    <svg class="kmc-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div class="kmc-panel" id="kmcPanel">
+  <div class="kmc-header">
+    <div class="kmc-avatar"><img src="images/aera-logo-black.png" alt="AERA"></div>
+    <div class="kmc-header-info">
+      <div class="kmc-header-name">AERA</div>
+      <div class="kmc-header-sub">Replies instantly</div>
+    </div>
+  </div>
+  <div class="kmc-body" id="kmcBody"></div>
+  <div class="kmc-footer">
+    <p class="kmc-footer-note">Have more questions? Message us directly.</p>
+    <button class="kmc-footer-cta" id="kmcContactBtn">
+      Message us directly
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+var CONTACT_TARGET='#contact';
+
+var chatFlow={
+  start:{
+    bot:["Hi! Welcome to AERA. 👋","We make hair & body mists, soaps and a body serum for everyday moments worth lingering in. What would you like to know?"],
+    options:[
+      {label:"What products do you sell?",next:"products"},
+      {label:"How do I place an order?",next:"ordering"},
+      {label:"Shipping & delivery",next:"shipping"},
+      {label:"AERA Circle reseller program",next:"circle"}
+    ]
+  },
+  products:{
+    bot:["We have three product lines:","• Hair & Body Mists — 5 scents, 110mL (₱450–₱450)\n• Soaps — 2 variants, 90g (₱139–₱169)\n• Second Skin Body Serum — 100mL (₱599)","Our mists: No Fixed Plans, White Shirt, First Flowers, Open Windows, and After Hours."],
+    options:[
+      {label:"How do I place an order?",next:"ordering"},
+      {label:"What payment methods do you accept?",next:"payment"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  },
+  ordering:{
+    bot:["Ordering is easy — no account needed!","1. Add items to your bag\n2. Go to checkout\n3. Enter your contact & delivery details\n4. Pay via GCash, BPI or Maribank\n5. Upload your receipt\n6. Tap Place Order to confirm","Your order isn't reserved until you complete Step 6."],
+    options:[
+      {label:"What payment methods do you accept?",next:"payment"},
+      {label:"Shipping & delivery",next:"shipping"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  },
+  payment:{
+    bot:["We accept:","• GCash\n• BPI\n• Maribank","After paying, upload a clear screenshot of your receipt showing the amount, date and reference number. Then tap Place Order."],
+    options:[
+      {label:"Can I cancel or return my order?",next:"returns"},
+      {label:"Shipping & delivery",next:"shipping"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  },
+  shipping:{
+    bot:["Shipping fees by area:","• Metro Manila — ₱80\n• Luzon (outside MM) — ₱120\n• Visayas — ₱150\n• Mindanao — ₱150","Orders are packed within 3–5 business days. Make sure your address and phone number are correct before placing your order."],
+    options:[
+      {label:"How do I place an order?",next:"ordering"},
+      {label:"Can I cancel or return my order?",next:"returns"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  },
+  returns:{
+    bot:["Once your order is placed, it cannot be cancelled or refunded.","For damaged or wrong items, contact us within 7 days of delivery with your order number and photos or an unboxing video.","Email us at contactaeraofficial@gmail.com and we'll help you right away."],
+    options:[
+      {label:"How do I place an order?",next:"ordering"},
+      {label:"AERA Circle reseller program",next:"circle"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  },
+  circle:{
+    bot:["AERA Circle is our reseller program with three tiers:","• 1st Tier — 15% off, min. net PO ₱6,000\n• 2nd Tier — 20% off, min. net PO ₱15,000\n• 3rd Tier — 30% off, min. net PO ₱25,000","For orders over ₱50,000, email us at contactaeraofficial@gmail.com.","Apply by emailing contactaeraofficial@gmail.com with subject \"AERA Circle Application\"."],
+    options:[
+      {label:"What products do you sell?",next:"products"},
+      {label:"How do I place an order?",next:"ordering"},
+      {label:"Back to main menu",next:"start"}
+    ]
+  }
+};
+
+var toggleBtn=document.getElementById('kmcToggleBtn');
+var panel=document.getElementById('kmcPanel');
+var body=document.getElementById('kmcBody');
+var contactBtn=document.getElementById('kmcContactBtn');
+var pendingTimeouts=[];
+var started=false;
+var isOpen=false;
+
+function scrollBottom(){body.scrollTop=body.scrollHeight;}
+
+function addBot(text){
+  var row=document.createElement('div');row.className='kmc-row bot';
+  var b=document.createElement('div');b.className='kmc-bubble';
+  b.textContent=text;b.style.whiteSpace='pre-line';
+  row.appendChild(b);body.appendChild(row);scrollBottom();
+}
+
+function addUser(text){
+  var row=document.createElement('div');row.className='kmc-row user';
+  var b=document.createElement('div');b.className='kmc-bubble';
+  b.textContent=text;row.appendChild(b);body.appendChild(row);scrollBottom();
+}
+
+function showTyping(){
+  var row=document.createElement('div');row.className='kmc-row bot';row.id='kmcTypingRow';
+  row.innerHTML='<div class="kmc-typing"><span></span><span></span><span></span></div>';
+  body.appendChild(row);scrollBottom();
+}
+
+function removeTyping(){var r=document.getElementById('kmcTypingRow');if(r)r.remove();}
+function removeOptions(){var o=body.querySelector('.kmc-options');if(o)o.remove();}
+
+function renderOptions(options){
+  removeOptions();
+  var wrap=document.createElement('div');wrap.className='kmc-options';
+  options.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='kmc-option-btn';btn.type='button';btn.textContent=opt.label;
+    btn.addEventListener('click',function(){addUser(opt.label);removeOptions();goToNode(opt.next,false);});
+    wrap.appendChild(btn);
+  });
+  body.appendChild(wrap);scrollBottom();
+}
+
+function goToNode(nodeId,isInitial){
+  var node=chatFlow[nodeId];if(!node)return;
+  pendingTimeouts.forEach(clearTimeout);pendingTimeouts=[];
+  removeTyping();
+  if(!isInitial)removeOptions();
+  showTyping();
+  var delay=500;
+  node.bot.forEach(function(line,i){
+    var t=setTimeout(function(){
+      removeTyping();addBot(line);
+      if(i<node.bot.length-1)showTyping();
+      if(i===node.bot.length-1){
+        pendingTimeouts.push(setTimeout(function(){renderOptions(node.options);},250));
+      }
+    },delay);
+    pendingTimeouts.push(t);delay+=550;
+  });
+}
+
+function openChat(){
+  isOpen=true;panel.classList.add('open');toggleBtn.classList.add('open');
+  toggleBtn.setAttribute('aria-label','Close chat');
+  if(!started){started=true;goToNode('start',true);}
+}
+
+function closeChat(){
+  isOpen=false;panel.classList.remove('open');toggleBtn.classList.remove('open');
+  toggleBtn.setAttribute('aria-label','Open chat');
+}
+
+toggleBtn.addEventListener('click',function(){isOpen?closeChat():openChat();});
+(function(){var cd=document.getElementById('cartDrawer');if(cd){var mo=new MutationObserver(function(){var wrapper=document.querySelector('.kmc-toggle-wrapper');if(wrapper){wrapper.style.display=cd.classList.contains('open')?'none':'';}});mo.observe(cd,{attributes:true,attributeFilter:['class']});}})();
+contactBtn.addEventListener('click',function(){
+  closeChat();
+  var el=document.querySelector(CONTACT_TARGET);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeChat();});
+})();
+</script>
+
+</body>
+</html>

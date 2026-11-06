@@ -1,0 +1,49 @@
+{
+  "id": "FEAT-005",
+  "type": "feat",
+  "description": "Modify admin.html to add the Blogs tab, panel, full-screen editor overlay, and all blog management JavaScript. This is the most complex FEAT. It modifies a single large existing file. Must follow the exact existing patterns: ES5 JS style, supaFetch() helper, toast() function, tab-panel toggle, upload-then-save pattern. Depends on FEAT-001 (Supabase tables must exist for live testing). Independent of FEAT-002–004 (admin does not need the public pages to exist).",
+  "status": "pending",
+  "steps": [
+    "MODIFICATION 1 — Admin tabs: In admin.html, find the <nav class=\"admin-tabs\"> block. Add <button class=\"admin-tab\" data-tab=\"blogs\">Blogs</button> after the Products tab button.",
+
+    "MODIFICATION 2 — Blogs panel HTML: After the comment '<!-- end content panel -->' and before '</main>', insert the full panel-blogs HTML block. The block contains: stat cards (bsTot, bsPub, bsDraft, bsSched), toolbar with #blogSearch input and #createBlogBtn button, table with colgroup (56px thumb, auto title, 110px category, 100px author, 90px date, 90px status, 180px actions) and tbody#blogTbody.",
+
+    "MODIFICATION 3 — Blog editor overlay HTML: After '</main>' and before the product modal (<!-- PRODUCT MODAL -->), insert the full-screen #blogEditorOverlay div (display:none). Structure: .blog-editor-wrap > .blog-editor-header (h2#blogEditorTitle + buttons: #blogPreviewBtn ghost, #blogEditorCancel ghost, #blogSaveDraft, #blogPublishNow with background var(--ok)) + .blog-editor-body (two columns at ≥900px: .blog-editor-fields on left, .blog-editor-quill on right). Fields column contains: #beTitle input, #beSlug input, #beExcerpt textarea (maxlength 200) with #excerptCount span, #beCategory select + #beNewCatBtn button, #beAuthor input, #beFeatImgFile file input + #beFeatImgPreview img + #beFeatImgRemove button, #beStatus select (draft/published/scheduled), #beScheduledWrap div (hidden) with #beScheduledAt datetime-local input, #beFeatured checkbox, #beErr error paragraph. Quill column contains a label and #beQuill div.",
+
+    "MODIFICATION 4 — CSS additions: In the admin.html <style> block, after all existing CSS, add: .badge.published (ok-bg/ok colors), .badge.draft (muted), .badge.scheduled (ship-bg/ship colors). Then add .blog-editor-overlay (position:fixed;inset:0;z-index:300;background:#f5f3ef;overflow-y:auto), .blog-editor-wrap, .blog-editor-header (sticky, white bg, border-bottom, flex space-between), .blog-editor-body (grid, 1.5rem padding, align-items:start, @media ≥900px grid-template-columns:380px 1fr), .blog-editor-fields (white bg, 16px border-radius, 1.5rem padding, border line), .blog-editor-quill (white bg, 16px border-radius, border), #beQuill (min-height:400px), .ql-container font override.",
+
+    "MODIFICATION 5 — JS: In the main IIFE, find the tab-switching querySelectorAll('.admin-tab') handler. Add 'if(tab.dataset.tab === 'blogs') loadBlogs();' to the if-chain alongside the existing products and content checks.",
+
+    "MODIFICATION 6 — JS blog functions: After the existing tab-switching code block, add the full blogs JS section. Functions to implement in order:\n  a) Quill lazy-loader: loadQuill(cb) — appends quill.snow.css link and quill.min.js script to <head>, sets quillLoaded=true in onload, calls cb.\n  b) initQuill() — creates new Quill('#beQuill', {theme:'snow', modules:{toolbar:{container:[...], handlers:{image: custom image-upload handler}}}}) only if quillEditor is null.\n  c) Quill image handler: opens a file <input>, on change calls uploadBlogMedia(file, 'blog-images'), then quillEditor.insertEmbed(range.index,'image',url).\n  d) uploadBlogMedia(file, folder) — uploads to /storage/v1/object/blog-media/{folder}/{timestamp}-{random}.{ext} with POST, apikey, Authorization, Content-Type, x-upsert:true headers; returns public URL.\n  e) loadBlogs() — supaFetch('/rest/v1/blogs?select=id,title,slug,category,author,created_at,status,featured_image_url&order=created_at.desc').then renderBlogStats + renderBlogTable.\n  f) loadBlogCategories(selectedSlug) — supaFetch('/rest/v1/blog_categories?select=id,name,slug&order=name.asc'), populates #beCategory select.\n  g) renderBlogStats() — counts published/draft/scheduled, updates 4 stat-val elements.\n  h) renderBlogTable() — filters allBlogs by blogSearchQ, renders rows with thumbnail, title, category, author, date, status badge, 4 action buttons (Edit, Preview, Publish/Unpublish, Delete). Attaches event listeners for each.\n  i) openBlogEditor(id) — sets editingBlogId, calls loadQuill(fn), inside fn: calls initQuill(); if id fetches full record from /rest/v1/blogs?select=*&id=eq.{id}; populates all form fields; restores Quill content from localStorage draft key 'aera-blog-draft-{id}' if exists and is newer than saved post; calls loadBlogCategories(category); shows overlay; calls startAutoSave().\n  j) closeBlogEditor() — hides overlay, calls stopAutoSave(), clears editingBlogId.\n  k) slugify(s) — lowercase, strip non-alphanumeric, replace spaces with dashes.\n  l) beTitle input event — if !editingBlogId, auto-set beSlug.value = slugify(beTitle.value).\n  m) beExcerpt input event — update excerptCount span.\n  n) beStatus change event — show/hide beScheduledWrap.\n  o) beFeatImgFile change event — preview image via URL.createObjectURL.\n  p) beFeatImgRemove click — clear url, preview, file input.\n  q) beNewCatBtn click — prompt for name, slugify, POST to /rest/v1/blog_categories, reload categories.\n  r) blogPreviewBtn click — window.open('blog-post.html?slug='+beSlug.value, '_blank').\n  s) blogEditorCancel click — closeBlogEditor().\n  t) startAutoSave() / stopAutoSave() — setInterval/clearInterval every 30s, saves quillEditor.root.innerHTML to localStorage key 'aera-blog-draft-{editingBlogId||\"new\"}'.\n  u) collectBlogPayload() — reads all form fields, returns payload object (title, slug, excerpt, category, author, featured_image_url from hidden input, content from quillEditor.root.innerHTML, status, featured, scheduled_at if scheduled, published_at if published).\n  v) saveBlog(statusOverride) — disables button, calls collectBlogPayload(), validates title required, if file in beFeatImgFile calls uploadBlogMedia first then doSave, else calls doSave directly. doSave: POST (new) or PATCH (edit) to /rest/v1/blogs with Prefer:return=representation; on success calls closeBlogEditor(), loadBlogs(), toast().\n  w) blogSaveDraft click → saveBlog('draft'); blogPublishNow click → saveBlog('published').\n  x) toggleBlogStatus(id, currentStatus) — PATCH status to opposite value, if publishing set published_at, re-render table.\n  y) deleteBlog(id) — confirm dialog, supaFetch DELETE, filter allBlogs, re-render.\n  z) createBlogBtn click → openBlogEditor(null); blogSearch input → set blogSearchQ, renderBlogTable()."
+  ],
+  "acceptance_criteria": [
+    "admin.html has a 'Blogs' tab button in .admin-tabs",
+    "Clicking Blogs tab shows panel-blogs with stat cards and table",
+    "Stat cards show correct counts of total/published/draft/scheduled posts",
+    "Search input filters the blog table client-side",
+    "Clicking '+ Create Blog' opens the full-screen editor overlay",
+    "Typing in the Title field auto-populates the Slug field (only when creating new)",
+    "Category dropdown is populated from Supabase blog_categories",
+    "'+ New' category button prompts for a name, creates it via Supabase, refreshes the select",
+    "Quill editor loads from CDN on first open and supports bold/italic/headings/lists/links/images/blockquote toolbar",
+    "Quill image toolbar button opens file picker, uploads to Supabase blog-media/blog-images/, inserts img tag",
+    "Featured image file picker shows preview before save",
+    "Selecting 'Scheduled' status reveals the datetime-local input",
+    "Auto-save writes to localStorage every 30 seconds",
+    "Save Draft creates a blog record with status='draft'; Publish Now creates/updates with status='published'",
+    "Each table row has Edit (opens editor pre-populated), Preview (opens blog-post.html in new tab), Publish/Unpublish toggle, Delete (with confirm dialog)",
+    "Delete removes the record from Supabase and from the table",
+    "All operations show appropriate toast messages"
+  ],
+  "verification": [
+    "Sign in to admin.html — click 'Blogs' tab — confirm panel loads with 4 stat cards and table",
+    "Click '+ Create Blog' — confirm editor overlay opens, Quill toolbar appears",
+    "Enter a title — confirm slug field auto-populates",
+    "Click 'Save Draft' — confirm toast 'Draft saved.' appears and new row appears in table with 'draft' badge",
+    "Click 'Publish' action on that row — confirm badge changes to green 'published'",
+    "Click 'Delete' — confirm confirmation dialog — confirm row removed from table",
+    "Check browser console — no uncaught JS errors throughout all above steps"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

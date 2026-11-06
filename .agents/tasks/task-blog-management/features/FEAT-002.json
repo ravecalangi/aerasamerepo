@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Add 'Blog' navigation link to all six public HTML pages. This is a same-pattern edit across multiple files. Independent of all other FEATs — can be done without the blog pages existing yet (the link will 404 until FEAT-003 creates blog.html, which is fine).",
+  "status": "completed",
+  "steps": [
+    "In EACH of the following 6 files: index.html, shop.html, about.html, circle.html, checkout.html, product.html — make BOTH changes below.",
+    "Desktop nav change: In .nav-links-center, find the <div class=\"nav-dropdown\"><a href=\"circle.html\" class=\"dd\">AERA Circle</a> element. Insert <a href=\"blog.html\">Blog</a> IMMEDIATELY BEFORE that nav-dropdown div. This places Blog between About Us and AERA Circle.",
+    "Mobile menu change: In the JavaScript string that builds mm.innerHTML (search for 'm-menu' in each file), find <a class=\"m-link\" href=\"about.html\">About Us</a> and add <a class=\"m-link\" href=\"blog.html\">Blog</a> AFTER it (before whatever comes next, which is the AERA Circle link or the .m-cta CTA).",
+    "In blog.html and blog-post.html (created by FEAT-003 and FEAT-004), ensure the Blog link has class 'active' added when on that page: <a href=\"blog.html\" class=\"active\">Blog</a> in the desktop nav of those pages only."
+  ],
+  "acceptance_criteria": [
+    "All 6 files (index.html, shop.html, about.html, circle.html, checkout.html, product.html) have <a href=\"blog.html\">Blog</a> in their .nav-links-center, positioned between About Us and AERA Circle",
+    "All 6 files have Blog link in their mobile menu mm.innerHTML string, positioned after About Us",
+    "Desktop nav order is: Home | Shop | About Us | Blog | AERA Circle",
+    "Mobile menu order matches desktop order"
+  ],
+  "verification": [
+    "Open shop.html in a browser — confirm 'Blog' appears between 'About Us' and 'AERA Circle' in the desktop nav",
+    "Resize to mobile width (≤1023px) — open hamburger menu — confirm 'Blog' appears after 'About Us'",
+    "Repeat the same check for about.html, circle.html, index.html"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
+<title>Checkout | AERA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#384168;--brown-deep:#2a3152;--cream:#f0ede8;--ink:#384168;--accent:#f4b99b;--danger:#b3261e;--ok:#2f6b3f;
+  --sans:"Instrument Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;--head:Urbanist,Arial,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+html{scrollbar-gutter:stable}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+h1,h2,h3{font-family:var(--head);font-weight:500;margin:0}
+
+/* faint marquee-style background text */
+.bg-text{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;display:flex;flex-direction:column;justify-content:space-around;user-select:none}
+.bg-text div{white-space:nowrap;font-family:var(--head);font-weight:700;font-size:clamp(34px,5vw,64px);letter-spacing:.35em;color:rgba(56,65,104,.06);text-transform:uppercase}
+.bg-text div:nth-child(even){margin-left:-12rem}
+
+/* nav */
+.site-nav{position:sticky;z-index:10;top:0;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,2.5vw,40px);height:64px;background:rgba(253,248,243,.95);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(56,65,104,.12);box-shadow:0 1px 8px rgba(42,49,82,.06)}
+.site-nav .logo{display:block;width:56px;height:auto;filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+.site-nav-left{flex-shrink:0}
+.site-nav-center{font-family:var(--head);font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(56,65,104,.55);flex-shrink:0}
+.site-nav-links{display:flex;align-items:center;justify-content:flex-end;gap:clamp(.65rem,2vw,1rem);flex-wrap:wrap}
+.site-nav-right{font-size:.8125rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--brown);opacity:.75;transition:opacity .2s;white-space:nowrap;flex-shrink:0}
+.site-nav-right:hover{opacity:1}
+@media(max-width:640px){.site-nav{height:auto;min-height:64px;padding-top:.7rem;padding-bottom:.7rem;align-items:flex-start}.site-nav-center{display:none}.site-nav-links{gap:.65rem;flex-direction:column;align-items:flex-end}.site-nav-right{font-size:.75rem}}
+
+/* notice banner */
+.notice{position:relative;z-index:2;background:var(--brown);border-bottom:1px solid rgba(240,237,232,.15)}
+.notice-in{max-width:56rem;margin:0 auto;padding:1.75rem 1rem;display:grid;gap:1.25rem}
+.n-item{display:flex;gap:1rem;align-items:flex-start}
+.n-item+.n-item{padding-top:1.25rem;border-top:1px solid rgba(240,237,232,.15)}
+.n-ico{flex:0 0 44px;height:44px;border-radius:12px;background:rgba(240,237,232,.1);border:1px solid rgba(240,237,232,.25);display:grid;place-items:center;color:var(--cream)}
+.n-item h3{font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);font-weight:700;margin-bottom:.3rem}
+.n-item p{margin:0;font-size:.975rem;line-height:1.6;color:rgba(240,237,232,.8)}
+.n-item b{color:var(--cream)}
+
+main{position:relative;z-index:1;max-width:72rem;margin:0 auto;padding:2.5rem 1rem 5rem}
+
+/* stepper */
+.stepper{display:flex;justify-content:center;gap:.75rem;margin-bottom:2rem;flex-wrap:wrap}
+.stp{display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:500;color:rgba(56,65,104,.5)}
+.stp i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;border:1px solid rgba(56,65,104,.3)}
+.stp.on{color:var(--brown)}
+.stp.on i{background:var(--brown);color:#fff;border-color:var(--brown)}
+.stp.done i{background:var(--ok);color:#fff;border-color:var(--ok)}
+.stp-line{width:40px;height:1px;background:rgba(56,65,104,.25);align-self:center}
+
+/* cards */
+.card{background:#fff;border-radius:20px;padding:2rem;box-shadow:0 1px 3px rgba(42,49,82,.08)}
+.card h2{font-size:1.5rem;margin-bottom:.4rem}
+.muted{color:rgba(56,65,104,.55);font-size:.9rem;line-height:1.6}
+.box{background:var(--cream);border-radius:14px;padding:1.1rem 1.25rem;margin-top:1.1rem}
+.box-label{font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(56,65,104,.5);font-weight:600;margin:0 0 .7rem}
+
+/* form */
+.info-wrap{max-width:42rem;margin:0 auto}
+.alert-y{display:flex;gap:.7rem;background:#fff6e5;border:1px solid #f3dca5;color:#8a4b0a;border-radius:12px;padding:.8rem 1rem;font-size:.8125rem;font-weight:500;line-height:1.5;margin:1.25rem 0}
+.alert-y svg{flex:0 0 20px}
+.grid2{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:640px){.grid2{grid-template-columns:1fr 1fr}.span2{grid-column:1/-1}}
+.fld{display:grid;gap:.4rem}
+.fld label{font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:rgba(56,65,104,.65)}
+.fld label em{color:#d6453d;font-style:normal}
+.fld input,.fld select,.fld textarea{width:100%;padding:.85rem 1rem;background:var(--cream);border:1px solid rgba(56,65,104,.15);border-radius:12px;font:inherit;font-size:.95rem;color:var(--ink)}
+.fld textarea{min-height:80px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--brown);outline-offset:1px;background:#fff}
+.fld.err input,.fld.err select{border-color:var(--danger);background:#fff7f6}
+.fld .msg{font-size:.75rem;color:var(--danger);min-height:0;display:none}
+.fld.err .msg{display:block}
+.row-end{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:1.75rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;height:48px;padding:0 1.75rem;border-radius:9999px;border:0;background:var(--brown);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s,transform .2s}
+.btn:hover{background:var(--brown-deep);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--brown);border:1px solid rgba(56,65,104,.35)}
+.btn.ghost:hover{background:rgba(56,65,104,.07)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* review layout */
+.review{display:grid;gap:1.5rem;align-items:start}
+@media(min-width:900px){.review{grid-template-columns:1.25fr 1fr}}
+.dl{display:flex;justify-content:space-between;gap:1rem;font-size:.9rem;padding:.3rem 0}
+.dl span:first-child{color:rgba(56,65,104,.6)}
+.dl span:last-child{text-align:right;font-weight:500}
+.item{display:flex;gap:.9rem;align-items:center;padding:.9rem 0;border-bottom:1px solid rgba(56,65,104,.1)}
+.item:last-child{border-bottom:0}
+.item img{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0;background:var(--cream)}
+.item .nm{flex:1;min-width:0}
+.item .nm b{display:block;font-weight:500;font-size:.95rem}
+.item .nm small{color:rgba(56,65,104,.55);font-size:.78rem}
+.item .pr{font-weight:600;font-size:.95rem;white-space:nowrap}
+.sum-line{display:flex;justify-content:space-between;font-size:.9rem;padding:.4rem 0;color:rgba(56,65,104,.75)}
+.sum-total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid rgba(56,65,104,.15);margin-top:.5rem;padding-top:1rem;font-family:var(--head);font-size:1.5rem;font-weight:700;color:var(--brown-deep)}
+
+.side{display:grid;gap:1.25rem}
+.sc{background:#fff;border-radius:18px;padding:1.4rem;box-shadow:0 1px 3px rgba(42,49,82,.08)}
+.sc-h{display:flex;align-items:center;gap:.6rem;font-size:.6875rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:rgba(56,65,104,.65);margin-bottom:.9rem}
+.sc-h i{font-style:normal;width:20px;height:20px;border-radius:50%;background:var(--brown);color:#fff;display:grid;place-items:center;font-size:.65rem;letter-spacing:0}
+.sc-h i.ok{background:var(--ok)}
+.tabs{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:.45rem .9rem;border-radius:8px;border:0;background:var(--cream);color:rgba(56,65,104,.65);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tab.on{background:var(--brown);color:#fff}
+.qr{border:1px solid rgba(56,65,104,.12);border-radius:14px;padding:1rem;text-align:center}
+.qr-frame{width:100%;max-width:240px;aspect-ratio:1;margin:0 auto .8rem;border-radius:12px;background:var(--cream);display:grid;place-items:center;overflow:hidden;font-size:.8rem;color:rgba(56,65,104,.5);padding:1rem}
+.qr-frame img{width:100%;height:100%;object-fit:contain;display:block}
+.acct{font-size:.85rem;line-height:1.6}
+.acct b{display:block;font-size:1rem;font-weight:600}
+.copy{margin-top:.5rem;padding:.35rem .9rem;border-radius:9999px;border:1px solid rgba(56,65,104,.3);background:none;font-size:.75rem;color:var(--brown)}
+.copy:hover{background:rgba(56,65,104,.07)}
+.warn{display:flex;gap:.6rem;background:#fdeeed;border:1px solid #f4c9c6;color:var(--danger);border-radius:12px;padding:.8rem .9rem;font-size:.78rem;line-height:1.5;margin-top:1rem}
+.warn svg{flex:0 0 18px;margin-top:1px}
+
+.drop{display:grid;place-items:center;text-align:center;gap:.3rem;border:2px dashed rgba(56,65,104,.25);background:var(--cream);border-radius:14px;padding:1.75rem 1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.drop:hover,.drop.over{border-color:var(--brown);background:#fff}
+.drop b{font-weight:500;font-size:.9rem}
+.drop small{color:rgba(56,65,104,.5);font-size:.72rem}
+.drop input{display:none}
+.drop.hidden{display:none}
+.preview{display:none;gap:.9rem;align-items:center;margin-top:.9rem;padding:.7rem;border:1px solid rgba(56,65,104,.15);border-radius:12px}
+.preview.show{display:flex}
+.preview img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+.preview div{flex:1;min-width:0;font-size:.8rem}
+.preview div b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.preview button{border:0;background:none;color:var(--danger);font-size:.78rem;text-decoration:underline}
+.receipt-img-preview{display:none;position:relative;margin-top:.9rem;border-radius:14px;overflow:hidden;border:1px solid rgba(56,65,104,.15)}
+.receipt-img-preview.show{display:block}
+.receipt-img-preview img{width:100%;display:block;border-radius:14px;max-height:400px;object-fit:contain;background:var(--cream)}
+.receipt-img-preview .rm-overlay{position:absolute;top:.6rem;right:.6rem;background:rgba(0,0,0,.55);color:#fff;border:0;border-radius:9999px;padding:.35rem .75rem;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .2s}
+.receipt-img-preview .rm-overlay:hover{background:rgba(0,0,0,.75)}
+.errtxt{color:var(--danger);font-size:.78rem;margin-top:.5rem;display:none}
+.errtxt.show{display:block}
+
+.pol-btn{width:100%;height:50px;border:0;border-radius:12px;background:var(--brown);color:var(--cream);font-weight:600;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.pol-btn:hover{background:var(--brown-deep)}
+.pol-btn.done{background:#e7f1ea;color:var(--ok);border:1px solid #b9d6c1}
+
+.confirm{background:var(--brown-deep);color:var(--cream);border-radius:18px;padding:1.6rem;text-align:center}
+.confirm .sc-h{justify-content:center;color:rgba(240,237,232,.75)}
+.confirm .sc-h i{background:var(--cream);color:var(--brown-deep)}
+.confirm .amt{font-family:var(--head);font-size:2.4rem;font-weight:700;margin:.4rem 0 .1rem}
+.confirm .cnt{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(240,237,232,.55);font-weight:600}
+.confirm .go{width:100%;height:52px;margin-top:1.25rem;border:0;border-radius:10px;background:var(--accent);color:var(--brown-deep);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.85rem;transition:filter .2s,background .3s,color .3s}
+.confirm .go:hover{filter:brightness(1.07)}
+.confirm .go.ready{background:#2f6b3f;color:#fff}
+.confirm .go.ready:hover{background:#256134;filter:none}
+.confirm .hint{display:flex;gap:.6rem;text-align:left;font-size:.8rem;line-height:1.5;margin-top:1rem;color:rgba(240,237,232,.8);background:rgba(240,237,232,.08);border-radius:10px;padding:.75rem .9rem}
+.confirm .hint.red{color:#ffb3ad;background:rgba(255,100,90,.1)}
+.confirm .hint svg{flex:0 0 18px}
+.edit{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;height:46px;border-radius:12px;border:1px solid rgba(56,65,104,.2);background:rgba(255,255,255,.6);color:rgba(56,65,104,.7);font-size:.875rem;font-weight:500}
+.edit:hover{background:#fff}
+
+/* empty + success */
+.center-card{max-width:34rem;margin:2rem auto;text-align:center}
+.center-card h2{margin-bottom:.6rem}
+.center-card .btn{margin-top:1.5rem}
+.ok-ico{width:64px;height:64px;border-radius:50%;background:#e7f1ea;color:var(--ok);display:grid;place-items:center;margin:0 auto 1.25rem}
+.ordno{display:inline-block;margin:.9rem 0;padding:.5rem 1.1rem;border-radius:9999px;background:var(--cream);font-weight:700;letter-spacing:.1em;font-size:.9rem}
+
+/* policy modal */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:1rem}
+.ov.open{display:flex}
+.modal{background:#fff;border-radius:20px;width:min(560px,100%);max-height:85vh;display:flex;flex-direction:column}
+.modal-h{padding:1.4rem 1.6rem .8rem}
+.modal-b{padding:0 1.6rem;overflow-y:auto;font-size:.9rem;line-height:1.7;color:rgba(56,65,104,.85)}
+.modal-b p{margin:0 0 .8rem}
+.modal-f{padding:1.1rem 1.6rem 1.4rem;border-top:1px solid rgba(56,65,104,.1);display:grid;gap:.8rem}
+.chk{display:flex;gap:.6rem;align-items:flex-start;font-size:.85rem;line-height:1.5}
+.chk input{margin-top:.2rem;accent-color:var(--brown);width:16px;height:16px}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translateX(-50%) translateY(20px);background:var(--brown-deep);color:#fff;padding:.7rem 1.2rem;border-radius:9999px;font-size:.85rem;opacity:0;pointer-events:none;transition:.25s;z-index:60}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.hidden{display:none!important}
+:focus-visible{outline:2px solid var(--brown);outline-offset:2px}
+@media(max-width:639px){.card{padding:1.4rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- TOUCH DEVICES: remove the default blue/gray tap flash ---------- */
+a,button,input,select,textarea,.drop,.pol-btn,.tab,.copy{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
+.btn,.pol-btn,.copy,.edit{-webkit-user-select:none;user-select:none}
+</style>
+</head>
+<body>
+
+<div class="bg-text" id="bgText" aria-hidden="true"></div>
+
+<header class="site-nav">
+  <div class="site-nav-left"><a href="index.html" aria-label="AERA home"><img src="images/aera-logo-black.png" class="logo" alt="AERA"></a></div>
+  <div class="site-nav-center">Checkout</div>
+  <nav class="site-nav-links" aria-label="Checkout links"><a class="site-nav-right" href="track-order.html">Track my order</a><a class="site-nav-right" href="blog.html">Blog</a><a class="site-nav-right" href="shop.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg> Continue shopping</a></nav>
+</header>
+
+<div class="notice">
+  <div class="notice-in">
+    <div class="n-item">
+      <div class="n-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M15 9l-4.5 4.5L9 12"/></svg></div>
+      <div><h3>No cancellation policy</h3><p>Once your order is confirmed, we can't cancel or refund it. Please double-check your items, delivery address and contact number before you pay.</p></div>
+    </div>
+    <div class="n-item">
+      <div class="n-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div><h3>Confirm your order</h3><p>Paying is not enough. After you pay, upload your receipt and tap <b>Place Order</b> on the last step. Your order isn't reserved until you do.</p></div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="stepper" id="stepper">
+    <div class="stp on" id="s1"><i>1</i>Your information</div>
+    <div class="stp-line"></div>
+    <div class="stp" id="s2"><i>2</i>Pay &amp; place order</div>
+  </div>
+
+  <!-- EMPTY -->
+  <section class="card center-card hidden" id="emptyView">
+    <h2>Your bag is empty.</h2>
+    <p class="muted">Add a mist, soap or serum first, then come back here to check out.</p>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <a class="btn" href="shop.html">Shop AERA</a>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="card info-wrap hidden" id="infoView">
+    <h2>Your information</h2>
+    <p class="muted">No account needed. We'll use this to send your order updates and deliver your items.</p>
+    <p class="muted" style="font-size:.8rem;margin-top:-.25rem">Your info is saved automatically as you type — it won't disappear if you go back or refresh.</p>
+    <div class="alert-y">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Please make sure your email and phone number are correct and reachable. We may contact you about your order, delivery or payment issues.</span>
+    </div>
+    <form id="infoForm" novalidate>
+      <div class="grid2">
+        <div class="fld span2"><label for="fName">Full name <em>*</em></label><input id="fName" autocomplete="name" placeholder="Juan Dela Cruz"><span class="msg">Please enter your full name.</span></div>
+        <div class="fld"><label for="fEmail">Email <em>*</em></label><input id="fEmail" type="email" autocomplete="email" placeholder="you@email.com"><span class="msg">Enter a valid email address.</span></div>
+        <div class="fld"><label for="fPhone">Phone number <em>*</em></label><input id="fPhone" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx or +63 9xx xxx xxxx"><span class="msg">Enter a valid PH mobile number.</span></div>
+        <div class="fld span2"><label for="fStreet">House no., street, building <em>*</em></label><input id="fStreet" autocomplete="address-line1" placeholder="Blk 1 Lot 2, Sampaguita St."><span class="msg">Please enter your street address.</span></div>
+        <div class="fld"><label for="fBrgy">Barangay <em>*</em></label><input id="fBrgy" placeholder="Barangay"><span class="msg">Please enter your barangay.</span></div>
+        <div class="fld"><label for="fCity">City / Municipality <em>*</em></label><input id="fCity" autocomplete="address-level2" placeholder="City"><span class="msg">Please enter your city.</span></div>
+        <div class="fld"><label for="fProv">Province / Region <em>*</em></label>
+          <select id="fProv"><option value="">Select area</option>
+            <option value="mm">Metro Manila</option>
+            <option value="luzon">Luzon (outside Metro Manila)</option>
+            <option value="visayas">Visayas</option>
+            <option value="mindanao">Mindanao</option>
+          </select><span class="msg">Please select your area.</span></div>
+        <div class="fld"><label for="fZip">Postal code <em>*</em></label><input id="fZip" inputmode="numeric" maxlength="4" placeholder="3023"><span class="msg">Enter a 4-digit postal code.</span></div>
+        <div class="fld span2"><label for="fNote">Delivery notes (optional)</label><textarea id="fNote" placeholder="Landmarks, preferred delivery time, etc."></textarea></div>
+      </div>
+      <div class="row-end">
+        <a class="back" href="index.html#shop">&larr; Back to shop</a>
+        <button class="btn" type="submit">Next <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>
+    </form>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="review hidden" id="reviewView">
+    <div class="card">
+      <h2>Order summary</h2>
+      <div class="box"><p class="box-label">Contact details</p><div id="sumContact"></div></div>
+      <div class="box"><p class="box-label">Delivery details</p><div id="sumDeliver"></div></div>
+      <div class="box" style="padding-bottom:.4rem"><p class="box-label">Items</p><div id="sumItems"></div></div>
+      <p class="box-label" style="margin-top:1.6rem">Payment breakdown</p>
+      <div class="sum-line"><span>Subtotal</span><span id="sumSub"></span></div>
+      <div class="sum-line"><span>Shipping</span><span id="sumShip"></span></div>
+      <div class="sum-total"><span>Total</span><span id="sumTotal"></span></div>
+    </div>
+
+    <div class="side">
+      <div class="sc">
+        <div class="sc-h"><i>1</i>Scan to pay</div>
+        <div class="tabs" id="payTabs"></div>
+        <div class="qr">
+          <div class="qr-frame" id="qrFrame"></div>
+          <div class="acct" id="acct"></div>
+          <button class="copy" id="copyBtn" type="button">Copy account number</button>
+        </div>
+      </div>
+
+      <div class="sc">
+        <div class="sc-h"><i id="ck2">2</i>Upload payment receipt</div>
+        <p class="muted" style="margin:0 0 .9rem;font-size:.8rem">After paying, upload a screenshot as proof of payment.</p>
+        <label class="drop" id="drop">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M7 18a4 4 0 0 1-.5-7.9A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5"/><path d="m12 12 0 8M9 15l3-3 3 3"/></svg>
+          <b>Tap to upload receipt</b><small>JPEG, PNG, WebP · max 10MB</small>
+          <input type="file" id="receipt" accept="image/jpeg,image/png,image/webp">
+        </label>
+        <div class="receipt-img-preview" id="receiptImgPreview">
+          <img id="prevImg" alt="Receipt preview">
+          <button class="rm-overlay" type="button" id="prevRm">&#x2715; Remove</button>
+        </div>
+        <p class="errtxt" id="rcErr"></p>
+      </div>
+
+      <div class="sc">
+        <div class="sc-h"><i id="ck3">3</i>Order policy &amp; agreement</div>
+        <p class="muted" style="margin:0 0 .9rem;font-size:.8rem">Read the ordering policy and confirm you agree before placing your order.</p>
+        <button class="pol-btn" id="polBtn" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg><span id="polBtnTxt">Read &amp; accept policy</span></button>
+      </div>
+
+      <div class="confirm">
+        <div class="sc-h"><i>4</i>Place order</div>
+        <div class="amt" id="confAmt"></div>
+        <div class="cnt" id="confCnt"></div>
+        <button class="go" id="placeBtn" type="button">Place order</button>
+      </div>
+
+      <button class="edit" id="editBtn" type="button">&larr; Edit information</button>
+    </div>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="card center-card hidden" id="doneView">
+    <div class="ok-ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></div>
+    <h2>Order placed. Thank you!</h2>
+    <p class="muted">We got your order and receipt. We'll verify your payment and message you at the contact details you gave us.</p>
+    <span class="ordno" id="ordNo"></span>
+    <p class="muted" id="doneTotal"></p>
+    <p class="muted" style="font-size:.85rem">Keep your order ID and use it with your checkout email to check delivery progress.</p>
+    <a class="btn ghost" href="track-order.html">Track this order</a>
+    <a class="btn" href="index.html">Back to AERA</a>
+  </section>
+</main>
+
+<!-- confirm order modal -->
+<div class="ov" id="confirmOv" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmT" style="max-width:420px">
+    <div class="modal-h">
+      <h2 id="confirmT" style="font-size:1.2rem">Confirm your order</h2>
+    </div>
+    <div class="modal-b" style="padding-top:.25rem">
+      <p>You're about to place your order. Please make sure you've already sent your payment before proceeding.</p>
+      <p style="margin-bottom:0">Once placed, your order <strong>cannot be cancelled or refunded</strong>.</p>
+    </div>
+    <div class="modal-f" style="display:flex;justify-content:flex-end;gap:.6rem">
+      <button class="btn ghost" type="button" id="confirmNo">Go back</button>
+      <button class="btn" type="button" id="confirmYes">Yes, place order</button>
+    </div>
+  </div>
+</div>
+
+<!-- validation modal -->
+<div class="ov" id="valOv" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="valT" style="max-width:420px">
+    <div class="modal-h">
+      <h2 id="valT" style="font-size:1.2rem">Complete these steps first</h2>
+    </div>
+    <div class="modal-b" style="padding-top:.5rem">
+      <ul id="valList" style="margin:0;padding-left:1.25rem;display:grid;gap:.6rem;font-size:.95rem;color:rgba(56,65,104,.85)"></ul>
+    </div>
+    <div class="modal-f" style="display:flex;justify-content:flex-end">
+      <button class="btn" type="button" id="valClose">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- policy modal -->
+<div class="ov" id="polOv" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="polT">
+    <div class="modal-h"><h2 id="polT" style="font-size:1.4rem">Ordering policy</h2></div>
+    <div class="modal-b">
+      <p><b>No cancellations or refunds.</b> Once your order is placed, it can't be cancelled, changed or refunded. Please review your items and delivery details first.</p>
+      <p><b>Payment.</b> Orders are processed only after we verify your payment. Upload a clear screenshot of your receipt showing the amount, date and reference number.</p>
+      <p><b>Shipping.</b> Orders are packed within 3&ndash;5 business days. Shipping fees are based on your delivery area. Make sure your address and phone number are correct and reachable.</p>
+      <p><b>Damaged or wrong items.</b> Contact us within 7 days of delivery with your order number and photos or an unboxing video so we can help.</p>
+      <p><b>Product use.</b> AERA products are for external cosmetic use. Do a patch test first if you have sensitive skin and stop use if irritation occurs.</p>
+    </div>
+    <div class="modal-f">
+      <label class="chk"><input type="checkbox" id="polChk"><span>I have read and agree to the ordering policy, including the no cancellation and no refund terms.</span></label>
+      <div style="display:flex;gap:.6rem;justify-content:flex-end">
+        <button class="btn ghost" type="button" id="polCancel">Close</button>
+        <button class="btn" type="button" id="polOk" disabled>I agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= CONFIG: edit these ================= */
+var CART_KEY   = 'aeraCart';            // must match the key saved in index.html
+var INFO_KEY   = 'aera-checkout-info';
+var ORDER_KEY  = 'aera-last-order';
+var ORDERS_KEY = 'aera-guest-orders';
+var SHIPPING   = { mm:80, luzon:120, visayas:150, mindanao:150 };   // PHP per area
+var FREE_SHIP_OVER = 0;                  // e.g. 1500 = free shipping at ₱1,500+. 0 = off
+var PAYMENTS = [
+  { id:'gcash',    label:'GCash',    name:'VI*****A JA*E D.', number:'0995 192 1895',  qr:'images/gcash.png' },
+  { id:'bpi',      label:'BPI',      name:'VI*****A JA*E D.', number:'4039336733',     qr:'images/bpi.jpg' },
+  { id:'maribank', label:'Maribank', name:'VI*****A JA*E D.', number:'13395873589',    qr:'images/maribank.png' }
+];
+var MAX_MB = 10;
+/* ====================================================== */
+
+var $ = function(id){ return document.getElementById(id); };
+var peso = function(n){ return '\u20B1' + Number(n).toLocaleString('en-PH'); };
+
+/* topbar removed */
+function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+function save(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function rememberOrder(order){
+  var orders=load(ORDERS_KEY)||[];
+  orders=orders.filter(function(item){return item && item.orderNo!==order.orderNo;});
+  orders.unshift({orderNo:order.orderNo,email:order.customer.email,items:order.items,total:order.total,date:order.date,status:'order_received'});
+  save(ORDERS_KEY,orders.slice(0,20));
+}
+
+var cart = (load(CART_KEY) || []).filter(function(i){ return i && i.qty > 0; });
+var info = load(INFO_KEY) || {};
+var receiptFile = null, policyOk = false, payment = PAYMENTS[0];
+
+/* faint background text */
+(function(){
+  var bg=$('bgText'), row='STAY A LITTLE LONGER \u2726 BLOOM \u2726 AERA \u2726 ';
+  for(var i=0;i<6;i++){ var d=document.createElement('div'); d.textContent=row+row+row; bg.appendChild(d); }
+})();
+
+var VIEWS=['emptyView','infoView','reviewView','doneView'];
+function show(id){
+  VIEWS.forEach(function(v){ $(v).classList.toggle('hidden', v!==id); });
+  var step2 = id==='reviewView', done = id==='doneView';
+  $('s1').className='stp'+(step2||done?' done':' on');
+  $('s2').className='stp'+(done?' done':(step2?' on':''));
+  $('stepper').classList.toggle('hidden', id==='emptyView');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* totals */
+function subtotal(){ return cart.reduce(function(s,i){ return s + (Number(i.price)||0)*i.qty; },0); }
+function shipping(){
+  if(!info.area) return 0;
+  var sub = subtotal();
+  if(FREE_SHIP_OVER && sub >= FREE_SHIP_OVER) return 0;
+  return SHIPPING[info.area] || 0;
+}
+function total(){ return subtotal() + shipping(); }
+function count(){ return cart.reduce(function(s,i){ return s+i.qty; },0); }
+
+/* ---------- STEP 1: form ---------- */
+var F = { name:'fName', email:'fEmail', phone:'fPhone', street:'fStreet', brgy:'fBrgy', city:'fCity', area:'fProv', zip:'fZip', note:'fNote' };
+Object.keys(F).forEach(function(k){ if(info[k]!=null) $(F[k]).value = info[k]; });
+
+var rules = {
+  name:  function(v){ return v.trim().length >= 2; },
+  email: function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()); },
+  phone: function(v){ return /^(\+63|63|0)9\d{9}$/.test(v.replace(/[\s-]/g,'')); },
+  street:function(v){ return v.trim().length >= 3; },
+  brgy:  function(v){ return v.trim().length >= 2; },
+  city:  function(v){ return v.trim().length >= 2; },
+  area:  function(v){ return !!v; },
+  zip:   function(v){ return /^\d{4}$/.test(v.trim()); }
+};
+function setErr(k,bad){ $(F[k]).closest('.fld').classList.toggle('err', bad); }
+Object.keys(rules).forEach(function(k){
+  $(F[k]).addEventListener('blur', function(){ setErr(k, !rules[k](this.value)); });
+  $(F[k]).addEventListener('input', function(){ if(this.closest('.fld').classList.contains('err')) setErr(k, !rules[k](this.value)); });
+});
+
+$('infoForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var first=null;
+  Object.keys(rules).forEach(function(k){
+    var bad = !rules[k]($(F[k]).value); setErr(k,bad);
+    if(bad && !first) first=k;
+  });
+  if(first){ $(F[first]).focus(); return; }
+  Object.keys(F).forEach(function(k){ info[k] = $(F[k]).value.trim(); });
+  save(INFO_KEY, info);
+  renderReview();
+  show('reviewView');
+});
+
+/* ---------- STEP 2: review ---------- */
+var AREA_NAME = { mm:'Metro Manila', luzon:'Luzon', visayas:'Visayas', mindanao:'Mindanao' };
+function renderReview(){
+  $('sumContact').innerHTML =
+    '<div class="dl"><span>Name</span><span>'+esc(info.name)+'</span></div>'+
+    '<div class="dl"><span>Email</span><span>'+esc(info.email)+'</span></div>'+
+    '<div class="dl"><span>Phone</span><span>'+esc(info.phone)+'</span></div>';
+  $('sumDeliver').innerHTML =
+    '<div class="dl"><span>Address</span><span>'+esc(info.street)+', Brgy. '+esc(info.brgy)+', '+esc(info.city)+' '+esc(info.zip)+'</span></div>'+
+    '<div class="dl"><span>Area</span><span>'+esc(AREA_NAME[info.area]||'')+'</span></div>'+
+    (info.note?'<div class="dl"><span>Notes</span><span>'+esc(info.note)+'</span></div>':'');
+  $('sumItems').innerHTML = cart.map(function(i){
+    return '<div class="item"><img src="'+esc(i.img)+'" alt=""><div class="nm"><b>'+esc(i.name)+'</b><small>'+esc(i.meta)+' \u00B7 Qty '+i.qty+'</small></div><div class="pr">'+peso((Number(i.price)||0)*i.qty)+'</div></div>';
+  }).join('');
+  var ship = shipping();
+  $('sumSub').textContent = peso(subtotal());
+  $('sumShip').textContent = ship===0 ? 'Free' : peso(ship);
+  $('sumTotal').textContent = peso(total());
+  $('confAmt').textContent = peso(total());
+  $('confCnt').textContent = count()+(count()===1?' item':' items');
+  updateGate();
+}
+
+/* payment tabs */
+function renderPay(){
+  $('payTabs').innerHTML = PAYMENTS.map(function(p){
+    return '<button type="button" class="tab'+(p.id===payment.id?' on':'')+'" data-id="'+p.id+'">'+esc(p.label)+'</button>';
+  }).join('');
+  var fr = $('qrFrame'); fr.innerHTML='';
+  var im = new Image(); im.alt = payment.label+' QR code'; im.src = payment.qr;
+  im.onerror = function(){ fr.textContent = 'Add your '+payment.label+' QR image at '+payment.qr; };
+  fr.appendChild(im);
+  $('acct').innerHTML = esc(payment.label)+'<b>'+esc(payment.name)+'</b>'+esc(payment.number);
+}
+$('payTabs').addEventListener('click', function(e){
+  var b = e.target.closest('.tab'); if(!b) return;
+  payment = PAYMENTS.filter(function(p){ return p.id===b.dataset.id; })[0];
+  renderPay();
+});
+$('copyBtn').addEventListener('click', function(){
+  var t = payment.number.replace(/\s/g,'');
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast('Account number copied'); }, function(){ toast(payment.number); });
+});
+
+/* receipt upload */
+var drop = $('drop'), input = $('receipt');
+function setReceipt(file){
+  var err = $('rcErr'); err.classList.remove('show');
+  if(!file) return;
+  if(['image/jpeg','image/png','image/webp'].indexOf(file.type) < 0){ err.textContent='Please upload a JPEG, PNG or WebP image.'; err.classList.add('show'); input.value=''; return; }
+  if(file.size > MAX_MB*1024*1024){ err.textContent='File is too large. Max '+MAX_MB+'MB.'; err.classList.add('show'); input.value=''; return; }
+  receiptFile = file;
+  $('prevImg').src = URL.createObjectURL(file);
+  drop.classList.add('hidden');
+  $('receiptImgPreview').classList.add('show');
+  $('ck2').classList.add('ok'); $('ck2').textContent='\u2713';
+  updateGate();
+}
+input.addEventListener('change', function(){ setReceipt(input.files[0]); });
+['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+drop.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) setReceipt(e.dataTransfer.files[0]); });
+$('prevRm').addEventListener('click', function(){
+  receiptFile=null; input.value='';
+  $('prevImg').src='';
+  $('receiptImgPreview').classList.remove('show');
+  drop.classList.remove('hidden');
+  $('ck2').classList.remove('ok'); $('ck2').textContent='2'; updateGate();
+});
+
+/* policy modal */
+var ov = $('polOv');
+function openPol(){ $('polChk').checked = policyOk; $('polOk').disabled = !policyOk; ov.classList.add('open'); ov.setAttribute('aria-hidden','false'); }
+function closePol(){ ov.classList.remove('open'); ov.setAttribute('aria-hidden','true'); }
+$('polBtn').addEventListener('click', openPol);
+$('polCancel').addEventListener('click', closePol);
+ov.addEventListener('click', function(e){ if(e.target===ov) closePol(); });
+$('polChk').addEventListener('change', function(){ $('polOk').disabled = !this.checked; });
+$('polOk').addEventListener('click', function(){
+  policyOk = true; closePol();
+  $('polBtn').classList.add('done'); $('polBtnTxt').textContent = 'Policy accepted';
+  $('ck3').classList.add('ok'); $('ck3').textContent='\u2713';
+  updateGate();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closePol(); });
+
+/* gate the place order button */
+function updateGate(){
+  var allDone = receiptFile && policyOk;
+  $('placeBtn').classList.toggle('ready', !!allDone);
+}
+
+/* validation modal */
+function openValModal(missing){
+  var list = $('valList');
+  list.innerHTML = missing.map(function(m){ return '<li>'+m+'</li>'; }).join('');
+  $('valOv').classList.add('open');
+  $('valOv').setAttribute('aria-hidden','false');
+}
+function closeValModal(){
+  $('valOv').classList.remove('open');
+  $('valOv').setAttribute('aria-hidden','true');
+}
+$('valClose').addEventListener('click', closeValModal);
+$('valOv').addEventListener('click', function(e){ if(e.target===$('valOv')) closeValModal(); });
+
+$('editBtn').addEventListener('click', function(){ show('infoView'); });
+
+/* ---------- Supabase config ---------- */
+var SUPA_URL = 'https://vhyveinrqamzycixhjsu.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';
+var AERA_API = SUPA_URL + '/functions/v1/aera-api';
+
+function receiptPayload(file){
+  return new Promise(function(resolve, reject){
+    if(!file){ resolve(null); return; }
+    var reader = new FileReader();
+    reader.onerror = function(){ reject(new Error('Could not read the receipt image.')); };
+    reader.onload = function(){
+      var value = String(reader.result || '');
+      resolve({ mime:file.type, base64:value.split(',')[1] || '' });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function saveOrderSecurely(order, receipt){
+  return fetch(AERA_API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPA_KEY
+    },
+    body: JSON.stringify({
+      action: 'create-order',
+      customer: order.customer,
+      delivery: order.delivery,
+      items: order.items,
+      shipping: order.shipping,
+      paymentMethod: order.paymentMethod,
+      receipt: receipt
+    })
+  }).then(function(res){
+    return res.json().then(function(data){
+      if(!res.ok) throw new Error(data.error || 'We could not place your order.');
+      return data;
+    });
+  });
+}
+
+/* ---------- place order ---------- */
+function doPlaceOrder(){
+  var btn = $('placeBtn'); btn.disabled = true; btn.textContent = 'Placing order...';
+  var order = {
+    date: new Date().toISOString(),
+    customer: { name:info.name, email:info.email, phone:info.phone },
+    delivery: { street:info.street, barangay:info.brgy, city:info.city, area:info.area, zip:info.zip, note:info.note||'' },
+    items: cart, subtotal: subtotal(), shipping: shipping(), total: total(),
+    paymentMethod: payment.label, receiptName: receiptFile ? receiptFile.name : ''
+  };
+
+  receiptPayload(receiptFile)
+    .then(function(receipt){ return saveOrderSecurely(order, receipt); })
+    .then(function(result){
+      order.orderNo = result.orderNumber;
+      save(ORDER_KEY, order);
+      rememberOrder(order);
+      try{ localStorage.removeItem(CART_KEY); }catch(e){}
+      try{ localStorage.removeItem(INFO_KEY); }catch(e){}
+      $('ordNo').textContent = result.orderNumber;
+      $('doneTotal').textContent = 'Total paid: ' + peso(order.total) + ' via ' + payment.label;
+      show('doneView');
+    })
+    .catch(function(err){
+      console.error('Order save failed:', err);
+      toast(err.message || 'We could not place your order. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Place order';
+    });
+}
+
+/* confirm modal */
+function openConfirm(){ $('confirmOv').classList.add('open'); $('confirmOv').setAttribute('aria-hidden','false'); }
+function closeConfirm(){ $('confirmOv').classList.remove('open'); $('confirmOv').setAttribute('aria-hidden','true'); }
+$('confirmNo').addEventListener('click', closeConfirm);
+$('confirmOv').addEventListener('click', function(e){ if(e.target===$('confirmOv')) closeConfirm(); });
+$('confirmYes').addEventListener('click', function(){ closeConfirm(); doPlaceOrder(); });
+
+$('placeBtn').addEventListener('click', function(){
+  var missing=[];
+  if(!receiptFile) missing.push('Upload your payment receipt (Step 2)');
+  if(!policyOk) missing.push('Read & accept the ordering policy (Step 3)');
+  if(missing.length){ openValModal(missing); return; }
+  openConfirm();
+});
+
+function toast(t){ var el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ el.classList.remove('show'); },1800); }
+
+/* ---------- init ---------- */
+renderPay();
+var DEMO = [
+  { name:'No Fixed Plans', meta:'Hair & Body Mist \u00B7 110mL', price:450, qty:2, img:'https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&auto=format&fit=crop&q=80' },
+  { name:'Second Skin Body Serum', meta:'Body Serum \u00B7 100mL', price:599, qty:1, img:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&auto=format&fit=crop&q=80' }
+];
+function startDemo(){ cart = DEMO.slice(); show('infoView'); }
+if(/[?&]demo=1/.test(location.search)){ startDemo(); }
+else if(!cart.length){ show('emptyView'); }
+else { show('infoView'); }
+})();
+</script>
+
+<!-- ============================================================
+     AERA CHAT WIDGET
+     ============================================================ -->
+<style>
+:root{--kmc-bg:#ffffff;--kmc-bg2:#f9f9fb;--kmc-text:#111111;--kmc-text3:#888899;--kmc-border:#e8e8ef;--kmc-card:#ffffff;}
+[data-theme="dark"]{--kmc-bg:#0f0f0f;--kmc-bg2:#1a1a1a;--kmc-text:#f0f0f0;--kmc-text3:#666677;--kmc-border:#2a2a2a;--kmc-card:#161616;}
+.kmc-toggle-wrapper,.kmc-panel,.kmc-toggle-wrapper *,.kmc-panel *{box-sizing:border-box;font-family:"Instrument Sans",-apple-system,BlinkMacSystemFont,sans-serif;}
+.kmc-toggle-wrapper{position:fixed;bottom:28px;right:28px;z-index:9998;display:flex;align-items:center;gap:12px;}
+.kmc-toggle-label{background:var(--kmc-card);color:var(--kmc-text);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:500;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid var(--kmc-border);white-space:nowrap;opacity:0;transform:translateX(8px);pointer-events:none;transition:opacity .25s ease,transform .25s ease;}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn:hover) .kmc-toggle-label{opacity:1;transform:translateX(0);}
+.kmc-toggle-wrapper:has(.kmc-toggle-btn.open) .kmc-toggle-label{opacity:0;transform:translateX(8px);}
+.kmc-toggle-btn{width:52px;height:52px;border-radius:50%;background:#384168;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(56,65,104,.4);transition:transform .25s ease,box-shadow .25s ease;flex-shrink:0;position:relative;padding:0;-webkit-tap-highlight-color:transparent;}
+.kmc-toggle-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 20px rgba(56,65,104,.5);}
+.kmc-toggle-btn svg{width:20px;height:20px;transition:opacity .2s ease,transform .2s ease;}
+.kmc-toggle-btn .kmc-icon-close{position:absolute;opacity:0;transform:scale(.7) rotate(90deg);}
+.kmc-toggle-btn.open .kmc-icon-chat{opacity:0;transform:scale(.7) rotate(-90deg);}
+.kmc-toggle-btn.open .kmc-icon-close{opacity:1;transform:scale(1) rotate(0deg);}
+.kmc-icon-chat{animation:kmcFlowerIdle 4s ease-in-out infinite;}
+.kmc-toggle-btn.open .kmc-icon-chat{animation:none;}
+@keyframes kmcFlowerIdle{0%{transform:rotate(0deg) scale(1);}20%{transform:rotate(15deg) scale(1.12);}40%{transform:rotate(-10deg) scale(1.08);}60%{transform:rotate(8deg) scale(1.1);}80%{transform:rotate(-5deg) scale(1.05);}100%{transform:rotate(0deg) scale(1);}}
+.kmc-toggle-btn::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(56,65,104,.35);animation:kmcRingPulse 3s ease-in-out infinite;pointer-events:none;}
+.kmc-toggle-btn.open::before{animation:none;opacity:0;}
+@keyframes kmcRingPulse{0%,100%{transform:scale(1);opacity:.5;}50%{transform:scale(1.18);opacity:0;}}
+.kmc-panel{position:fixed;bottom:100px;right:28px;width:360px;max-width:calc(100vw - 40px);height:500px;max-height:calc(100vh - 140px);background:var(--kmc-card);color:var(--kmc-text);border-radius:20px;border:1px solid var(--kmc-border);box-shadow:0 20px 60px rgba(0,0,0,.18);z-index:9998;display:flex;flex-direction:column;overflow:hidden;opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .25s cubic-bezier(.22,1,.36,1),transform .25s cubic-bezier(.22,1,.36,1);}
+.kmc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.kmc-header{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--kmc-border);background:var(--kmc-bg2);flex-shrink:0;}
+.kmc-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;background:#384168;display:flex;align-items:center;justify-content:center;border:2px solid var(--kmc-card);box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;}
+.kmc-avatar img{width:26px;height:auto;display:block;filter:brightness(0) invert(1);}
+.kmc-header-info{flex:1;min-width:0;}
+.kmc-header-name{font-size:14px;font-weight:600;color:var(--kmc-text);}
+.kmc-header-sub{font-size:12px;color:var(--kmc-text3);margin-top:1px;display:flex;align-items:center;gap:6px;}
+.kmc-body{flex:1;overflow-y:auto;padding:24px 16px 18px;display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;}
+.kmc-body::-webkit-scrollbar{width:5px;}.kmc-body::-webkit-scrollbar-thumb{background:var(--kmc-border);border-radius:10px;}
+.kmc-row{display:flex;animation:kmcMsgIn .28s cubic-bezier(.22,1,.36,1);margin-bottom:6px;}
+.kmc-row.bot{justify-content:flex-start;}.kmc-row.user{justify-content:flex-end;}
+@keyframes kmcMsgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.kmc-bubble{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;}
+.kmc-row.bot .kmc-bubble{background:var(--kmc-bg2);color:var(--kmc-text);border-bottom-left-radius:4px;}
+.kmc-row.user .kmc-bubble{background:#384168;color:#fff;border-bottom-right-radius:4px;}
+.kmc-typing{display:inline-flex;align-items:center;gap:4px;background:var(--kmc-bg2);padding:12px 14px;border-radius:14px;border-bottom-left-radius:4px;}
+.kmc-typing span{width:6px;height:6px;border-radius:50%;background:var(--kmc-text3);animation:kmcBounce 1.2s infinite ease-in-out;}
+.kmc-typing span:nth-child(2){animation-delay:.15s;}.kmc-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes kmcBounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-4px);opacity:1;}}
+.kmc-options{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
+.kmc-option-btn{text-align:left;padding:10px 14px;background:var(--kmc-card);border:1.5px solid var(--kmc-border);border-radius:12px;font-size:13px;color:var(--kmc-text);cursor:pointer;transition:border-color .15s,background .15s,transform .1s;opacity:0;animation:kmcMsgIn .3s cubic-bezier(.22,1,.36,1) forwards;-webkit-tap-highlight-color:transparent;}
+.kmc-option-btn:nth-child(1){animation-delay:.02s;}.kmc-option-btn:nth-child(2){animation-delay:.08s;}.kmc-option-btn:nth-child(3){animation-delay:.14s;}.kmc-option-btn:nth-child(4){animation-delay:.20s;}
+.kmc-option-btn:hover{border-color:#384168;background:var(--kmc-bg2);transform:translateX(2px);}
+.kmc-footer{padding:12px 16px 16px;border-top:1px solid var(--kmc-border);flex-shrink:0;background:var(--kmc-card);}
+.kmc-footer-note{font-size:11px;color:var(--kmc-text3);text-align:center;margin:0 0 10px;line-height:1.5;}
+.kmc-footer-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 16px;background:#384168;color:#fff;border:none;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;}
+.kmc-footer-cta:hover{opacity:.85;transform:translateY(-1px);}
+@media(max-width:768px){.kmc-toggle-wrapper{bottom:20px;right:20px;}.kmc-toggle-label{display:none;}}
+@media(max-width:480px){.kmc-panel{right:16px;left:16px;width:auto;bottom:92px;height:60vh;}.kmc-toggle-wrapper{right:16px;bottom:20px;}}
+</style>
+
+<div class="kmc-toggle-wrapper">
+  <div class="kmc-toggle-label">Have a question?</div>
+  <button class="kmc-toggle-btn" id="kmcToggleBtn" aria-label="Open chat">
+    <svg class="kmc-icon-chat" width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="50" cy="27" rx="10" ry="19"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(72 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(144 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(216 50 50)"/><ellipse cx="50" cy="27" rx="10" ry="19" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="6"/></svg>
+    <svg class="kmc-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div class="kmc-panel" id="kmcPanel">
+  <div class="kmc-header">
+    <div class="kmc-avatar"><img src="images/aera-logo-black.png" alt="AERA"></div>
+    <div class="kmc-header-info">
+      <div class="kmc-header-name">AERA</div>
+      <div class="kmc-header-sub">Replies instantly</div>
+    </div>
+  </div>
+  <div class="kmc-body" id="kmcBody"></div>
+  <div class="kmc-footer">
+    <p class="kmc-footer-note">Have more questions? Message us directly.</p>
+    <button class="kmc-footer-cta" id="kmcContactBtn">
+      Message us directly
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+var CONTACT_TARGET_URL='shop.html#contact';
+var chatFlow={
+  start:{bot:["Hi! Welcome to AERA. \uD83D\uDC4B","We make hair & body mists, soaps and a body serum for everyday moments worth lingering in. What would you like to know?"],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Shipping & delivery",next:"shipping"},{label:"AERA Circle reseller program",next:"circle"}]},
+  products:{bot:["We have three product lines:","• Hair & Body Mists — 5 scents, 110mL (\u20B1299\u2013\u20B1329)\n• Soaps — 2 variants, 90g (\u20B1129\u2013\u20B1149)\n• Second Skin Body Serum — 100mL (\u20B1449)","Our mists: No Fixed Plans, White Shirt, First Flowers, Open Windows, and After Hours."],options:[{label:"How do I place an order?",next:"ordering"},{label:"What payment methods do you accept?",next:"payment"},{label:"Back to main menu",next:"start"}]},
+  ordering:{bot:["Ordering is easy — no account needed!","1. Add items to your bag\n2. Go to checkout\n3. Enter your contact & delivery details\n4. Pay via GCash, BPI or Maribank\n5. Upload your receipt\n6. Tap Place Order to confirm","Your order isn't reserved until you complete Step 6."],options:[{label:"What payment methods do you accept?",next:"payment"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
+  payment:{bot:["We accept:","• GCash\n• BPI\n• Maribank","After paying, upload a clear screenshot of your receipt showing the amount, date and reference number. Then tap Place Order."],options:[{label:"Can I cancel or return my order?",next:"returns"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
+  shipping:{bot:["Shipping fees by area:","• Metro Manila — \u20B180\n• Luzon (outside MM) — \u20B1120\n• Visayas — \u20B1150\n• Mindanao — \u20B1150","Orders are packed within 3\u20135 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
+  returns:{bot:["Once your order is placed, it cannot be cancelled or refunded.","For damaged or wrong items, contact us within 7 days of delivery with your order number and photos or an unboxing video.","Email us at contactaeraofficial@gmail.com and we'll help you right away."],options:[{label:"How do I place an order?",next:"ordering"},{label:"AERA Circle reseller program",next:"circle"},{label:"Back to main menu",next:"start"}]},
+  circle:{bot:["AERA Circle is our reseller program with three tiers:","• 1st Tier — 15% off, min. net PO \u20B16,000\n• 2nd Tier — 20% off, min. net PO \u20B115,000\n• 3rd Tier — 30% off, min. net PO \u20B125,000","For orders over \u20B150,000, email us at contactaeraofficial@gmail.com.","Apply by emailing contactaeraofficial@gmail.com with subject \"AERA Circle Application\"."],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Back to main menu",next:"start"}]}
+};
+var toggleBtn=document.getElementById('kmcToggleBtn'),panel=document.getElementById('kmcPanel'),body=document.getElementById('kmcBody'),contactBtn=document.getElementById('kmcContactBtn'),pendingTimeouts=[],started=false,isOpen=false;
+function scrollBottom(){body.scrollTop=body.scrollHeight;}
+function addBot(text){var row=document.createElement('div');row.className='kmc-row bot';var b=document.createElement('div');b.className='kmc-bubble';b.textContent=text;b.style.whiteSpace='pre-line';row.appendChild(b);body.appendChild(row);scrollBottom();}
+function addUser(text){var row=document.createElement('div');row.className='kmc-row user';var b=document.createElement('div');b.className='kmc-bubble';b.textContent=text;row.appendChild(b);body.appendChild(row);scrollBottom();}
+function showTyping(){var row=document.createElement('div');row.className='kmc-row bot';row.id='kmcTypingRow';row.innerHTML='<div class="kmc-typing"><span></span><span></span><span></span></div>';body.appendChild(row);scrollBottom();}
+function removeTyping(){var r=document.getElementById('kmcTypingRow');if(r)r.remove();}
+function removeOptions(){var o=body.querySelector('.kmc-options');if(o)o.remove();}
+function renderOptions(options){removeOptions();var wrap=document.createElement('div');wrap.className='kmc-options';options.forEach(function(opt){var btn=document.createElement('button');btn.className='kmc-option-btn';btn.type='button';btn.textContent=opt.label;btn.addEventListener('click',function(){addUser(opt.label);removeOptions();goToNode(opt.next,false);});wrap.appendChild(btn);});body.appendChild(wrap);scrollBottom();}
+function goToNode(nodeId,isInitial){var node=chatFlow[nodeId];if(!node)return;pendingTimeouts.forEach(clearTimeout);pendingTimeouts=[];removeTyping();if(!isInitial)removeOptions();showTyping();var delay=500;node.bot.forEach(function(line,i){var t=setTimeout(function(){removeTyping();addBot(line);if(i<node.bot.length-1)showTyping();if(i===node.bot.length-1){pendingTimeouts.push(setTimeout(function(){renderOptions(node.options);},250));}},delay);pendingTimeouts.push(t);delay+=550;});}
+function openChat(){isOpen=true;panel.classList.add('open');toggleBtn.classList.add('open');toggleBtn.setAttribute('aria-label','Close chat');if(!started){started=true;goToNode('start',true);}}
+function closeChat(){isOpen=false;panel.classList.remove('open');toggleBtn.classList.remove('open');toggleBtn.setAttribute('aria-label','Open chat');}
+toggleBtn.addEventListener('click',function(){isOpen?closeChat():openChat();});
+contactBtn.addEventListener('click',function(){closeChat();window.location.href=CONTACT_TARGET_URL;});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&isOpen)closeChat();});
+})();
+</script>
+</body>
+</html>

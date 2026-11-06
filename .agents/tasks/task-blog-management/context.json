@@ -1,0 +1,42 @@
+{
+  "project_type": "Static HTML/CSS/JS site hosted on GitHub Pages — no build step, no bundler, no framework",
+  "language": "HTML + vanilla JavaScript (ES5-compatible, no modules)",
+  "build_system": "None — files are served directly. No package.json, no Makefile. 'Build' means open the file in a browser.",
+  "test_framework": "None — verification is manual browser inspection. No automated test runner exists.",
+  "build_command": "N/A — open HTML files directly in a browser or serve with: npx serve . (optional, no install needed)",
+  "test_command": "N/A — manual browser verification only",
+  "verification_instructions": "1. Open the modified HTML file in a browser. 2. Check the browser console for JS errors. 3. For Supabase-dependent features, confirm network requests succeed in the Network tab. 4. For admin features, sign in with a Supabase Email/Password admin account.",
+  "snapshot_or_generated_files": null,
+  "environment_constraints": "GitHub Pages static hosting — no server-side code. All data is fetched client-side from Supabase REST API. The Supabase anon key is intentionally public (RLS enforces access). Do not add npm dependencies or build steps.",
+  "contribution_requirements": "Follow the existing ES5-compatible vanilla JS style (no arrow functions at top level, no let/const, no template literals in IE-sensitive paths). Inline all CSS in <style> blocks in each HTML file. Copy nav/footer HTML verbatim from shop.html when creating new pages.",
+  "key_patterns": "1. supaFetch() in admin.html wraps fetch() with Authorization Bearer + apikey headers; public pages use anonymous fetch() with just apikey header. 2. Images uploaded via POST to /storage/v1/object/{bucket}/{path}, public URL is /storage/v1/object/public/{bucket}/{path}. 3. Tab panels use class 'tab-panel on' toggled by data-tab attribute on buttons. 4. Toast notifications via toast(msg) function. 5. Mobile menu built as JS string injected into mm.innerHTML; desktop nav is static HTML. 6. All CSS in page-level <style> tag — no external stylesheet. 7. Supabase REST API: GET /rest/v1/{table}?select=cols&filter=val, POST /rest/v1/{table} with Prefer:return=representation, PATCH /rest/v1/{table}?id=eq.{id}.",
+  "relevant_files": [
+    "shop.html — copy nav/footer/cart/mobile-menu/search-overlay from here for blog.html and blog-post.html",
+    "admin.html — modify to add Blogs tab; follow tab-panel pattern, supaFetch pattern, uploadProductImage pattern",
+    "about.html — same nav as shop.html but inspect to confirm nav HTML",
+    "circle.html — same nav",
+    "index.html — same nav",
+    "checkout.html — same nav",
+    "product.html — same nav"
+  ],
+  "directory_structure": "c:\\Users\\martq\\Documents\\area-new-main\\ — all HTML files at root. images\\ — static images. .agents\\tasks\\ — planning artifacts (not deployed).",
+
+  "supabase_url": "https://vhyveinrqamzycixhjsu.supabase.co",
+  "supabase_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE",
+  "supabase_session_key": "aera-admin-token",
+
+  "nav_desktop_insert_point": "Add <a href=\"blog.html\">Blog</a> immediately before the AERA Circle .nav-dropdown in .nav-links-center",
+  "nav_mobile_insert_point": "In the mm.innerHTML JS string, add <a class=\"m-link\" href=\"blog.html\">Blog</a> after the About Us m-link and before the AERA Circle m-link (or before the .m-cta CTA button if Circle is not a plain link in mobile)",
+
+  "quill_cdn": {
+    "js":  "https://cdn.quilljs.com/1.3.7/quill.min.js",
+    "css": "https://cdn.quilljs.com/1.3.7/quill.snow.css"
+  },
+
+  "storage_upload_pattern": "fetch(SUPA_URL + '/storage/v1/object/{bucket}/{path}', { method:'POST', headers:{ apikey, Authorization, Content-Type, 'x-upsert':'true' }, body: file }) then public URL = SUPA_URL + '/storage/v1/object/public/{bucket}/{path}'",
+
+  "existing_css_classes_to_reuse": {
+    "admin_base": "btn, btn.sm, btn.ghost, btn.danger, fld, stats/.stat/.stat-val/.stat-lbl, toolbar, tbl-wrap/table/th/td/tbl-empty, badge (extend with .published .draft .scheduled), toast, ov/.modal pattern for overlays",
+    "public_base": "wrap, btn, tab/.tab.on, nav/nav-links-center/nav-dropdown, topbar, contact footer, newsletter"
+  }
+}

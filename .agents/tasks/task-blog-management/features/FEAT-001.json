@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Create SUPABASE_BLOG_SETUP.md containing the full SQL DDL and setup instructions for the blogs table, blog_categories table, RLS policies, and blog-media storage bucket. This file must be committed to the repo so the admin can run it once against the Supabase project.",
+  "status": "completed",
+  "steps": [
+    "Create c:\\Users\\martq\\Documents\\area-new-main\\SUPABASE_BLOG_SETUP.md",
+    "Step 1 in doc: SQL DDL for blog_categories table (id uuid pk default gen_random_uuid(), name text not null, slug text not null unique, created_at timestamptz default now())",
+    "Step 2 in doc: SQL DDL for blogs table (id uuid pk, title text not null, slug text unique not null, excerpt text, category text, author text, featured_image_url text, content text, status text default 'draft' check(status in ('draft','published','scheduled')), published_at timestamptz, scheduled_at timestamptz, created_at timestamptz default now(), updated_at timestamptz default now(), tags text[], featured boolean default false)",
+    "Step 3 in doc: Enable RLS on both tables. Four policies: (a) SELECT on blogs WHERE status='published' for anon, (b) SELECT on blog_categories for anon (true), (c) ALL on blogs for authenticated, (d) ALL on blog_categories for authenticated. Also add a set_updated_at() trigger function + trigger on blogs.",
+    "Step 4 in doc: Create blog-media storage bucket — Supabase Dashboard → Storage → New bucket → name 'blog-media' → enable Public → Create.",
+    "Step 5 in doc: Set Storage policies — allow authenticated INSERT/UPDATE/DELETE on blog-media; public SELECT already granted by public bucket flag.",
+    "Step 6 in doc: Seed default categories SQL: INSERT INTO blog_categories (name, slug) VALUES ('Skincare','skincare'),('Hair Care','hair-care'),('Lifestyle','lifestyle'),('Behind the Scenes','behind-the-scenes'),('Tutorials','tutorials') ON CONFLICT (slug) DO NOTHING;",
+    "Include note: This file is a setup guide only; it does not run automatically."
+  ],
+  "acceptance_criteria": [
+    "SUPABASE_BLOG_SETUP.md exists at the workspace root",
+    "The file contains complete, copy-pasteable SQL DDL for both tables with all columns and constraints as specified",
+    "The file contains all four RLS policies in SQL form",
+    "The file contains the updated_at trigger function and trigger",
+    "The file contains the seed INSERT for 5 default categories",
+    "The file contains step-by-step UI instructions for creating the blog-media bucket"
+  ],
+  "verification": [
+    "Open SUPABASE_BLOG_SETUP.md in a text editor and confirm all sections are present",
+    "Copy the SQL DDL block into Supabase SQL editor and confirm it executes without errors (manual step performed by admin)"
+  ],
+  "blocked_reason": null,
+  "findings": "All acceptance criteria met. SUPABASE_BLOG_SETUP.md created at workspace root with complete DDL for both tables, all four RLS policies, set_updated_at() trigger, seed INSERT for 5 default categories, step-by-step UI instructions for the blog-media storage bucket, and SQL storage policies for authenticated INSERT/UPDATE/DELETE. NOTE: The workspace has no .git directory so git commit could not be performed; the file is saved on disk and ready to be committed once the repo is initialised or the worktree is connected."
+}
