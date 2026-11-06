@@ -909,7 +909,9 @@ a{color:inherit;text-decoration:none}
       if(k==='theme_deep'){document.documentElement.style.setProperty('--brown-deep',v);document.documentElement.style.setProperty('--accent-deep',v);}
       if(k==='theme_background') document.documentElement.style.setProperty('--cream',v);
       if(k==='swirl_mart_supporting_text'){
-        document.querySelectorAll('.rt').forEach(function(text){text.textContent=v;});
+        window.aeraRibbonText = v;
+        if(window.setRibbonText) window.setRibbonText(v);
+        else document.querySelectorAll('.rt').forEach(function(text){text.textContent=v;});
         return;
       }
 
@@ -1148,7 +1150,8 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
   if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
   var SPEED = 45;  // px per second. Higher = faster
   var BAND  = 92;  // ribbon thickness: back text is hidden where the front strand covers it
-  var UNIT  = 'STAY A LITTLE LONGER \u2013 BLOOM' + '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
+  var DEFAULT_TEXT = 'STAY A LITTLE LONGER \u2013 BLOOM';
+  var ribbonText = window.aeraRibbonText || DEFAULT_TEXT;
   var NS    = 'http://www.w3.org/2000/svg';
   // centerline of the front strand at the crossing
   var FRONT = 'M584 182 C581 199 579 216 580 232 C580 249 583 266 586 282 C590 298 594 315 601 330 C608 345 616 360 627 373';
@@ -1159,6 +1162,30 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
     var e = document.createElementNS(NS, tag);
     for(var k in attrs) e.setAttribute(k, attrs[k]);
     return e;
+  }
+
+  function cleanText(value){
+    return String(value || DEFAULT_TEXT).replace(/\s+/g, ' ').trim() || DEFAULT_TEXT;
+  }
+
+  function updateText(item, value){
+    var unit = cleanText(value) + '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
+    var probe = mk('text', {'class':'rt'});
+    probe.style.whiteSpace = 'pre';
+    item.svg.appendChild(probe);
+    probe.textContent = unit;
+    var one = probe.getComputedTextLength();
+    probe.textContent = unit + unit;
+    var two = probe.getComputedTextLength();
+    item.svg.removeChild(probe);
+    var period = two - one;
+    if(!(period > 0)) return;
+
+    var n = Math.ceil((item.len1 + item.len2) / period) + 3;
+    var str = new Array(n + 1).join(unit);
+    item.tp1.textContent = str;
+    item.tp2.textContent = str;
+    item.period = period;
   }
 
   function setup(svg){
@@ -1186,23 +1213,9 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
     mask.appendChild(mk('path', {d:FRONT, fill:'none', stroke:'#000', 'stroke-width':BAND}));
     svg.appendChild(mask);
 
-    // measure one repeating unit (incl. letter-spacing)
-    var probe = mk('text', {'class':'rt'});
-    probe.style.whiteSpace = 'pre';
-    svg.appendChild(probe);
-    probe.textContent = UNIT;        var one = probe.getComputedTextLength();
-    probe.textContent = UNIT + UNIT; var two = probe.getComputedTextLength();
-    svg.removeChild(probe);
-    var period = two - one;
-    if(!(period > 0)) return null;
-
-    var n = Math.ceil((len1 + len2) / period) + 3;
-    var str = new Array(n + 1).join(UNIT);
-
     // back text (existing element, now on path 1 + masked)
     var t1 = tp1.parentNode;
     tp1.setAttribute('href', '#' + p1.id);
-    tp1.textContent = str;
     t1.setAttribute('mask', 'url(#' + mask.id + ')');
     // front text (new element on path 2, drawn on top)
     var t2 = t1.cloneNode(true);
@@ -1212,7 +1225,9 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
     t1.parentNode.appendChild(t2);
 
     if(tpA) tpA.parentNode.style.display = 'none'; // hide old static text
-    return {tp1:tp1, tp2:tp2, len1:len1, period:period, visible:true, svg:svg};
+    var item = {tp1:tp1, tp2:tp2, len1:len1, len2:len2, period:0, visible:true, svg:svg};
+    updateText(item, ribbonText);
+    return item;
   }
 
   function init(){
@@ -1220,6 +1235,10 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
       .map(function(s){ return s && setup(s); })
       .filter(Boolean);
     if(!items.length) return;
+    window.setRibbonText = function(value){
+      ribbonText = cleanText(value);
+      items.forEach(function(item){ updateText(item, ribbonText); });
+    };
 
     if('IntersectionObserver' in window){
       var io = new IntersectionObserver(function(entries){
