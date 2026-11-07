@@ -1,54 +1,306 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
   <title>Track Order | AERA</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--ink:#384168;--deep:#242b4b;--paper:#fdf8f3;--line:rgba(56,65,104,.16);--muted:rgba(56,65,104,.68)}*{box-sizing:border-box}body{margin:0;background:var(--paper);font:16px/1.55 "DM Sans",sans-serif;color:var(--ink)}.nav{height:70px;display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:auto;padding:0 24px;border-bottom:1px solid var(--line)}.brand{font:700 1.25rem Urbanist,sans-serif;letter-spacing:.15em;color:var(--deep);text-decoration:none}.nav a:last-child{color:var(--ink);text-decoration:none;font-size:.9rem}.wrap{width:min(760px,calc(100% - 32px));margin:0 auto;padding:clamp(48px,8vw,96px) 0}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:700;color:var(--muted)}h1{font:600 clamp(2.3rem,6vw,4.7rem)/.98 Urbanist,sans-serif;letter-spacing:-.05em;margin:.7rem 0 1rem;color:var(--deep)}.intro{max-width:540px;color:var(--muted);margin:0 0 2rem}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(20px,4vw,34px);box-shadow:0 10px 30px rgba(56,65,104,.05)}.device-orders{display:grid;gap:10px;margin-bottom:26px}.device-order{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#fff}.device-order button{margin:0;padding:8px 13px;font-size:.78rem}.device-order small{display:block;color:var(--muted)}.device-empty{color:var(--muted);font-size:.9rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}.fields label{font-size:.8rem;font-weight:600}.fields input{width:100%;margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:13px;background:#fff;font:inherit;color:var(--ink)}button{margin-top:20px;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:13px 22px;font:600 .9rem inherit;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.message{min-height:24px;margin:14px 0 0;color:#a33;font-size:.9rem}.result{display:none;margin-top:26px}.result.show{display:block}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}.meta span{display:block;font-size:.75rem;color:var(--muted)}.meta strong{font-size:.92rem}.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:28px 0}.step{position:relative;padding-top:24px;font-size:.68rem;color:var(--muted)}.step:before{content:"";position:absolute;left:0;right:4px;top:7px;height:2px;background:#d7d9e2}.step:after{content:"";position:absolute;top:2px;left:0;width:12px;height:12px;border-radius:50%;background:#d7d9e2}.step.done,.step.current{color:var(--deep);font-weight:700}.step.done:before,.step.current:before,.step.done:after,.step.current:after{background:var(--ink)}.items{padding:0;margin:12px 0;list-style:none}.items li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.total{display:flex;justify-content:space-between;font-weight:700;margin-top:14px}@media(max-width:540px){.fields{grid-template-columns:1fr}.meta{grid-template-columns:1fr 1fr}.progress{grid-template-columns:1fr}.step{padding:5px 0 5px 25px}.step:before{width:2px;height:100%;left:5px;top:12px}.step:after{left:0;top:5px}.step:last-child:before{display:none}.device-order{align-items:flex-start;flex-direction:column}.device-order button{align-self:stretch}}
+    :root{--ink:#384168;--deep:#242b4b;--paper:#fdf8f3;--line:rgba(56,65,104,.16);--muted:rgba(56,65,104,.68)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);font:16px/1.55 "DM Sans",sans-serif;color:var(--ink)}
+    .nav{height:70px;display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:auto;padding:0 24px;border-bottom:1px solid var(--line)}
+    .brand{font:700 1.25rem Urbanist,sans-serif;letter-spacing:.15em;color:var(--deep);text-decoration:none}
+    .nav a:last-child{color:var(--ink);text-decoration:none;font-size:.9rem}
+    .wrap{width:min(760px,calc(100% - 32px));margin:0 auto;padding:clamp(40px,7vw,80px) 0}
+    .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:700;color:var(--muted)}
+    h1{font:600 clamp(2.3rem,6vw,4.2rem)/.98 Urbanist,sans-serif;letter-spacing:-.04em;margin:.7rem 0 1rem;color:var(--deep)}
+    .intro{max-width:540px;color:var(--muted);margin:0 0 2rem}
+    .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(20px,4vw,34px);box-shadow:0 10px 30px rgba(56,65,104,.05)}
+    .device-orders{display:grid;gap:10px;margin-bottom:26px}
+    .device-order{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#fcfbfa}
+    .device-order button{margin:0;padding:8px 14px;font-size:.78rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;cursor:pointer;font-weight:600}
+    .device-order small{display:block;color:var(--muted);margin-top:2px}
+    .device-empty{color:var(--muted);font-size:.9rem;padding:6px 0}
+    .fields{display:grid;grid-template-columns:1fr;gap:14px}
+    .fields label{font-size:.8rem;font-weight:600;display:block}
+    .fields input{width:100%;margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:13px;background:#fff;font:inherit;color:var(--ink)}
+    .hint{display:block;font-size:.75rem;color:var(--muted);margin-top:4px;font-weight:400}
+    .track-btn{margin-top:18px;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:13px 26px;font:600 .9rem inherit;cursor:pointer;transition:opacity .2s}
+    .track-btn:disabled{opacity:.55;cursor:wait}
+    .message{min-height:24px;margin:14px 0 0;color:#c33;font-size:.9rem}
+    .result{display:none;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+    .result.show{display:block}
+    .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}
+    .meta span{display:block;font-size:.75rem;color:var(--muted)}
+    .meta strong{font-size:.92rem;color:var(--deep)}
+    .badge-status{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;background:rgba(56,65,104,.1);color:var(--deep)}
+    .progress{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:28px 0}
+    .step{position:relative;padding-top:24px;font-size:.68rem;color:var(--muted);text-align:center}
+    .step:before{content:"";position:absolute;left:0;right:0;top:7px;height:2px;background:#d7d9e2}
+    .step:first-child:before{left:50%}
+    .step:last-child:before{right:50%}
+    .step:after{content:"";position:absolute;top:2px;left:50%;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:#d7d9e2}
+    .step.done,.step.current{color:var(--deep);font-weight:700}
+    .step.done:before,.step.current:before,.step.done:after,.step.current:after{background:var(--ink)}
+    .items{padding:0;margin:14px 0;list-style:none}
+    .items li{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+    .total{display:flex;justify-content:space-between;font-weight:700;margin-top:14px;font-size:1.05rem;color:var(--deep)}
+    .timeline{margin-top:24px;padding:16px;background:#fcfbfa;border-radius:12px;border:1px solid var(--line)}
+    .timeline h3{margin:0 0 10px;font-size:.9rem;color:var(--deep)}
+    .tl-item{font-size:.82rem;padding:6px 0;border-bottom:1px solid rgba(56,65,104,.08);color:var(--muted)}
+    .tl-item:last-child{border-bottom:none}
+    .tl-item strong{color:var(--deep)}
+    @media(max-width:540px){
+      .meta{grid-template-columns:1fr}
+      .progress{grid-template-columns:1fr;gap:12px;text-align:left}
+      .step{padding:6px 0 6px 28px;text-align:left}
+      .step:before{width:2px;height:100%;left:5px;top:12px;right:auto}
+      .step:first-child:before{left:5px}
+      .step:last-child:before{display:none}
+      .step:after{left:0;top:8px;transform:none}
+      .device-order{align-items:flex-start;flex-direction:column}
+      .device-order button{align-self:stretch;text-align:center}
+    }
   </style>
 </head>
 <body>
-  <nav class="nav"><a class="brand" href="index.html">AERA</a><a href="shop.html">Continue shopping</a></nav>
-  <main class="wrap"><p class="eyebrow">Guest order tracking</p><h1>Where is my order?</h1><p class="intro">Enter the order ID and the email address used at checkout. No account is required.</p>
-    <section class="card"><h2 style="margin:0 0 8px">My orders on this device</h2><p class="intro" style="font-size:.9rem;margin-bottom:14px">No sign-in needed. Orders placed on this browser are saved here for quick access.</p><div class="device-orders" id="deviceOrders"><p class="device-empty">No saved orders yet.</p></div><form id="trackForm" novalidate><div class="fields"><label>Order ID<input id="orderNumber" autocomplete="off" placeholder="AERA-2026-XXXXXXXXXX" required></label><label>Email used at checkout<input id="email" type="email" autocomplete="email" required></label></div><button id="submit" type="submit">Track order</button><p class="message" id="message" aria-live="polite"></p></form>
-      <div class="result" id="result"><div class="meta"><div><span>Order ID</span><strong id="rNumber"></strong></div><div><span>Order date</span><strong id="rDate"></strong></div><div><span>Current status</span><strong id="rStatus"></strong></div></div><div class="progress" id="progress"></div><h2>Items</h2><ul class="items" id="items"></ul><div class="total"><span>Total</span><span id="total"></span></div></div>
+  <nav class="nav">
+    <a class="brand" href="index.html">AERA</a>
+    <a href="shop.html">Continue shopping</a>
+  </nav>
+
+  <main class="wrap">
+    <p class="eyebrow">Guest order tracking</p>
+    <h1>Where is my order?</h1>
+    <p class="intro">Enter your Order ID below to view your order status, items, and delivery progress. No account is required.</p>
+
+    <section class="card">
+      <h2 style="margin:0 0 8px;font-size:1.15rem;font-family:Urbanist,sans-serif">Recent orders on this device</h2>
+      <p class="intro" style="font-size:.88rem;margin-bottom:14px">Orders placed on this browser are automatically saved here for quick tracking.</p>
+      <div class="device-orders" id="deviceOrders">
+        <p class="device-empty">No saved orders on this device yet.</p>
+      </div>
+
+      <form id="trackForm" novalidate>
+        <div class="fields">
+          <label>
+            Order ID
+            <input id="orderNumber" autocomplete="off" placeholder="e.g. AERA-2026-XXXXXXXXXX" required>
+            <span class="hint">Found in your order confirmation screen or confirmation message</span>
+          </label>
+          <label>
+            Checkout Email <span style="font-weight:400;color:var(--muted)">(optional)</span>
+            <input id="orderEmail" type="email" autocomplete="email" placeholder="Email used when ordering (if available)">
+          </label>
+        </div>
+        <button class="track-btn" id="submit" type="submit">Track order</button>
+        <p class="message" id="message" aria-live="polite"></p>
+      </form>
+
+      <div class="result" id="result">
+        <div class="meta">
+          <div><span>Order ID</span><strong id="rNumber"></strong></div>
+          <div><span>Order date</span><strong id="rDate"></strong></div>
+          <div><span>Current status</span><div style="margin-top:4px"><span class="badge-status" id="rStatus"></span></div></div>
+        </div>
+
+        <div class="progress" id="progress"></div>
+
+        <div id="timelineWrap" class="timeline" style="display:none">
+          <h3>Status Updates & Notes</h3>
+          <div id="timelineList"></div>
+        </div>
+
+        <h3 style="margin:24px 0 8px;font-size:1rem;font-family:Urbanist,sans-serif">Order Items</h3>
+        <ul class="items" id="items"></ul>
+        <div class="total"><span>Total</span><span id="total"></span></div>
+      </div>
     </section>
   </main>
-  <script>
-  (function(){'use strict';var U='https://vhyveinrqamzycixhjsu.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE',API=U+'/functions/v1/aera-api';
-  /* Replace K with the same Supabase publishable/anon key used by the other AERA pages. */
-  var $=function(id){return document.getElementById(id)},steps=['order_received','processing','packed','shipped','delivered'],label=function(s){return s.replaceAll('_',' ').replace(/\b\w/g,function(c){return c.toUpperCase()})},peso=function(n){return '₱'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})};
-  $('trackForm').onsubmit=function(e){e.preventDefault();var n=$('orderNumber').value.trim().toUpperCase(),email=$('email').value.trim().toLowerCase();$('message').textContent='';$('result').classList.remove('show');if(!n||!email){$('message').textContent='Enter both your order ID and checkout email.';return}var b=$('submit');b.disabled=true;b.textContent='Looking up order…';fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':K},body:JSON.stringify({action:'track-order',orderNumber:n,email:email})}).then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Could not track order.');return x})}).then(function(x){var o=x.order;$('rNumber').textContent=o.order_number;$('rDate').textContent=new Date(o.created_at).toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'});$('rStatus').textContent=label(o.status);var active=steps.indexOf(o.status);$('progress').innerHTML=steps.map(function(s,i){return '<div class="step '+(i<active?'done':i===active?'current':'')+'">'+label(s)+'</div>'}).join('');$('items').innerHTML=(o.items||[]).map(function(i){return '<li><span>'+String(i.name||'Item')+' × '+Number(i.qty||1)+'</span><strong>'+peso(Number(i.price||0)*Number(i.qty||1))+'</strong></li>'}).join('');$('total').textContent=peso(o.total);$('result').classList.add('show')}).catch(function(err){$('message').textContent=err.message}).finally(function(){b.disabled=false;b.textContent='Track order'})};})();
-  </script>
+
   <script>
   (function(){
     'use strict';
-    var key='aera-guest-orders', api='https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api', anon='******';
-    var $=function(id){return document.getElementById(id)}, steps=['order_received','processing','packed','shipped','delivered'];
-    var label=function(s){return String(s||'order_received').replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()})};
-    var peso=function(n){return '₱'+Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})};
-    var read=function(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return[]}};
-    var write=function(v){try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}};
-    function render(){
-      var rows=read(), box=$('deviceOrders');
-      if(!rows.length){box.innerHTML='<p class="device-empty">No saved orders yet.</p>';return}
-      box.innerHTML=rows.map(function(o,i){return '<div class="device-order"><div><strong>'+o.orderNo+'</strong><small>'+label(o.status)+' · '+peso(o.total)+'</small></div><button type="button" data-order-index="'+i+'">View status</button></div>'}).join('');
-      box.querySelectorAll('[data-order-index]').forEach(function(btn){btn.onclick=function(){var o=rows[Number(btn.dataset.orderIndex)];$('orderNumber').value=o.orderNo;$('email').value=o.email;lookup(o.orderNo,o.email)}});
+    var U = window.AERA_SUPABASE_URL || 'https://vhyveinrqamzycixhjsu.supabase.co';
+    var K = window.AERA_SUPABASE_KEY || 'sb_publishable_Bdq_PnkKKZfnoqwBkcqrAg_Np412yu3';
+    var API = U + '/functions/v1/aera-api';
+    var STORAGE_KEY = 'aera-guest-orders';
+    var STEPS = ['order_received', 'processing', 'packed', 'shipped', 'delivered'];
+
+    var $ = function(id){ return document.getElementById(id); };
+    var label = function(s){
+      return String(s || 'order_received').replace(/_/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+    };
+    var peso = function(n){
+      return '₱' + Number(n || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    function readOrders(){
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('aera_orders_v2') || '[]';
+        var arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
+      } catch(e) {
+        return [];
+      }
     }
-    function lookup(orderNumber,email){
-      var button=$('submit');$('message').textContent='';$('result').classList.remove('show');button.disabled=true;button.textContent='Looking up order…';
-      fetch(api,{method:'POST',headers:{'Content-Type':'application/json','apikey':anon},body:JSON.stringify({action:'track-order',orderNumber:orderNumber,email:email})}).then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Could not track order.');return x})}).then(function(x){
-        var o=x.order;write(read().map(function(saved){return saved.orderNo===o.order_number?Object.assign({},saved,{status:o.status}):saved}));render();
-        $('rNumber').textContent=o.order_number;$('rDate').textContent=new Date(o.created_at).toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'});$('rStatus').textContent=label(o.status);
-        var active=steps.indexOf(o.status);$('progress').innerHTML=steps.map(function(s,i){return '<div class="step '+(i<active?'done':i===active?'current':'')+'">'+label(s)+'</div>'}).join('');
-        $('items').innerHTML=(o.items||[]).map(function(i){return '<li><span>'+String(i.name||'Item')+' × '+Number(i.qty||1)+'</span><strong>'+peso(Number(i.price||0)*Number(i.qty||1))+'</strong></li>'}).join('');$('total').textContent=peso(o.total);$('result').classList.add('show');
-      }).catch(function(err){$('message').textContent=err.message}).finally(function(){button.disabled=false;button.textContent='Track order'});
+
+    function writeOrders(list){
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch(e){}
     }
-    $('trackForm').onsubmit=function(e){e.preventDefault();var n=$('orderNumber').value.trim().toUpperCase(),email=$('email').value.trim().toLowerCase();if(!n||!email){$('message').textContent='Enter both your order ID and checkout email.';return}lookup(n,email)};
-    render();
+
+    function renderDeviceOrders(){
+      var rows = readOrders(), box = $('deviceOrders');
+      if(!rows.length){
+        box.innerHTML = '<p class="device-empty">No saved orders on this device yet.</p>';
+        return;
+      }
+      box.innerHTML = rows.map(function(o, i){
+        var id = o.orderNo || o.order_number || 'Order';
+        var st = label(o.status || 'order_received');
+        var tot = peso(o.total || 0);
+        return '<div class="device-order">' +
+          '<div><strong>' + id + '</strong><small>' + st + ' · ' + tot + '</small></div>' +
+          '<button type="button" data-order-index="' + i + '">View status</button>' +
+        '</div>';
+      }).join('');
+
+      box.querySelectorAll('[data-order-index]').forEach(function(btn){
+        btn.onclick = function(){
+          var o = rows[Number(btn.dataset.orderIndex)];
+          var id = o.orderNo || o.order_number;
+          var em = o.email || '';
+          if(id){
+            $('orderNumber').value = id;
+            if($('orderEmail')) $('orderEmail').value = em;
+            lookup(id, em);
+          }
+        };
+      });
+    }
+
+    function lookup(orderNumber, email){
+      var num = String(orderNumber || '').trim().toUpperCase();
+      if(!num){
+        $('message').textContent = 'Please enter your Order ID.';
+        return;
+      }
+      var em = String(email !== undefined ? email : ($('orderEmail') ? $('orderEmail').value : '')).trim();
+      var button = $('submit');
+      $('message').textContent = '';
+      $('result').classList.remove('show');
+      button.disabled = true;
+      button.textContent = 'Looking up order…';
+
+      var payload = {
+        action: 'track-order',
+        orderNumber: num
+      };
+      if(em) payload.email = em;
+
+      fetch(API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': K
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r){
+        return r.json().then(function(data){
+          if(!r.ok) throw new Error(data.error || 'Could not find an order matching that ID.');
+          return data;
+        });
+      })
+      .then(function(res){
+        var o = res.order;
+        // Update device storage with current status
+        var existing = readOrders();
+        var found = false;
+        var updated = existing.map(function(item){
+          var itemNum = item.orderNo || item.order_number;
+          if(itemNum === o.order_number){
+            found = true;
+            return Object.assign({}, item, { status: o.status, total: o.total });
+          }
+          return item;
+        });
+        if(!found){
+          updated.unshift({ orderNo: o.order_number, total: o.total, status: o.status, date: o.created_at });
+        }
+        writeOrders(updated.slice(0, 15));
+        renderDeviceOrders();
+
+        // Render Order Result
+        $('rNumber').textContent = o.order_number;
+        $('rDate').textContent = new Date(o.created_at).toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+        $('rStatus').textContent = label(o.status);
+
+        var activeIdx = STEPS.indexOf(o.status);
+        if(activeIdx < 0) activeIdx = 0;
+        $('progress').innerHTML = STEPS.map(function(stepName, i){
+          var cls = i < activeIdx ? 'done' : (i === activeIdx ? 'current' : '');
+          return '<div class="step ' + cls + '">' + label(stepName) + '</div>';
+        }).join('');
+
+        // Timeline notes if any
+        var hist = o.history || [];
+        var tlWrap = $('timelineWrap');
+        var tlList = $('timelineList');
+        if(hist.length > 0){
+          tlWrap.style.display = 'block';
+          tlList.innerHTML = hist.map(function(h){
+            var dateStr = new Date(h.created_at).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+            return '<div class="tl-item"><strong>' + label(h.status) + '</strong> (' + dateStr + ')' +
+                   (h.note ? ' — ' + String(h.note) : '') + '</div>';
+          }).join('');
+        } else {
+          tlWrap.style.display = 'none';
+        }
+
+        // Items list
+        $('items').innerHTML = (o.items || []).map(function(item){
+          var name = String(item.name || 'Item');
+          var qty = Number(item.qty || 1);
+          var price = Number(item.price || 0);
+          return '<li><span>' + name + ' × ' + qty + '</span><strong>' + peso(price * qty) + '</strong></li>';
+        }).join('');
+
+        $('total').textContent = peso(o.total);
+        $('result').classList.add('show');
+      })
+      .catch(function(err){
+        $('message').textContent = err.message || 'Unable to track order. Please verify the ID.';
+      })
+      .finally(function(){
+        button.disabled = false;
+        button.textContent = 'Track order';
+      });
+    }
+
+    $('trackForm').onsubmit = function(e){
+      e.preventDefault();
+      lookup($('orderNumber').value, $('orderEmail') ? $('orderEmail').value : '');
+    };
+
+    renderDeviceOrders();
+
+    // Check query params for instant lookup (e.g. ?order=AERA-2026-...&email=...)
+    var params = new URLSearchParams(window.location.search);
+    var queryOrder = params.get('order') || params.get('orderNumber');
+    var queryEmail = params.get('email') || '';
+    if(queryOrder){
+      $('orderNumber').value = queryOrder.trim();
+      if(queryEmail && $('orderEmail')) $('orderEmail').value = queryEmail.trim();
+      lookup(queryOrder.trim(), queryEmail.trim());
+    }
   })();
   </script>
-</body></html>
+</body>
+</html>

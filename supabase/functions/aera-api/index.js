@@ -1,0 +1,844 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const baseHeaders = {
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Content-Type": "application/json",
+};
+
+function corsHeaders(req) {
+  const origin = req?.headers?.get("Origin") || "";
+  const configured = (Deno.env.get("ALLOWED_ORIGIN") || "").split(",").map((value) => value.trim()).filter(Boolean);
+  const allowed = configured.concat([
+    "https://ravecalangi.github.io",
+    "http://localhost:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:5501",
+    "http://127.0.0.1:5501",
+  ]);
+  return { ...baseHeaders, "Access-Control-Allow-Origin": req ? (origin || allowed[0] || "*") : "*", "Vary": "Origin" };
+}
+
+const json = (body, status = 200, req) => new Response(JSON.stringify(body), { status, headers: corsHeaders(req) });
+const emailOk = (value) => typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+const clean = (value, limit = 500) => String(value || "").trim().slice(0, limit);
+const orderStatuses = new Set(["order_received", "processing", "packed", "shipped", "delivered", "cancelled", "pending", "confirmed"]);
+
+function adminClient() {
+  return createClient(Deno.env.get("SUPABASE_URL"), Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"), { auth: { persistSession: false } });
+}
+
+async function currentUser(req) {
+  const token = req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
+  if (!token) return null;
+  const client = adminClient();
+  const { data } = await client.auth.getUser(token);
+  return data.user || null;
+}
+
+async function requireAdmin(req) {
+  const user = await currentUser(req);
+  if (!user) throw new Error("Unauthorized");
+  const { data } = await adminClient().from("profiles").select("role,is_active").eq("id", user.id).maybeSingle();
+  if (!data || data.role !== "admin" || !data.is_active) throw new Error("Admin access is not enabled for this account. Set this user's profiles.role to admin and profiles.is_active to true.");
+  return user;
+}
+
+async function sendBrevo(payload) {
+  const resendKey = Deno.env.get("RESEND_API_KEY");
+  if (resendKey) {
+    const from = Deno.env.get("RESEND_FROM") || "AERA Official <onboarding@resend.dev>";
+    const toList = (payload.to || []).map(r => typeof r === "string" ? r : r.email).filter(Boolean);
+    if (!toList.length) return false;
+    const replyTo = payload.replyTo?.email || Deno.env.get("CONTACT_RECIPIENT_EMAIL") || "contactaeraofficial@gmail.com";
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + resendKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from,
+        reply_to: replyTo,
+        to: toList,
+        subject: payload.subject,
+        html: payload.htmlContent
+      })
+    });
+    if (!response.ok) {
+      const err = await response.text();
+      console.error("Resend error:", err);
+      throw new Error("Email delivery failed via Resend.");
+    }
+    return true;
+  }
+
+  const key = Deno.env.get("BREVO_API_KEY");
+  if (!key) return false;
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", { method: "POST", headers: { "api-key": key, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  if (!response.ok) throw new Error("Email delivery failed.");
+  return true;
+}
+
+function sender() {
+  return { email: Deno.env.get("BREVO_SENDER_EMAIL") || "contactaeraofficial@gmail.com", name: Deno.env.get("BREVO_SENDER_NAME") || "AERA" };
+}
+
+function getLogoUrl() {
+  return Deno.env.get("PUBLIC_LOGO_URL") || "https://ravecalangi.github.io/area-new/images/aera-logo-black.png";
+}
+function getSiteUrl() {
+  return Deno.env.get("PUBLIC_SITE_URL") || "https://ravecalangi.github.io/area-new/";
+}
+
+function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, items, subtotal, shipping, total, deliveryArea, trackUrl }) {
+  const itemsRows = items.map((item) => `
+    <tr>
+      <td style="padding: 16px 0; vertical-align: top;">
+        <div class="text-title" style="font-weight: 600; font-size: 15px; color: #242b4b; line-height: 1.35;">${item.name}</div>
+        ${item.meta ? `<div class="text-muted" style="font-size: 12px; color: #7882a5; margin-top: 3px;">${item.meta}</div>` : ""}
+      </td>
+      <td style="padding: 16px 12px; text-align: center; vertical-align: top; white-space: nowrap;">
+        <span class="text-muted" style="font-size: 13px; color: #7882a5;">× ${item.qty}</span>
+      </td>
+      <td style="padding: 16px 0; text-align: right; vertical-align: top; white-space: nowrap;">
+        <span class="text-title" style="font-weight: 600; font-size: 15px; color: #242b4b;">₱${(item.price * item.qty).toLocaleString("en-PH", { minimumFractionDigits: 2 })}</span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" class="divider" style="border-bottom: 1px solid rgba(56, 65, 104, 0.06); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
+    </tr>`).join("");
+
+  return `<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Your AERA Order ${orderNumber}</title>
+  <style>
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 100%; background-color: #f7f4ee; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #384168; }
+    .brand-logo { display: block; width: 96px; height: auto; margin: 0 auto; }
+    @media (prefers-color-scheme: dark) {
+      body, .email-bg { background-color: #121520 !important; }
+      .card-surface { background-color: #1c2133 !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+      .order-pill { background-color: #272d45 !important; border-color: rgba(255, 255, 255, 0.12) !important; }
+      .text-title { color: #fdfaf6 !important; }
+      .text-body { color: #d2d6e4 !important; }
+      .text-muted { color: #8e96b3 !important; }
+      .divider { border-color: rgba(255, 255, 255, 0.08) !important; }
+      .btn-primary { background-color: #f7f4ee !important; color: #1c2133 !important; }
+      .btn-primary-text { color: #1c2133 !important; }
+      .tag-chip { background-color: rgba(255, 255, 255, 0.08) !important; color: #d2d6e4 !important; }
+      .footer-text { color: #6e7694 !important; }
+      .brand-logo { filter: brightness(0) invert(1) !important; -webkit-filter: brightness(0) invert(1) !important; }
+    }
+    [data-ogsc] body, [data-ogsc] .email-bg { background-color: #121520 !important; }
+    [data-ogsc] .card-surface { background-color: #1c2133 !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+    [data-ogsc] .text-title { color: #fdfaf6 !important; }
+    [data-ogsc] .text-body { color: #d2d6e4 !important; }
+    [data-ogsc] .text-muted { color: #8e96b3 !important; }
+    [data-ogsc] .btn-primary { background-color: #f7f4ee !important; color: #1c2133 !important; }
+    [data-ogsc] .brand-logo { filter: brightness(0) invert(1) !important; }
+  </style>
+</head>
+<body class="email-bg" style="margin: 0; padding: 0; background-color: #f7f4ee; -webkit-font-smoothing: antialiased;">
+  <div style="display: none; font-size: 1px; color: #f7f4ee; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    Your AERA order ${orderNumber} is confirmed. Track your package status anytime without creating an account.
+  </div>
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="email-bg" style="background-color: #f7f4ee; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 40px 16px 50px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" role="presentation">
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <a href="${getSiteUrl()}" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="${getLogoUrl()}" alt="AERA" width="96" height="58" class="brand-logo" style="display:block;width:96px;height:auto;margin:0 auto;border:0;outline:none;" />
+              </a>
+              <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; color: #6a7499; margin-top: 8px; font-weight: 600;">Stay a little longer</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="card-surface" style="background-color: #ffffff; border-radius: 24px; border: 1px solid rgba(56, 65, 104, 0.1); padding: 44px 36px; box-shadow: 0 12px 36px rgba(36, 43, 75, 0.04);">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+                <tr>
+                  <td>
+                    <span class="tag-chip" style="display: inline-block; padding: 6px 14px; background-color: #eef1f8; color: #242b4b; border-radius: 9999px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">Order Received</span>
+                    <h1 class="text-title" style="margin: 18px 0 8px; font-size: 26px; line-height: 1.25; font-weight: 600; color: #242b4b; letter-spacing: -0.02em;">Thank you for your order, ${customerName}.</h1>
+                    <p class="text-body" style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #434c74;">We've received your order and payment verification is underway. You can track your order status anytime using your unique Order ID.</p>
+                  </td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="order-pill" style="background-color: #f8f6f0; border-radius: 16px; border: 1px solid rgba(56, 65, 104, 0.08); margin-bottom: 32px;">
+                <tr>
+                  <td style="padding: 20px 24px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+                      <tr>
+                        <td>
+                          <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #727b9e; font-weight: 600; margin-bottom: 4px;">Order Tracking Reference</div>
+                          <div class="text-title" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 20px; font-weight: 700; color: #242b4b; letter-spacing: 0.04em;">${orderNumber}</div>
+                        </td>
+                        <td align="right" valign="middle">
+                          <span class="text-muted" style="font-size: 12px; color: #727b9e;">${orderDate}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+                <tr>
+                  <td colspan="3" class="text-title" style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #242b4b; padding-bottom: 12px;">Items Ordered</td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="divider" style="border-bottom: 1px solid rgba(56, 65, 104, 0.1); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
+                </tr>
+                ${itemsRows}
+                <tr>
+                  <td colspan="2" class="text-muted" style="padding: 14px 0 4px; font-size: 14px; color: #6a7499;">Subtotal</td>
+                  <td style="padding: 14px 0 4px; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${subtotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="text-muted" style="padding: 4px 0; font-size: 14px; color: #6a7499;">Shipping (${deliveryArea || "Standard"})</td>
+                  <td style="padding: 4px 0; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${shipping.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="divider" style="border-bottom: 1px solid rgba(56, 65, 104, 0.14); padding-top: 10px; font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="text-title" style="padding: 16px 0; font-size: 17px; font-weight: 700; color: #242b4b;">Total Amount</td>
+                  <td style="padding: 16px 0; text-align: right; font-size: 20px; font-weight: 700; color: #242b4b;">₱${total.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 24px;">
+                <tr>
+                  <td align="center">
+                    <a href="${trackUrl}" target="_blank" class="btn-primary" style="display: inline-block; background-color: #242b4b; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; padding: 16px 38px; border-radius: 9999px; letter-spacing: 0.02em; text-align: center; box-shadow: 0 6px 18px rgba(36, 43, 75, 0.15);">
+                      <span class="btn-primary-text" style="color: #ffffff;">Track Order Status &rarr;</span>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top: 14px;">
+                    <span class="text-muted" style="font-size: 12px; color: #7882a5; line-height: 1.5; display: inline-block;">No account needed &bull; Just enter your Order ID anytime on our website</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 36px 20px 0;">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td align="center" style="padding-bottom: 12px;">
+                    <a href="https://www.instagram.com/aeraclucofficial" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">Instagram</a>
+                    <span class="footer-text" style="color: #c4c7d5;">&bull;</span>
+                    <a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">TikTok</a>
+                    <span class="footer-text" style="color: #c4c7d5;">&bull;</span>
+                    <a href="https://www.facebook.com/thisisaera" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">Facebook</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" class="footer-text" style="font-size: 12px; color: #7882a5; line-height: 1.6;">
+                    Have questions about your order? Email us at <a href="mailto:contactaeraofficial@gmail.com" style="color: #242b4b; text-decoration: underline;">contactaeraofficial@gmail.com</a>.<br>
+                    &copy; 2026 AERA. All rights reserved.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, ctaUrl, unsubscribeEmail }) {
+  const safeTitle = escapeHtml(title || subject || "Notes from AERA");
+  const safePreheader = escapeHtml(preheader || "A quiet moment with AERA.");
+  const paragraphs = (message || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const bodyHtml = paragraphs.length
+    ? paragraphs.map((p) => `<p class="text-body" style="margin: 0 0 18px; font-size: 15px; line-height: 1.7; color: #434c74;">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("")
+    : `<p class="text-body" style="margin: 0 0 18px; font-size: 15px; line-height: 1.7; color: #434c74;">${escapeHtml(message || "")}</p>`;
+
+  const ctaBlock = (ctaLabel && ctaUrl) ? `
+    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin: 28px 0 12px;">
+      <tr>
+        <td align="center" style="border-radius: 9999px; background-color: #384168;" class="btn-primary">
+          <a href="${escapeHtml(ctaUrl)}" target="_blank" class="btn-primary-text" style="display: inline-block; padding: 14px 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #ffffff; text-decoration: none; border-radius: 9999px;">
+            ${escapeHtml(ctaLabel)} &rarr;
+          </a>
+        </td>
+      </tr>
+    </table>` : "";
+
+  return `<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>${escapeHtml(subject)}</title>
+  <style>
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 100%; background-color: #f7f4ee; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #384168; }
+    .brand-logo { display: block; width: 96px; height: auto; margin: 0 auto; }
+    @media (prefers-color-scheme: dark) {
+      body, .email-bg { background-color: #121520 !important; }
+      .card-surface { background-color: #1c2133 !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+      .text-title { color: #fdfaf6 !important; }
+      .text-body { color: #d2d6e4 !important; }
+      .text-muted { color: #8e96b3 !important; }
+      .divider { border-color: rgba(255, 255, 255, 0.08) !important; }
+      .btn-primary { background-color: #f7f4ee !important; }
+      .btn-primary-text { color: #1c2133 !important; }
+      .tag-chip { background-color: rgba(255, 255, 255, 0.08) !important; color: #d2d6e4 !important; }
+      .footer-text { color: #6e7694 !important; }
+      .brand-logo { filter: brightness(0) invert(1) !important; -webkit-filter: brightness(0) invert(1) !important; }
+    }
+    [data-ogsc] body, [data-ogsc] .email-bg { background-color: #121520 !important; }
+    [data-ogsc] .card-surface { background-color: #1c2133 !important; border-color: rgba(255, 255, 255, 0.08) !important; }
+    [data-ogsc] .text-title { color: #fdfaf6 !important; }
+    [data-ogsc] .text-body { color: #d2d6e4 !important; }
+    [data-ogsc] .text-muted { color: #8e96b3 !important; }
+    [data-ogsc] .btn-primary { background-color: #f7f4ee !important; }
+    [data-ogsc] .btn-primary-text { color: #1c2133 !important; }
+    [data-ogsc] .brand-logo { filter: brightness(0) invert(1) !important; }
+  </style>
+</head>
+<body class="email-bg" style="margin: 0; padding: 0; background-color: #f7f4ee; -webkit-font-smoothing: antialiased;">
+  <div style="display: none; font-size: 1px; color: #f7f4ee; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    ${safePreheader}
+    &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
+  </div>
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="email-bg" style="background-color: #f7f4ee; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 40px 16px 50px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" role="presentation">
+          <tr>
+            <td align="center" style="padding-bottom: 24px;">
+              <a href="${getSiteUrl()}" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="${getLogoUrl()}" alt="AERA" width="96" height="58" class="brand-logo" style="display:block;width:96px;height:auto;margin:0 auto;border:0;outline:none;" />
+              </a>
+              <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.22em; color: #6a7499; margin-top: 8px; font-weight: 600;">Stay a little longer</div>
+            </td>
+          </tr>
+          <tr>
+            <td class="card-surface" style="background-color: #ffffff; border-radius: 24px; border: 1px solid rgba(56, 65, 104, 0.1); padding: 44px 36px; box-shadow: 0 12px 36px rgba(36, 43, 75, 0.04);">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
+                <tr>
+                  <td>
+                    <span class="tag-chip" style="display: inline-block; padding: 6px 14px; background-color: #f1ede4; color: #384168; border-radius: 9999px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">
+                      AERA Bulletin
+                    </span>
+                    <h1 class="text-title" style="margin: 20px 0 16px; font-size: 26px; line-height: 1.3; font-weight: 600; color: #242b4b; letter-spacing: -0.02em;">
+                      ${safeTitle}
+                    </h1>
+                  </td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 10px;">
+                <tr>
+                  <td>
+                    ${bodyHtml}
+                    ${ctaBlock}
+                  </td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 36px;">
+                <tr>
+                  <td class="divider" style="border-top: 1px solid rgba(56, 65, 104, 0.1); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
+                </tr>
+              </table>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 24px;">
+                <tr>
+                  <td>
+                    <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #7882a5; font-weight: 600; margin-bottom: 4px;">With gratitude,</div>
+                    <div class="text-title" style="font-size: 16px; font-weight: 600; color: #242b4b;">The AERA Team</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding-top: 32px; padding-bottom: 24px;">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 16px;">
+                <tr>
+                  <td style="padding: 0 10px;"><a href="https://www.instagram.com/aeraclucofficial" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">Instagram</a></td>
+                  <td class="footer-text" style="color: #cbd0e0;">&bull;</td>
+                  <td style="padding: 0 10px;"><a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">TikTok</a></td>
+                  <td class="footer-text" style="color: #cbd0e0;">&bull;</td>
+                  <td style="padding: 0 10px;"><a href="https://www.facebook.com/thisisaera" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">Facebook</a></td>
+                </tr>
+              </table>
+              <p class="footer-text" style="margin: 0 0 8px; font-size: 12px; line-height: 1.6; color: #8e96b3;">
+                You are receiving this note because you subscribed to the AERA newsletter.
+              </p>
+              <p class="footer-text" style="margin: 0; font-size: 11px; line-height: 1.5; color: #a4accc;">
+                &copy; 2026 AERA Official &bull; San Jose del Monte, Bulacan, Philippines
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function renderContactInquiryEmail({ name, email, phone, subject, message }) {
+  const logoUrl = getLogoUrl();
+  const siteUrl = getSiteUrl();
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background-color: #f7f4ee; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px; color: #384168; }
+    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 20px; border: 1px solid rgba(56,65,104,0.12); padding: 36px 32px; box-shadow: 0 8px 30px rgba(36,43,75,0.05); }
+    .title { font-size: 22px; font-weight: 700; color: #242b4b; margin: 12px 0 20px; }
+    .chip { display: inline-block; padding: 5px 12px; background: #e8ecf6; color: #242b4b; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .meta-box { background: #faf9f7; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; border: 1px solid rgba(56,65,104,0.06); }
+    .meta-row { margin: 6px 0; font-size: 14px; }
+    .meta-label { font-weight: 600; color: #727b9e; display: inline-block; width: 80px; }
+    .msg-body { font-size: 15px; line-height: 1.7; color: #384168; white-space: pre-wrap; background: #faf9f7; border-left: 3px solid #384168; padding: 12px 18px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  </style>
+</head>
+<body>
+  <div style="text-align: center; margin-bottom: 20px;">
+    <a href="${siteUrl}" target="_blank" style="text-decoration:none;">
+      <img src="${logoUrl}" alt="AERA" width="96" height="58" style="display:block;width:96px;height:auto;margin:0 auto;border:0;" />
+    </a>
+  </div>
+  <div class="card">
+    <span class="chip">New Website Inquiry</span>
+    <h1 class="title">${escapeHtml(subject)}</h1>
+    <div class="meta-box">
+      <div class="meta-row"><span class="meta-label">From:</span> <b>${escapeHtml(name)}</b></div>
+      <div class="meta-row"><span class="meta-label">Email:</span> <a href="mailto:${escapeHtml(email)}" style="color:#384168;">${escapeHtml(email)}</a></div>
+      <div class="meta-row"><span class="meta-label">Phone:</span> ${escapeHtml(phone || "Not provided")}</div>
+      <div class="meta-row"><span class="meta-label">Received:</span> ${new Date().toLocaleString("en-PH", { dateStyle: "medium", timeStyle: "short" })}</div>
+    </div>
+    <div style="font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #727b9e;">Customer Message:</div>
+    <div class="msg-body">${escapeHtml(message)}</div>
+    <div style="text-align: center; margin-top: 28px;">
+      <a href="mailto:${escapeHtml(email)}?subject=Re: ${encodeURIComponent(subject)}" style="display:inline-block;padding:12px 28px;background:#384168;color:#ffffff;text-decoration:none;border-radius:999px;font-size:13px;font-weight:600;">Reply Directly to Customer</a>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(req) });
+  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405, req);
+
+  try {
+    const { action, ...body } = await req.json();
+    const db = adminClient();
+
+    if (action === "get-branding" || action === "get-logo") {
+      return json({
+        logoUrl: getLogoUrl(),
+        siteUrl: getSiteUrl(),
+        brandName: "AERA",
+        tagline: "Stay a little longer"
+      });
+    }
+
+    if (action === "create-order") {
+      const customer = body.customer || {}, delivery = body.delivery || {}, items = Array.isArray(body.items) ? body.items : [];
+      if (!emailOk(customer.email) || clean(customer.name, 120).length < 2 || !items.length) {
+        return json({ error: "Please provide a valid customer email, name, and order items." }, 400);
+      }
+      const normalizedItems = items.slice(0, 30).map((item) => ({
+        name: clean(item.name, 150),
+        qty: Math.max(1, Math.min(99, Number(item.qty) || 1)),
+        price: Math.max(0, Number(item.price) || 0),
+        meta: clean(item.meta, 150),
+        img: clean(item.img, 1000)
+      }));
+      if (normalizedItems.some((item) => !item.name || !Number.isFinite(item.price))) {
+        return json({ error: "Invalid order items." }, 400);
+      }
+      const subtotal = normalizedItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const shipping = Math.max(0, Number(body.shipping) || 0), total = subtotal + shipping;
+      const orderNumber = `AERA-${new Date().getUTCFullYear()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 10).toUpperCase()}`;
+      const trackingToken = crypto.randomUUID() + crypto.randomUUID();
+      const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(trackingToken));
+      const tokenHash = Array.from(new Uint8Array(hash)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      let receiptPath = null;
+      if (body.receipt) {
+        const mime = clean(body.receipt.mime, 80);
+        const encoded = clean(body.receipt.base64, 14_000_000);
+        if (!/^image\/(jpeg|png|webp)$/.test(mime) || !encoded || encoded.length > 13_981_016) {
+          return json({ error: "Receipt must be a JPEG, PNG, or WebP under 10 MB." }, 400);
+        }
+        const bytes = Uint8Array.from(atob(encoded), char => char.charCodeAt(0));
+        if (bytes.byteLength > 10 * 1024 * 1024) return json({ error: "Receipt must be under 10 MB." }, 400);
+        const extension = mime === "image/jpeg" ? "jpg" : mime.split("/")[1];
+        receiptPath = `${orderNumber}.${extension}`;
+        const { error: receiptError } = await db.storage.from("receipts").upload(receiptPath, bytes, { contentType: mime, upsert: false });
+        if (receiptError) throw new Error("Receipt upload failed.");
+      }
+      const { data: order, error } = await db.from("orders").insert({
+        order_number: orderNumber,
+        customer_name: clean(customer.name, 120),
+        customer_email: clean(customer.email, 254).toLowerCase(),
+        customer_phone: clean(customer.phone, 30),
+        street: clean(delivery.street, 200),
+        barangay: clean(delivery.barangay, 120),
+        city: clean(delivery.city, 120),
+        province: clean(delivery.area, 60),
+        zip: clean(delivery.zip, 20),
+        delivery_notes: clean(delivery.note, 500),
+        items: normalizedItems,
+        subtotal,
+        shipping,
+        total,
+        payment_method: clean(body.paymentMethod, 50),
+        receipt_url: receiptPath,
+        status: "order_received",
+        tracking_token_hash: tokenHash,
+        status_updated_at: new Date().toISOString()
+      }).select("id,order_number,created_at,total,status").single();
+      if (error) throw error;
+      await db.from("order_status_history").insert({ order_id: order.id, status: "order_received", note: "Order received" });
+      const trackUrl = `${Deno.env.get("PUBLIC_SITE_URL") || "https://ravecalangi.github.io/area-new"}/track-order.html`;
+      const luxuryHtml = renderOrderConfirmationEmail({
+        customerName: clean(customer.name, 120),
+        orderNumber,
+        orderDate: new Date().toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" }),
+        items: normalizedItems,
+        subtotal,
+        shipping,
+        total,
+        deliveryArea: [clean(delivery.barangay, 120), clean(delivery.city, 120), clean(delivery.area, 60)].filter(Boolean).join(", "),
+        trackUrl
+      });
+      const emailSent = await sendBrevo({ sender: sender(), to: [{ email: clean(customer.email, 254) }], subject: `AERA — Order Received ${orderNumber}`, htmlContent: luxuryHtml });
+      return json({ orderNumber, trackingToken, orderDate: order.created_at, total, status: "order_received", emailSent }, 201);
+    }
+
+    if (action === "track-order") {
+      const orderNumber = clean(body.orderNumber, 40).toUpperCase();
+      if (!/^[A-Z0-9-]{10,40}$/i.test(orderNumber)) return json({ error: "Enter a valid Order ID." }, 400);
+      let query = db.from("orders").select("id,order_number,created_at,status,status_updated_at,items,total,shipping").eq("order_number", orderNumber);
+      if (body.email && emailOk(body.email)) {
+        query = query.eq("customer_email", clean(body.email, 254).toLowerCase());
+      }
+      const { data: order } = await query.maybeSingle();
+      if (!order) return json({ error: "We could not find an order matching that ID." }, 404);
+      const { data: history } = await db.from("order_status_history").select("status,note,created_at").eq("order_id", order.id).order("created_at", { ascending: true });
+      return json({ order: { ...order, history: history || [] } });
+    }
+
+    if (action === "admin-list-orders") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("orders").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return json({ orders: data || [] });
+    }
+
+    if (action === "admin-list-blogs") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("blogs").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return json({ blogs: data || [] });
+    }
+
+    if (action === "admin-save-blog") {
+      await requireAdmin(req);
+      const title = clean(body.title, 180);
+      const slug = clean(body.slug, 180).toLowerCase();
+      if (!title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return json({ error: "Provide a title and valid slug." }, 400);
+      const payload = {
+        title,
+        slug,
+        excerpt: clean(body.excerpt, 500),
+        category: clean(body.category, 80),
+        featured_image_url: clean(body.featuredImageUrl, 1200),
+        content: clean(body.content, 50_000),
+        status: ["draft", "published", "scheduled"].includes(body.status) ? body.status : "draft",
+        featured: body.featured === true,
+        scheduled_at: body.scheduledAt || null,
+        published_at: body.status === "published" ? (body.publishedAt || new Date().toISOString()) : null,
+      };
+      const query = body.blogId ? db.from("blogs").update(payload).eq("id", clean(body.blogId, 80)) : db.from("blogs").insert(payload);
+      const { data, error } = await query.select("*").single();
+      if (error) throw error;
+      return json({ blog: data });
+    }
+
+    if (action === "admin-delete-blog") {
+      await requireAdmin(req);
+      const { error } = await db.from("blogs").delete().eq("id", clean(body.blogId, 80));
+      if (error) throw error;
+      return json({ ok: true });
+    }
+
+    if (action === "admin-update-content") {
+      await requireAdmin(req);
+      const updates = Array.isArray(body.content) ? body.content.slice(0, 100) : [];
+      for (const row of updates) {
+        const key = clean(row?.key, 100);
+        if (!/^[a-z0-9_]+$/.test(key)) return json({ error: "Invalid content key." }, 400);
+        const { error } = await db.from("site_content").upsert({ key, value: clean(row?.value, 20_000), updated_at: new Date().toISOString() }, { onConflict: "key" });
+        if (error) throw error;
+      }
+      return json({ ok: true });
+    }
+
+    if (action === "subscribe") {
+      const email = clean(body.email, 254).toLowerCase();
+      if (!emailOk(email)) return json({ error: "Enter a valid email address." }, 400);
+      await db.from("newsletter_subscribers").upsert({ email, status: "subscribed" }, { onConflict: "email" });
+      const welcomeHtml = renderNewsletterEmail({
+        subject: "Welcome to AERA Circle",
+        preheader: "Thank you for joining our circle of mindful scents and rituals.",
+        title: "Welcome to the AERA Circle",
+        message: "Thank you for joining us. You are now part of our quiet circle of scents, seasonal drops, and restorative rituals.\n\nWhenever we release a new blend or share an announcement, you'll be among the very first to know.",
+        ctaLabel: "Visit AERA",
+        ctaUrl: Deno.env.get("PUBLIC_SITE_URL") || "https://ravecalangi.github.io/area-new/index.html",
+        unsubscribeEmail: email
+      });
+      sendBrevo({
+        sender: sender(),
+        to: [{ email }],
+        subject: "Welcome to AERA Circle",
+        htmlContent: welcomeHtml
+      }).catch((err) => console.error("Welcome email notice:", err));
+      return json({ message: "You’re on the list." });
+    }
+
+    if (action === "contact") {
+      const email = clean(body.email, 254).toLowerCase();
+      const name = clean(body.name, 120);
+      const subject = clean(body.subject, 160) || "General Inquiry";
+      const message = clean(body.message, 4000);
+      const phone = clean(body.phone, 40);
+
+      if (!emailOk(email) || name.length < 2 || message.length < 3) {
+        return json({ error: "Please provide your name, valid email, and your message." }, 400);
+      }
+      const recipient = Deno.env.get("CONTACT_RECIPIENT_EMAIL") || "contactaeraofficial@gmail.com";
+      const inquiryHtml = renderContactInquiryEmail({ name, email, phone, subject, message });
+      const emailSent = await sendBrevo({
+        sender: sender(),
+        replyTo: { email, name },
+        to: [{ email: recipient }],
+        subject: `AERA Contact Inquiry — ${subject}`,
+        htmlContent: inquiryHtml,
+        textContent: `Customer Contact Inquiry\n-----------------------\nFrom: ${name} <${email}>\nPhone: ${phone || "N/A"}\nSubject: ${subject}\nSubmitted: ${new Date().toISOString()}\n\nMessage:\n${message}`
+      });
+      return json({ message: emailSent ? "Your message has been sent successfully. We'll get back to you soon." : "Your message was received. Email notifications are temporarily disabled." });
+    }
+
+    if (action === "reseller-me") {
+      const user = await currentUser(req);
+      if (!user) return json({ error: "Unauthorized" }, 401);
+      const { data: profile } = await db.from("profiles").select("id,role,full_name,business_name,contact_number,address,is_active,created_at").eq("id", user.id).maybeSingle();
+      if (!profile || profile.role !== "reseller" || !profile.is_active) return json({ error: "This reseller account is unavailable." }, 403);
+      const { data: balance } = await db.from("reseller_balances").select("balance,updated_at").eq("reseller_id", user.id).maybeSingle();
+      const { data: transactions } = await db.from("reseller_balance_transactions").select("transaction_type,amount,description,balance_after,created_at").eq("reseller_id", user.id).order("created_at", { ascending: false }).limit(20);
+      return json({ profile, email: user.email, balance: balance?.balance || 0, transactions: transactions || [] });
+    }
+
+    if (action === "admin-update-order-status") {
+      const admin = await requireAdmin(req);
+      const status = clean(body.status, 30);
+      if (!orderStatuses.has(status)) return json({ error: "Invalid order status." }, 400);
+      const { data: order, error } = await db.from("orders").update({ status, status_updated_at: new Date().toISOString() }).eq("id", clean(body.orderId, 80)).select("id,order_number,customer_email").single();
+      if (error) throw error;
+      await db.from("order_status_history").insert({ order_id: order.id, status, note: clean(body.note, 500), changed_by: admin.id });
+      return json({ ok: true });
+    }
+
+    if (action === "admin-delete-order") {
+      await requireAdmin(req);
+      const { error } = await db.from("orders").delete().eq("id", clean(body.orderId, 80));
+      if (error) throw error;
+      return json({ ok: true });
+    }
+
+    if (action === "admin-list-resellers") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("profiles").select("id,full_name,business_name,contact_number,address,is_active,created_at,reseller_balances(balance,updated_at)").eq("role", "reseller").order("created_at", { ascending: false });
+      if (error) throw error;
+      return json({ resellers: data || [] });
+    }
+
+    if (action === "admin-create-reseller") {
+      await requireAdmin(req);
+      const email = clean(body.email, 254).toLowerCase(), password = String(body.password || "");
+      if (!emailOk(email) || clean(body.fullName, 120).length < 2 || password.length < 12) {
+        return json({ error: "Provide a name, valid email, and a password of at least 12 characters." }, 400);
+      }
+      const { data: created, error: createError } = await db.auth.admin.createUser({ email, password, email_confirm: true });
+      if (createError) return json({ error: createError.message }, 400);
+      const initialBalance = Math.max(0, Number(body.initialBalance) || 0);
+      const { error: profileError } = await db.from("profiles").insert({
+        id: created.user.id,
+        role: "reseller",
+        full_name: clean(body.fullName, 120),
+        business_name: clean(body.businessName, 160),
+        contact_number: clean(body.contactNumber, 30),
+        address: clean(body.address, 500),
+        is_active: body.isActive !== false
+      });
+      if (profileError) {
+        await db.auth.admin.deleteUser(created.user.id);
+        throw profileError;
+      }
+      await db.from("reseller_balances").insert({ reseller_id: created.user.id, balance: initialBalance });
+      if (initialBalance) {
+        await db.from("reseller_balance_transactions").insert({ reseller_id: created.user.id, transaction_type: "credit", amount: initialBalance, description: "Initial balance", balance_after: initialBalance });
+      }
+      return json({ id: created.user.id }, 201);
+    }
+
+    if (action === "admin-update-reseller") {
+      await requireAdmin(req);
+      const id = clean(body.resellerId, 80);
+      const payload = {
+        full_name: clean(body.fullName, 120),
+        business_name: clean(body.businessName, 160),
+        contact_number: clean(body.contactNumber, 30),
+        address: clean(body.address, 500),
+        is_active: body.isActive !== false
+      };
+      const { error } = await db.from("profiles").update(payload).eq("id", id).eq("role", "reseller");
+      if (error) throw error;
+      return json({ ok: true });
+    }
+
+    if (action === "admin-adjust-balance") {
+      const admin = await requireAdmin(req);
+      const id = clean(body.resellerId, 80), amount = Number(body.amount), type = clean(body.transactionType, 20);
+      if (!Number.isFinite(amount) || amount <= 0 || !["credit", "debit", "adjustment"].includes(type)) {
+        return json({ error: "Enter a valid positive balance amount." }, 400);
+      }
+      const { data: current, error: balanceError } = await db.from("reseller_balances").select("balance").eq("reseller_id", id).single();
+      if (balanceError) throw balanceError;
+      const next = type === "debit" ? Number(current.balance) - amount : Number(current.balance) + amount;
+      if (next < 0) return json({ error: "This debit would make the balance negative." }, 400);
+      const { error: updateError } = await db.from("reseller_balances").update({ balance: next, updated_at: new Date().toISOString() }).eq("reseller_id", id);
+      if (updateError) throw updateError;
+      await db.from("reseller_balance_transactions").insert({ reseller_id: id, transaction_type: type, amount, description: clean(body.description, 300), balance_after: next, created_by: admin.id });
+      return json({ balance: next });
+    }
+
+    if (action === "admin-list-subscribers") {
+      await requireAdmin(req);
+      const { data: subscribers, error } = await db.from("newsletter_subscribers").select("id, email, status, created_at").order("created_at", { ascending: false });
+      if (error) throw error;
+      return json({ subscribers: subscribers || [], count: (subscribers || []).length });
+    }
+
+    if (action === "admin-add-subscriber") {
+      await requireAdmin(req);
+      const email = clean(body.email, 254).toLowerCase();
+      if (!emailOk(email)) return json({ error: "Enter a valid email address." }, 400);
+      const { error } = await db.from("newsletter_subscribers").upsert({ email, status: "subscribed" }, { onConflict: "email" });
+      if (error) throw error;
+      return json({ ok: true, message: "Subscriber added." });
+    }
+
+    if (action === "admin-delete-subscriber") {
+      await requireAdmin(req);
+      const email = clean(body.email, 254).toLowerCase();
+      if (!email) return json({ error: "Subscriber email required." }, 400);
+      const { error } = await db.from("newsletter_subscribers").delete().eq("email", email);
+      if (error) throw error;
+      return json({ ok: true, message: "Subscriber removed." });
+    }
+
+    if (action === "admin-send-newsletter") {
+      await requireAdmin(req);
+      const subject = clean(body.subject, 180);
+      const preheader = clean(body.preheader, 200);
+      const title = clean(body.title, 200);
+      const message = clean(body.message, 20000);
+      const ctaLabel = clean(body.ctaLabel, 80);
+      const ctaUrl = clean(body.ctaUrl, 500);
+      const testEmail = clean(body.testEmail, 254).toLowerCase();
+
+      if (!subject || !message) return json({ error: "Subject and announcement message are required." }, 400);
+
+      const htmlContent = renderNewsletterEmail({
+        subject,
+        preheader,
+        title: title || subject,
+        message,
+        ctaLabel,
+        ctaUrl,
+        unsubscribeEmail: testEmail || "subscriber@aera.com"
+      });
+
+      if (testEmail) {
+        if (!emailOk(testEmail)) return json({ error: "Invalid test email address." }, 400);
+        await sendBrevo({
+          sender: sender(),
+          to: [{ email: testEmail }],
+          subject: `[PREVIEW] ${subject}`,
+          htmlContent
+        });
+        return json({ ok: true, message: `Preview sent to ${testEmail}.` });
+      }
+
+      const { data: subs, error: subsError } = await db.from("newsletter_subscribers").select("email").eq("status", "subscribed");
+      if (subsError) throw subsError;
+      if (!subs || !subs.length) return json({ error: "No active subscribers found in database." }, 400);
+
+      let sentCount = 0;
+      for (const sub of subs) {
+        if (emailOk(sub.email)) {
+          try {
+            await sendBrevo({
+              sender: sender(),
+              to: [{ email: sub.email }],
+              subject,
+              htmlContent
+            });
+            sentCount++;
+          } catch (e) {
+            console.error(`Failed to send to ${sub.email}:`, e);
+          }
+        }
+      }
+
+      return json({ ok: true, count: sentCount, message: `Newsletter broadcast sent to ${sentCount} subscriber(s).` });
+    }
+
+    return json({ error: "Unknown action." }, 400);
+  } catch (error) {
+    console.error(error);
+    return json({ error: error instanceof Error ? error.message : "Request failed." }, 500);
+  }
+});
+

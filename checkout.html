@@ -325,8 +325,8 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
     <p class="muted">We got your order and receipt. We'll verify your payment and message you at the contact details you gave us.</p>
     <span class="ordno" id="ordNo"></span>
     <p class="muted" id="doneTotal"></p>
-    <p class="muted" style="font-size:.85rem">Keep your order ID and use it with your checkout email to check delivery progress.</p>
-    <a class="btn ghost" href="track-order.html">Track this order</a>
+    <p class="muted" style="font-size:.85rem">Keep your Order ID to check your delivery progress anytime on our website. No account required.</p>
+    <a class="btn ghost" id="trackOrderLink" href="track-order.html">Track this order</a>
     <a class="btn" href="index.html">Back to AERA</a>
   </section>
 </main>
@@ -653,6 +653,7 @@ function doPlaceOrder(){
       try{ localStorage.removeItem(CART_KEY); }catch(e){}
       try{ localStorage.removeItem(INFO_KEY); }catch(e){}
       $('ordNo').textContent = result.orderNumber;
+      if($('trackOrderLink')) $('trackOrderLink').href = 'track-order.html?order=' + encodeURIComponent(result.orderNumber);
       $('doneTotal').textContent = 'Total paid: ' + peso(order.total) + ' via ' + payment.label;
       show('doneView');
     })

@@ -23,14 +23,42 @@
 <a class="featured" id="featured" href="#"><div class="featured-img" id="featuredImg"></div><div class="featured-body"><span class="badge" id="featuredCat"></span><h2 id="featuredTitle"></h2><p class="excerpt" id="featuredExcerpt"></p><div class="meta"><span id="featuredDate"></span></div><strong>Read the story →</strong></div></a>
 <section class="grid" id="grid" aria-live="polite"></section><div class="empty" id="empty">No published stories match your search.</div><div class="load"><button id="loadMore" hidden>Load more</button></div>
 </main>
-<footer class="contact" id="contact"><div class="ct-in"><div class="ct-info"><img src="images/aera-logo-black.png" class="logo" alt="AERA" style="filter:invert(1)"><h2>Contact us</h2><p>Questions about our products, how to order, or AERA Circle? Send us a message and we’ll get back to you.</p><ul class="ct-list"><li><span>Email</span><a href="mailto:contactaeraofficial@gmail.com">contactaeraofficial@gmail.com</a></li></ul><div class="ct-social"><a href="https://www.instagram.com/aeraclucofficial" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" rel="noopener">TikTok</a><a href="https://www.facebook.com/thisisaera" target="_blank" rel="noopener">Facebook</a></div></div><form class="ct-form" id="ctForm"><label>Your name<input type="text" name="name" placeholder="Name" required></label><label>Phone<input type="tel" name="phone" placeholder="+63 ..." required></label><label>Message<textarea name="message" placeholder="Tell us about your question or order"></textarea></label><button type="submit">Send message</button><p class="form-msg" id="ctMsg" role="status"></p></form></div><div class="ct-bottom"><span>© 2026 AERA. All rights reserved.</span><nav><a href="#" data-policy="privacy">Privacy Policy</a><a href="#" data-policy="ordering">Ordering Policy</a><a href="about.html">About Us</a><a href="circle.html">AERA Circle</a><a href="index.html#faq">FAQs</a></nav></div></footer>
+<footer class="contact" id="contact"><div class="ct-in"><div class="ct-info"><img src="images/aera-logo-black.png" class="logo" alt="AERA" style="filter:invert(1)"><h2>Contact us</h2><p>Questions about our products, how to order, or AERA Circle? Send us a message and we’ll get back to you.</p><ul class="ct-list"><li><span>Email</span><a href="mailto:contactaeraofficial@gmail.com">contactaeraofficial@gmail.com</a></li></ul><div class="ct-social"><a href="https://www.instagram.com/aeraclucofficial" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" rel="noopener">TikTok</a><a href="https://www.facebook.com/thisisaera" target="_blank" rel="noopener">Facebook</a></div></div><form class="ct-form" id="ctForm"><label>Your name<input type="text" name="name" placeholder="Name" required></label><label>Email address<input type="email" name="email" placeholder="your@email.com" required></label><label>Subject<input type="text" name="subject" placeholder="How can we help?" required></label><label>Phone<input type="tel" name="phone" placeholder="+63 ..." required></label><label>Message<textarea name="message" placeholder="Tell us about your question or order" required></textarea></label><button type="submit">Send message</button><p class="form-msg" id="ctMsg" role="status"></p></form></div><div class="ct-bottom"><span>© 2026 AERA. All rights reserved.</span><nav><a href="#" data-policy="privacy">Privacy Policy</a><a href="#" data-policy="ordering">Ordering Policy</a><a href="about.html">About Us</a><a href="circle.html">AERA Circle</a><a href="index.html#faq">FAQs</a></nav></div></footer>
 <script>
 (function(){
-  function wire(id,msg,text){var f=document.getElementById(id),m=document.getElementById(msg);if(f)f.addEventListener('submit',function(e){e.preventDefault();m.textContent=text;f.reset()})}
+  var AERA_API='https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api';
+  var SUPA_KEY=window.AERA_SUPABASE_KEY || 'sb_publishable_Bdq_PnkKKZfnoqwBkcqrAg_Np412yu3';
+  function wire(id,msg,text){
+    var f=document.getElementById(id),m=document.getElementById(msg);
+    if(!f||!m)return;
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var btn=f.querySelector('button');
+      if(btn) btn.disabled=true;
+      m.textContent='Sending…';
+      var data=new FormData(f),payload={action:'contact'};
+      data.forEach(function(v,k){payload[k]=v;});
+      fetch(AERA_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify(payload)})
+        .then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Unable to send.');return x;});})
+        .then(function(x){m.textContent=x.message||text;f.reset();})
+        .catch(function(err){m.textContent=err.message;})
+        .finally(function(){if(btn) btn.disabled=false;});
+    });
+  }
   wire('ctForm','ctMsg','Thanks! We got your message and will get back to you soon.');
   var url=window.AERA_SUPABASE_URL||'https://vhyveinrqamzycixhjsu.supabase.co',key=window.AERA_SUPABASE_KEY||'sb_publishable_Bdq_PnkKKZfnoqwBkcqrAg_Np412yu3',size=9,offset=0,category='',query='';
   var $=function(id){return document.getElementById(id)}, esc=function(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML};
   function get(path){return fetch(url+path,{headers:{apikey:key,Authorization:'Bearer '+key}}).then(function(r){if(!r.ok)throw Error('Blog service unavailable');return r.json()})}
+  get('/rest/v1/site_content?select=key,value&key=in.(topbar_text,topbar_active,theme_primary,theme_deep,theme_background)').then(function(rows){
+    if(!Array.isArray(rows)) return;
+    rows.forEach(function(row){
+      if(row.key==='topbar_active'&&row.value==='false'){var t=document.querySelector('.topbar');if(t)t.style.display='none';}
+      if(row.key==='topbar_text'){var a=document.querySelector('.topbar a');if(a)a.textContent=row.value;}
+      if(row.key==='theme_primary'){document.documentElement.style.setProperty('--ink',row.value);document.documentElement.style.setProperty('--brown',row.value);}
+      if(row.key==='theme_deep'){document.documentElement.style.setProperty('--deep',row.value);}
+      if(row.key==='theme_background'){document.documentElement.style.setProperty('--cream',row.value);}
+    });
+  }).catch(function(){});
   function date(v){return v?new Date(v).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'}):''}
   function card(p){
     var a=document.createElement('a');

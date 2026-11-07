@@ -410,19 +410,26 @@ a{color:inherit;text-decoration:none}
         <h2 id="collection_title">Find your ritual.</h2>
         <p class="section-sub" id="collection_sub">Pick a scent, a daily cleanser or a body-care essential.</p>
       </div>
-      <div class="cat-cards">
-        <a class="cat-card" href="#collection" data-go-cat="mist">
-          <div class="cat-card-img"><img id="cat1_img" src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
-          <span class="cat-card-label"><small class="cat-tag" id="cat1_tag">Fragrance</small><b id="cat1_title">Hair &amp; Body Mists</b><small class="cat-meta" id="cat1_meta">5 scents &#183; 110mL</small></span>
-        </a>
-        <a class="cat-card" href="#collection" data-go-cat="soap">
-          <div class="cat-card-img"><img id="cat2_img" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
-          <span class="cat-card-label"><small class="cat-tag" id="cat2_tag">Skincare</small><b id="cat2_title">Soaps</b><small class="cat-meta" id="cat2_meta">2 soaps &#183; 90g</small></span>
-        </a>
-        <a class="cat-card" href="#collection" data-go-cat="serum">
-          <div class="cat-card-img"><img id="cat3_img" src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
-          <span class="cat-card-label"><small class="cat-tag" id="cat3_tag">Body Care</small><b id="cat3_title">Body Serum</b><small class="cat-meta" id="cat3_meta">Second Skin &#183; 100mL</small></span>
-        </a>
+      <div class="cat-carousel-wrap">
+        <div class="cat-cards" id="catCards">
+          <a class="cat-card" href="#collection" data-go-cat="mist">
+            <div class="cat-card-img"><img id="cat1_img" src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+            <span class="cat-card-label"><small class="cat-tag" id="cat1_tag">Fragrance</small><b id="cat1_title">Hair &amp; Body Mists</b><small class="cat-meta" id="cat1_meta">5 scents &#183; 110mL</small></span>
+          </a>
+          <a class="cat-card" href="#collection" data-go-cat="soap">
+            <div class="cat-card-img"><img id="cat2_img" src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+            <span class="cat-card-label"><small class="cat-tag" id="cat2_tag">Skincare</small><b id="cat2_title">Soaps</b><small class="cat-meta" id="cat2_meta">2 soaps &#183; 90g</small></span>
+          </a>
+          <a class="cat-card" href="#collection" data-go-cat="serum">
+            <div class="cat-card-img"><img id="cat3_img" src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=700&auto=format&fit=crop&q=80" alt="" loading="lazy"></div>
+            <span class="cat-card-label"><small class="cat-tag" id="cat3_tag">Body Care</small><b id="cat3_title">Body Serum</b><small class="cat-meta" id="cat3_meta">Second Skin &#183; 100mL</small></span>
+          </a>
+        </div>
+        <div class="cat-dots" id="catDots" aria-label="Category Carousel pagination">
+          <button class="cat-dot active" aria-label="Slide 1" data-slide="0"></button>
+          <button class="cat-dot" aria-label="Slide 2" data-slide="1"></button>
+          <button class="cat-dot" aria-label="Slide 3" data-slide="2"></button>
+        </div>
       </div>
     </div>
     <div class="products-header" id="collection">
@@ -598,7 +605,7 @@ a{color:inherit;text-decoration:none}
     </div>
     <form class="nl-form" id="nlForm">
       <label class="sr-only" for="nlEmail">Email address</label>
-      <input id="nlEmail" type="email" placeholder="Your email address" required>
+      <input id="nlEmail" name="email" type="email" placeholder="Your email address" required>
       <button type="submit">Subscribe</button>
       <p class="form-msg" id="nlMsg" role="status"></p>
     </form>
@@ -623,9 +630,10 @@ a{color:inherit;text-decoration:none}
     </div>
     <form class="ct-form" id="ctForm">
       <label>Your name<input type="text" name="name" placeholder="Name" required></label>
+      <label>Email address<input type="email" name="email" placeholder="your@email.com" required></label>
       <label>Subject<input type="text" name="subject" placeholder="How can we help?" required></label>
       <label>Phone<input type="tel" name="phone" placeholder="+63 ..." required></label>
-      <label>Message<textarea name="message" placeholder="Tell us about your question or order"></textarea></label>
+      <label>Message<textarea name="message" placeholder="Tell us about your question or order" required></textarea></label>
       <button type="submit">Send message</button>
       <p class="form-msg" id="ctMsg" role="status"></p>
     </form>
@@ -1045,16 +1053,59 @@ a{color:inherit;text-decoration:none}
     });
   })
   .catch(function(){/* fail silently — grid stays empty */});
+
+  /* Category carousel mobile pagination */
+  (function(){
+    var box = document.getElementById('catCards');
+    var dots = document.querySelectorAll('.cat-dot');
+    if(!box || !dots.length) return;
+    box.addEventListener('scroll', function(){
+      var scrollLeft = box.scrollLeft;
+      var cardWidth = box.offsetWidth * 0.85;
+      var activeIndex = Math.round(scrollLeft / (cardWidth || 1));
+      dots.forEach(function(dot, idx){
+        dot.classList.toggle('active', idx === activeIndex);
+      });
+    }, { passive: true });
+
+    dots.forEach(function(dot, idx){
+      dot.addEventListener('click', function(e){
+        e.preventDefault();
+        var cards = box.querySelectorAll('.cat-card');
+        if(cards[idx]){
+          cards[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      });
+    });
+  })();
 })();
 
 // keep the banner exactly full-screen (device height) with or without the topbar
 function setTopbarH(){var t=document.getElementById('topbar');document.documentElement.style.setProperty('--topbar-h',(t&&t.style.display!=='none'?t.offsetHeight:0)+'px');}
 (function(){var t=document.getElementById('topbar');if(localStorage.getItem('aera-topbar-closed')==='1'){t.style.display='none';}setTopbarH();window.addEventListener('resize',setTopbarH);window.addEventListener('load',setTopbarH);document.getElementById('tbClose').addEventListener('click',function(){t.style.display='none';localStorage.setItem('aera-topbar-closed','1');setTopbarH();});window.addEventListener('storage',function(e){if(e.key==='aera-topbar-closed'){t.style.display=e.newValue==='1'?'none':'';setTopbarH();}});})();
 (function(){
-  var AERA_API='https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api',SUPA_KEY='******';
+  var AERA_API='https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api';
+  var SUPA_KEY=window.AERA_SUPABASE_KEY || 'sb_publishable_Bdq_PnkKKZfnoqwBkcqrAg_Np412yu3';
   function wire(formId,msgId,text){
     var f=document.getElementById(formId),m=document.getElementById(msgId);
-    f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('button');b.disabled=true;m.textContent='Sending…';var data=new FormData(f),payload={action:formId==='nlForm'?'subscribe':'contact'};data.forEach(function(v,k){payload[k]=v;});fetch(AERA_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify(payload)}).then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Unable to send.');return x;});}).then(function(x){m.textContent=x.message||text;f.reset();}).catch(function(err){m.textContent=err.message;}).finally(function(){b.disabled=false;});});
+    if(!f||!m) return;
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      var b=f.querySelector('button');
+      if(b) b.disabled=true;
+      m.textContent='Sending…';
+      var data=new FormData(f),payload={action:formId==='nlForm'?'subscribe':'contact'};
+      data.forEach(function(v,k){payload[k]=v;});
+      if(formId==='nlForm' && !payload.email){
+        var em=f.querySelector('input[type="email"]');
+        if(em) payload.email=em.value.trim();
+      }
+      fetch(AERA_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY},body:JSON.stringify(payload)})
+        .then(function(r){return r.json().then(function(x){if(!r.ok)throw Error(x.error||'Unable to send.');return x;});})
+        .then(function(x){m.textContent=x.message||text;f.reset();})
+        .catch(function(err){m.textContent=err.message;})
+        .finally(function(){if(b) b.disabled=false;});
+    });
   }
   wire('nlForm','nlMsg','Thanks for subscribing!');
   wire('ctForm','ctMsg','Thanks! We got your message and will get back to you soon.');
@@ -1444,9 +1495,10 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 /* ===== SHOP BY CATEGORY (image on top, text below) ===== */
 .cat-feature{position:relative}
 .cat-feature .products-header{position:relative;z-index:1}
+.cat-carousel-wrap{position:relative;width:100%}
 .cat-cards{display:flex;gap:1.25rem;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 0 .75rem;-webkit-overflow-scrolling:touch}
 .cat-cards::-webkit-scrollbar{display:none}
-.cat-card{min-width:82%;scroll-snap-align:start}
+.cat-card{min-width:85%;scroll-snap-align:center}
 .cat-card{display:flex;flex-direction:column;overflow:hidden;border-radius:.75rem;background:#fcfbfa;border:1px solid rgba(56,65,104,.15);transition:transform .3s,border-color .3s}
 .cat-card:hover{transform:translateY(-4px);border-color:rgba(56,65,104,.35)}
 .cat-card-img{aspect-ratio:5/4;overflow:hidden;background:rgba(56,65,104,.06)}
@@ -1455,9 +1507,13 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 .cat-card-label{display:flex;flex-direction:column;gap:.4rem;padding:1.25rem 1.5rem 1.5rem;text-align:left}
 .cat-card-label small{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(56,65,104,.6)}
 .cat-card-label b{font-family:Urbanist,Arial,sans-serif;font-weight:500;font-size:1.5rem;line-height:1.2;color:var(--ink)}
+.cat-dots{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:12px}
+.cat-dot{width:8px;height:8px;border-radius:50%;background:rgba(56,65,104,.25);border:none;padding:0;cursor:pointer;transition:all .25s ease}
+.cat-dot.active{width:22px;border-radius:999px;background:var(--ink)}
 @media(min-width:640px){
   .cat-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem;overflow:visible;padding:0}
   .cat-card{min-width:0}
+  .cat-dots{display:none}
 }
 .prod-card.flash{border-color:var(--brown);box-shadow:0 0 0 3px rgba(56,65,104,.25)}
 

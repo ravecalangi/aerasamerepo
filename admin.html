@@ -32,6 +32,7 @@ button{font:inherit;cursor:pointer}
 .fld{display:grid;gap:.4rem;margin-bottom:1rem}
 .fld label{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .fld input{padding:.85rem 1rem;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:.95rem;color:var(--brown);background:var(--cream)}
+.fld input[type="color"]{height:46px;padding:4px 8px;cursor:pointer}
 .fld input:focus{outline:2px solid var(--brown);outline-offset:1px}
 .login-err{color:var(--danger);font-size:.8rem;margin-bottom:.75rem;min-height:1rem}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;height:48px;padding:0 1.5rem;border-radius:9999px;border:0;background:var(--brown);color:#fff;font-weight:600;font-size:.9rem;transition:background .2s,transform .2s;white-space:nowrap}
@@ -140,15 +141,21 @@ button{font:inherit;cursor:pointer}
 .lightbox-x{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);border:0;border-radius:50%;width:40px;height:40px;display:grid;place-items:center;color:#fff;font-size:1.4rem;cursor:pointer}
 .lightbox-x:hover{background:rgba(255,255,255,.25)}
 
-/* ── RESELLERS + NEWSLETTER ── */
-var resellerRows=[], editingResellerId=null;
-function loadResellers(){
-  aeraApi('admin-list-resellers').then(function(data){resellerRows=data.resellers||[];var body=$('resellerTbody');body.innerHTML=resellerRows.length?resellerRows.map(function(r){var b=r.reseller_balances&&r.reseller_balances[0]?r.reseller_balances[0].balance:0;return '<tr><td><b>'+esc(r.full_name)+'</b><br><small>'+esc(r.address||'')+'</small></td><td>'+esc(r.business_name||'—')+'</td><td>'+esc(r.contact_number||'—')+'</td><td>'+peso(b)+'</td><td><span class="badge '+(r.is_active?'confirmed':'cancelled')+'">'+(r.is_active?'Active':'Inactive')+'</span></td><td><button class="btn sm ghost" data-r-edit="'+esc(r.id)+'">Edit</button> <button class="btn sm ghost" data-r-balance="'+esc(r.id)+'">Balance</button></td></tr>';}).join(''):'<tr><td colspan="6"><div class="tbl-empty">No reseller accounts yet.</div></td></tr>';body.querySelectorAll('[data-r-edit]').forEach(function(b){b.onclick=function(){openReseller(b.dataset.rEdit);};});body.querySelectorAll('[data-r-balance]').forEach(function(b){b.onclick=function(){adjustResellerBalance(b.dataset.rBalance);};});}).catch(function(e){toast(e.message);});
-}
-function openReseller(id){editingResellerId=id||null;var r=id?resellerRows.filter(function(x){return x.id===id;})[0]:null;$('resellerEditor').hidden=false;$('resellerEditorTitle').textContent=r?'Edit reseller':'Add reseller';$('rFullName').value=r?r.full_name:'';$('rBusiness').value=r?(r.business_name||''):'';$('rEmail').value='';$('rEmail').disabled=!!r;$('rContact').value=r?(r.contact_number||''):'';$('rAddress').value=r?(r.address||''):'';$('rBalance').value=r?(r.reseller_balances&&r.reseller_balances[0]?r.reseller_balances[0].balance:0):0;$('rBalance').disabled=!!r;$('rPassword').value='';$('rPasswordWrap').hidden=!!r;$('rActive').checked=r?r.is_active:true;$('resellerMsg').textContent='';}
-function adjustResellerBalance(id){var amount=prompt('Amount in pesos (positive number):');if(amount===null)return;var type=prompt('Type: credit or debit','credit');if(type===null)return;var description=prompt('Description','Balance adjustment');if(description===null)return;aeraApi('admin-adjust-balance',{resellerId:id,amount:Number(amount),transactionType:type.trim().toLowerCase(),description:description}).then(function(){toast('Balance updated.');loadResellers();}).catch(function(e){toast(e.message);});}
-$('newResellerBtn').onclick=function(){openReseller(null);};$('cancelResellerBtn').onclick=function(){$('resellerEditor').hidden=true;};$('saveResellerBtn').onclick=function(){var p={fullName:$('rFullName').value.trim(),businessName:$('rBusiness').value.trim(),contactNumber:$('rContact').value.trim(),address:$('rAddress').value.trim(),isActive:$('rActive').checked};var btn=this;btn.disabled=true;btn.textContent='Saving…';var request=editingResellerId?aeraApi('admin-update-reseller',Object.assign(p,{resellerId:editingResellerId})):aeraApi('admin-create-reseller',Object.assign(p,{email:$('rEmail').value.trim(),password:$('rPassword').value,initialBalance:Number($('rBalance').value)||0}));request.then(function(){$('resellerEditor').hidden=true;toast(editingResellerId?'Reseller updated.':'Reseller account created.');loadResellers();}).catch(function(e){$('resellerMsg').textContent=e.message;}).finally(function(){btn.disabled=false;btn.textContent='Save reseller';});};
-$('sendCampaignBtn').onclick=function(){var subject=$('campaignSubject').value.trim(),htmlContent=$('campaignContent').value.trim();if(!subject||!htmlContent){$('campaignMsg').textContent='Add a subject and email content.';return;}if(!confirm('Send this newsletter to all Brevo subscribers?'))return;var btn=this;btn.disabled=true;btn.textContent='Scheduling…';aeraApi('admin-send-newsletter',{subject:subject,htmlContent:htmlContent}).then(function(){$('campaignMsg').textContent='Newsletter scheduled successfully.';$('campaignSubject').value='';$('campaignContent').value='';}).catch(function(e){$('campaignMsg').textContent=e.message;}).finally(function(){btn.disabled=false;btn.textContent='Send newsletter';});};
+/* ── NEWSLETTER MANAGER ── */
+.nl-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+@media(min-width:1024px){.nl-grid{grid-template-columns:1.05fr .95fr}}
+.nl-preview-frame{border:1px solid var(--line);border-radius:18px;background:#f7f4ee;padding:1.5rem;transition:background .2s,color .2s;max-height:650px;overflow-y:auto}
+.nl-preview-frame.dark-preview{background:#121520;color:#fdfaf6}
+.nl-preview-frame.dark-preview .card-surface{background:#1c2133!important;border-color:rgba(255,255,255,0.08)!important;color:#fdfaf6!important}
+.nl-preview-frame.dark-preview .text-title{color:#fdfaf6!important}
+.nl-preview-frame.dark-preview .text-body{color:#d2d6e4!important}
+.nl-preview-frame.dark-preview .text-muted{color:#8e96b3!important}
+.nl-preview-frame.dark-preview .btn-primary{background:#f7f4ee!important}
+.nl-preview-frame.dark-preview .btn-primary-text{color:#1c2133!important}
+.nl-preview-frame.dark-preview .tag-chip{background:rgba(255,255,255,0.08)!important;color:#d2d6e4!important}
+.nl-preview-frame.dark-preview .footer-text{color:#6e7694!important}
+.nl-preview-frame.dark-preview .divider{border-color:rgba(255,255,255,0.08)!important}
+.nl-badge-count{display:inline-flex;align-items:center;justify-content:center;background:var(--brown);color:#fff;font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-left:.35rem}
 
 /* ── ADMIN TABS ── */
 .admin-tabs{display:flex;gap:.25rem;padding:0 clamp(1rem,3vw,2.5rem);background:var(--brown);border-top:1px solid rgba(240,237,232,.15)}
@@ -631,8 +638,116 @@ button:focus:not(:focus-visible){outline:none}
       <div id="resellerEditor" hidden class="tbl-wrap" style="margin-top:1.25rem;padding:1.5rem"><h3 id="resellerEditorTitle">Add reseller</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem"><div class="fld"><label>Full name</label><input id="rFullName"></div><div class="fld"><label>Business name</label><input id="rBusiness"></div><div class="fld"><label>Email</label><input id="rEmail" type="email"></div><div class="fld"><label>Contact number</label><input id="rContact"></div><div class="fld"><label>Address</label><input id="rAddress"></div><div class="fld"><label>Initial balance (₱)</label><input id="rBalance" type="number" min="0" value="0"></div><div class="fld" id="rPasswordWrap"><label>Temporary password (12+ characters)</label><input id="rPassword" type="password" minlength="12"></div><label style="display:flex;align-items:center;gap:.5rem"><input id="rActive" type="checkbox" checked> Active account</label></div><p id="resellerMsg" class="form-msg"></p><button class="btn sm" id="saveResellerBtn">Save reseller</button><button class="btn sm ghost" id="cancelResellerBtn">Cancel</button></div>
     </div>
 
+    <!-- ── NEWSLETTER TAB ── -->
     <div class="tab-panel" id="panel-newsletter">
-      <div class="tbl-wrap" style="padding:1.5rem;max-width:800px"><h2 style="font-family:var(--head);margin-top:0">Send newsletter</h2><p style="color:var(--muted)">This sends to the Brevo subscriber list after confirmation.</p><div class="fld"><label>Subject</label><input id="campaignSubject" maxlength="180"></div><div class="fld"><label>Email content</label><textarea id="campaignContent" rows="12" maxlength="20000" placeholder="Write your announcement…"></textarea></div><p id="campaignMsg" class="form-msg"></p><button class="btn" id="sendCampaignBtn">Send newsletter</button></div>
+      <div class="toolbar" style="margin-bottom:1.25rem">
+        <div>
+          <h2 style="margin:0;font-family:var(--head)">Newsletter & Subscribers</h2>
+          <p style="margin:.25rem 0 0;color:var(--muted);font-size:.85rem">Broadcast announcements to subscribers via Brevo, preview in real time, and manage email recipients.</p>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn sm ghost" id="refreshNewsletterBtn">Refresh</button>
+      </div>
+
+      <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:1.5rem">
+        <div class="stat"><div class="stat-val" id="nlStatTotal">0</div><div class="stat-lbl">Active Subscribers</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--ok)">Active</div><div class="stat-lbl">Brevo Relay</div></div>
+      </div>
+
+      <div class="nl-grid">
+        <!-- Composer Column -->
+        <div style="display:grid;gap:1.5rem;align-content:start">
+          <div class="tbl-wrap" style="padding:1.5rem">
+            <h3 style="margin:0 0 .5rem;font-family:var(--head);font-size:1.15rem">Compose Broadcast</h3>
+            <p style="margin:0 0 1.25rem;color:var(--muted);font-size:.8125rem">Compose an announcement to be sent with AERA's signature luxury email design.</p>
+            
+            <div style="display:grid;gap:1rem">
+              <div class="fld">
+                <label>Subject line</label>
+                <input id="nlSubject" maxlength="180" placeholder="e.g. AERA Notes — Autumn Rituals & Member Drop">
+              </div>
+              <div class="fld">
+                <label>Preview text / Preheader</label>
+                <input id="nlPreheader" maxlength="200" placeholder="e.g. A quiet moment with AERA: Explore our new collection.">
+              </div>
+              <div class="fld">
+                <label>Announcement Headline</label>
+                <input id="nlTitle" maxlength="200" placeholder="e.g. Crafted for Quiet Moments">
+              </div>
+              <div class="fld">
+                <label>Announcement Body</label>
+                <textarea id="nlBody" rows="7" placeholder="Write your announcement or newsletter message here... (Separated paragraphs are formatted automatically)"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                <div class="fld">
+                  <label>Button Label (Optional)</label>
+                  <input id="nlCtaLabel" placeholder="e.g. Explore Collection">
+                </div>
+                <div class="fld">
+                  <label>Button Link</label>
+                  <input id="nlCtaUrl" placeholder="https://...">
+                </div>
+              </div>
+
+              <!-- Test Send Section -->
+              <div style="background:#faf9f7;border:1px solid var(--line);border-radius:12px;padding:1rem;margin-top:.5rem">
+                <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Send Preview Test</label>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                  <input id="nlTestEmail" type="email" placeholder="rayquirante@gmail.com" style="flex:1 1 200px;padding:.65rem;border:1px solid var(--line);border-radius:8px;font:inherit">
+                  <button class="btn sm ghost" id="sendTestNewsletterBtn" type="button">Send Test Email</button>
+                </div>
+                <small style="display:block;margin-top:.4rem;color:var(--muted);font-size:.75rem">Tests deliverability and verifies email styling directly in your inbox.</small>
+              </div>
+
+              <p id="nlMsg" class="form-msg" style="margin:.25rem 0 0;font-size:.875rem"></p>
+
+              <div style="display:flex;gap:.75rem;align-items:center;margin-top:.5rem">
+                <button class="btn" id="sendBroadcastBtn" style="background:var(--ok);color:#fff">Broadcast to All Subscribers</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview & Subscribers Column -->
+        <div style="display:grid;gap:1.5rem;align-content:start">
+          <!-- Live Preview Box -->
+          <div class="tbl-wrap" style="padding:1.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+              <h3 style="margin:0;font-family:var(--head);font-size:1.15rem">Live Email Preview</h3>
+              <button class="btn sm ghost" id="toggleNlPreviewTheme" type="button">Toggle Dark Mode</button>
+            </div>
+            <div class="nl-preview-frame" id="nlPreviewFrame">
+              <!-- Rendered preview dynamically injected -->
+            </div>
+          </div>
+
+          <!-- Subscribers Management -->
+          <div class="tbl-wrap" style="padding:1.5rem">
+            <h3 style="margin:0 0 .5rem;font-family:var(--head);font-size:1.15rem">Subscribers (<span id="nlSubCount">0</span>)</h3>
+            <p style="margin:0 0 1rem;color:var(--muted);font-size:.8125rem">People who signed up via the website newsletter form.</p>
+            
+            <div style="display:flex;gap:.5rem;margin-bottom:1.25rem">
+              <input id="nlAddEmail" type="email" placeholder="subscriber@email.com" style="flex:1;padding:.6rem .8rem;border:1px solid var(--line);border-radius:8px;font:inherit">
+              <button class="btn sm" id="addSubscriberBtn">Add</button>
+            </div>
+
+            <div style="max-height:300px;overflow-y:auto">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Joined</th>
+                    <th style="width:70px">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="nlSubscribersTbody">
+                  <tr><td colspan="3"><div class="tbl-empty">Loading subscribers…</div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1407,6 +1522,7 @@ document.querySelectorAll('.admin-tab').forEach(function(tab){
     if(tab.dataset.tab === 'content') loadContent();
     if(tab.dataset.tab === 'blogs') loadBlogs();
     if(tab.dataset.tab === 'resellers') loadResellers();
+    if(tab.dataset.tab === 'newsletter') loadNewsletter();
   });
 });
 
@@ -1506,6 +1622,316 @@ document.getElementById('saveContentBtn').addEventListener('click', function(){
     })
     .finally(function(){ btn.disabled = false; btn.textContent = 'Save all changes'; });
 });
+
+/* ══════════════════════════════
+   RESELLERS
+   ══════════════════════════════ */
+var resellerRows = [], editingResellerId = null;
+function loadResellers(){
+  aeraApi('admin-list-resellers').then(function(data){
+    resellerRows = data.resellers || [];
+    var body = $('resellerTbody');
+    if(!body) return;
+    body.innerHTML = resellerRows.length ? resellerRows.map(function(r){
+      var b = r.reseller_balances && r.reseller_balances[0] ? r.reseller_balances[0].balance : 0;
+      return '<tr><td><b>' + esc(r.full_name) + '</b><br><small>' + esc(r.address || '') + '</small></td>' +
+             '<td>' + esc(r.business_name || '—') + '</td>' +
+             '<td>' + esc(r.contact_number || '—') + '</td>' +
+             '<td>' + peso(b) + '</td>' +
+             '<td><span class="badge ' + (r.is_active ? 'confirmed' : 'cancelled') + '">' + (r.is_active ? 'Active' : 'Inactive') + '</span></td>' +
+             '<td><button class="btn sm ghost" data-r-edit="' + esc(r.id) + '">Edit</button> <button class="btn sm ghost" data-r-balance="' + esc(r.id) + '">Balance</button></td></tr>';
+    }).join('') : '<tr><td colspan="6"><div class="tbl-empty">No reseller accounts yet.</div></td></tr>';
+    body.querySelectorAll('[data-r-edit]').forEach(function(b){
+      b.onclick = function(){ openReseller(b.dataset.rEdit); };
+    });
+    body.querySelectorAll('[data-r-balance]').forEach(function(b){
+      b.onclick = function(){ adjustResellerBalance(b.dataset.rBalance); };
+    });
+  }).catch(function(e){ toast(e.message); });
+}
+
+function openReseller(id){
+  editingResellerId = id || null;
+  var r = id ? resellerRows.filter(function(x){ return x.id === id; })[0] : null;
+  $('resellerEditor').hidden = false;
+  $('resellerEditorTitle').textContent = r ? 'Edit reseller' : 'Add reseller';
+  $('rFullName').value = r ? r.full_name : '';
+  $('rBusiness').value = r ? (r.business_name || '') : '';
+  $('rEmail').value = '';
+  $('rEmail').disabled = !!r;
+  $('rContact').value = r ? (r.contact_number || '') : '';
+  $('rAddress').value = r ? (r.address || '') : '';
+  $('rBalance').value = r ? (r.reseller_balances && r.reseller_balances[0] ? r.reseller_balances[0].balance : 0) : 0;
+  $('rBalance').disabled = !!r;
+  $('rPassword').value = '';
+  $('rPasswordWrap').hidden = !!r;
+  $('rActive').checked = r ? r.is_active : true;
+  $('resellerMsg').textContent = '';
+}
+
+function adjustResellerBalance(id){
+  var amount = prompt('Amount in pesos (positive number):');
+  if(amount === null) return;
+  var type = prompt('Type: credit or debit', 'credit');
+  if(type === null) return;
+  var description = prompt('Description', 'Balance adjustment');
+  if(description === null) return;
+  aeraApi('admin-adjust-balance', {
+    resellerId: id,
+    amount: Number(amount),
+    transactionType: type.trim().toLowerCase(),
+    description: description
+  }).then(function(){
+    toast('Balance updated.');
+    loadResellers();
+  }).catch(function(e){ toast(e.message); });
+}
+
+if($('newResellerBtn')) $('newResellerBtn').onclick = function(){ openReseller(null); };
+if($('cancelResellerBtn')) $('cancelResellerBtn').onclick = function(){ $('resellerEditor').hidden = true; };
+if($('saveResellerBtn')) $('saveResellerBtn').onclick = function(){
+  var p = {
+    fullName: $('rFullName').value.trim(),
+    businessName: $('rBusiness').value.trim(),
+    contactNumber: $('rContact').value.trim(),
+    address: $('rAddress').value.trim(),
+    isActive: $('rActive').checked
+  };
+  var btn = this;
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  var request = editingResellerId
+    ? aeraApi('admin-update-reseller', Object.assign(p, { resellerId: editingResellerId }))
+    : aeraApi('admin-create-reseller', Object.assign(p, {
+        email: $('rEmail').value.trim(),
+        password: $('rPassword').value,
+        initialBalance: Number($('rBalance').value) || 0
+      }));
+  request.then(function(){
+    $('resellerEditor').hidden = true;
+    toast(editingResellerId ? 'Reseller updated.' : 'Reseller account created.');
+    loadResellers();
+  }).catch(function(e){
+    $('resellerMsg').textContent = e.message;
+  }).finally(function(){
+    btn.disabled = false;
+    btn.textContent = 'Save reseller';
+  });
+};
+
+/* ══════════════════════════════
+   NEWSLETTER & SUBSCRIBERS
+   ══════════════════════════════ */
+var nlSubscribers = [];
+var isNlPreviewDark = false;
+
+function updateNlPreview(){
+  var frame = $('nlPreviewFrame');
+  if(!frame) return;
+  var subj = $('nlSubject').value.trim() || 'AERA Notes — Autumn Rituals & Member Drop';
+  var preheader = $('nlPreheader').value.trim() || 'A quiet moment with AERA.';
+  var title = $('nlTitle').value.trim() || 'Crafted for Quiet Moments';
+  var body = $('nlBody').value.trim() || "We believe self-care shouldn't feel like a routine — it should feel like an invitation to stay a little longer.\n\nFormulated with skin-kind botanicals, delicate textures, and lingering notes crafted right here in the Philippines.";
+  var ctaLabel = $('nlCtaLabel').value.trim();
+  var ctaUrl = $('nlCtaUrl').value.trim();
+
+  var paragraphs = body.split(/\n\s*\n/).map(function(p){
+    return '<p class="text-body" style="margin:0 0 16px;font-size:14px;line-height:1.7;color:' + (isNlPreviewDark ? '#d2d6e4' : '#434c74') + ';">' + esc(p).replace(/\n/g, '<br>') + '</p>';
+  }).join('');
+
+  var ctaHtml = (ctaLabel && ctaUrl) ? '<div style="margin:24px 0 12px;text-align:center;"><a href="' + esc(ctaUrl) + '" target="_blank" class="btn-primary-text" style="display:inline-block;padding:12px 28px;background:' + (isNlPreviewDark ? '#f7f4ee' : '#384168') + ';color:' + (isNlPreviewDark ? '#1c2133' : '#ffffff') + ';text-decoration:none;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">' + esc(ctaLabel) + ' &rarr;</a></div>' : '';
+
+  frame.innerHTML =
+    '<div style="max-width:540px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;">' +
+      '<div style="text-align:center;padding-bottom:20px;">' +
+        '<div class="text-title" style="font-size:22px;font-weight:700;letter-spacing:0.28em;color:' + (isNlPreviewDark ? '#fdfaf6' : '#242b4b') + ';text-transform:uppercase;">AERA</div>' +
+        '<div class="text-muted" style="font-size:10px;text-transform:uppercase;letter-spacing:0.16em;color:' + (isNlPreviewDark ? '#8e96b3' : '#6a7499') + ';margin-top:4px;font-weight:600;">Stay a little longer</div>' +
+      '</div>' +
+      '<div class="card-surface" style="background:' + (isNlPreviewDark ? '#1c2133' : '#ffffff') + ';border:1px solid ' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : 'rgba(56,65,104,0.1)') + ';border-radius:18px;padding:32px 24px;box-shadow:0 8px 24px rgba(36,43,75,0.04);">' +
+        '<span class="tag-chip" style="display:inline-block;padding:5px 12px;background:' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : '#f1ede4') + ';color:' + (isNlPreviewDark ? '#d2d6e4' : '#384168') + ';border-radius:999px;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">AERA Bulletin</span>' +
+        '<h2 class="text-title" style="margin:16px 0 12px;font-size:20px;line-height:1.3;font-weight:600;color:' + (isNlPreviewDark ? '#fdfaf6' : '#242b4b') + ';">' + esc(title) + '</h2>' +
+        '<div style="margin-top:10px;">' + paragraphs + ctaHtml + '</div>' +
+        '<div class="divider" style="margin-top:24px;border-top:1px solid ' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : 'rgba(56,65,104,0.1)') + ';"></div>' +
+        '<div style="margin-top:18px;">' +
+          '<div class="text-muted" style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:' + (isNlPreviewDark ? '#8e96b3' : '#7882a5') + ';font-weight:600;">With gratitude,</div>' +
+          '<div class="text-title" style="font-size:14px;font-weight:600;color:' + (isNlPreviewDark ? '#fdfaf6' : '#242b4b') + ';margin-top:2px;">The AERA Team</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="text-align:center;padding-top:20px;">' +
+        '<p class="footer-text" style="font-size:11px;color:' + (isNlPreviewDark ? '#6e7694' : '#8e96b3') + ';margin:0 0 4px;">You are receiving this note because you subscribed to the AERA newsletter.</p>' +
+        '<p class="footer-text" style="font-size:10px;color:' + (isNlPreviewDark ? '#555d78' : '#a4accc') + ';margin:0;">&copy; 2026 AERA Official &bull; San Jose del Monte, Bulacan, Philippines</p>' +
+      '</div>' +
+    '</div>';
+}
+
+function loadNewsletter(){
+  updateNlPreview();
+  var tbody = $('nlSubscribersTbody');
+  if(tbody) tbody.innerHTML = '<tr><td colspan="3"><div class="tbl-empty">Loading subscribers…</div></td></tr>';
+
+  aeraApi('admin-list-subscribers').then(function(res){
+    nlSubscribers = res.subscribers || [];
+    $('nlStatTotal').textContent = nlSubscribers.length;
+    $('nlSubCount').textContent = nlSubscribers.length;
+    renderSubscribersTable();
+  }).catch(function(err){
+    console.error('Failed to load subscribers:', err);
+    if(tbody) tbody.innerHTML = '<tr><td colspan="3"><div class="tbl-empty">' + esc(err.message || 'Could not load subscribers.') + '</div></td></tr>';
+  });
+}
+
+function renderSubscribersTable(){
+  var tbody = $('nlSubscribersTbody');
+  if(!tbody) return;
+  if(!nlSubscribers.length){
+    tbody.innerHTML = '<tr><td colspan="3"><div class="tbl-empty">No subscribers yet.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = nlSubscribers.map(function(s){
+    var d = s.created_at ? new Date(s.created_at).toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' }) : '—';
+    return '<tr><td><b>' + esc(s.email) + '</b></td>' +
+           '<td><small style="color:var(--muted)">' + esc(d) + '</small></td>' +
+           '<td><button class="btn sm ghost" style="color:var(--danger)" data-del-sub="' + esc(s.email) + '">Remove</button></td></tr>';
+  }).join('');
+
+  tbody.querySelectorAll('[data-del-sub]').forEach(function(btn){
+    btn.onclick = function(){
+      var email = btn.dataset.delSub;
+      if(!confirm('Remove "' + email + '" from newsletter subscribers?')) return;
+      btn.disabled = true;
+      btn.textContent = '…';
+      aeraApi('admin-delete-subscriber', { email: email }).then(function(){
+        toast('Subscriber removed.');
+        loadNewsletter();
+      }).catch(function(err){ toast(err.message); }).finally(function(){ btn.disabled = false; });
+    };
+  });
+}
+
+// Live preview event listeners
+['nlSubject','nlPreheader','nlTitle','nlBody','nlCtaLabel','nlCtaUrl'].forEach(function(id){
+  var el = $(id);
+  if(el) el.addEventListener('input', updateNlPreview);
+});
+
+if($('toggleNlPreviewTheme')){
+  $('toggleNlPreviewTheme').onclick = function(){
+    isNlPreviewDark = !isNlPreviewDark;
+    this.textContent = isNlPreviewDark ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+    $('nlPreviewFrame').classList.toggle('dark-preview', isNlPreviewDark);
+    updateNlPreview();
+  };
+}
+
+if($('refreshNewsletterBtn')){
+  $('refreshNewsletterBtn').onclick = function(){ loadNewsletter(); toast('Subscriber list refreshed.'); };
+}
+
+if($('addSubscriberBtn')){
+  $('addSubscriberBtn').onclick = function(){
+    var input = $('nlAddEmail');
+    var email = (input ? input.value : '').trim().toLowerCase();
+    if(!email || !email.includes('@')){ toast('Enter a valid email address.'); return; }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+    aeraApi('admin-add-subscriber', { email: email }).then(function(){
+      if(input) input.value = '';
+      toast('Subscriber added.');
+      loadNewsletter();
+    }).catch(function(err){ toast(err.message); }).finally(function(){
+      btn.disabled = false;
+      btn.textContent = 'Add';
+    });
+  };
+}
+
+if($('sendTestNewsletterBtn')){
+  $('sendTestNewsletterBtn').onclick = function(){
+    var testEmail = ($('nlTestEmail').value || '').trim();
+    var subject = $('nlSubject').value.trim();
+    var message = $('nlBody').value.trim();
+    if(!testEmail || !testEmail.includes('@')){
+      $('nlMsg').textContent = 'Please enter a valid test recipient email.';
+      $('nlMsg').style.color = 'var(--danger)';
+      return;
+    }
+    if(!subject || !message){
+      $('nlMsg').textContent = 'Please provide at least a subject line and announcement message.';
+      $('nlMsg').style.color = 'var(--danger)';
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    $('nlMsg').textContent = 'Sending preview email to ' + testEmail + '…';
+    $('nlMsg').style.color = 'var(--brown)';
+
+    aeraApi('admin-send-newsletter', {
+      subject: subject,
+      preheader: $('nlPreheader').value.trim(),
+      title: $('nlTitle').value.trim() || subject,
+      message: message,
+      ctaLabel: $('nlCtaLabel').value.trim(),
+      ctaUrl: $('nlCtaUrl').value.trim(),
+      testEmail: testEmail
+    }).then(function(res){
+      $('nlMsg').textContent = res.message || 'Preview email sent successfully!';
+      $('nlMsg').style.color = 'var(--ok)';
+      toast('Preview email sent!');
+    }).catch(function(err){
+      $('nlMsg').textContent = err.message || 'Failed to send preview.';
+      $('nlMsg').style.color = 'var(--danger)';
+    }).finally(function(){
+      btn.disabled = false;
+      btn.textContent = 'Send Test Email';
+    });
+  };
+}
+
+if($('sendBroadcastBtn')){
+  $('sendBroadcastBtn').onclick = function(){
+    var subject = $('nlSubject').value.trim();
+    var message = $('nlBody').value.trim();
+    if(!subject || !message){
+      $('nlMsg').textContent = 'Please enter a subject line and announcement message.';
+      $('nlMsg').style.color = 'var(--danger)';
+      return;
+    }
+    var count = nlSubscribers.length;
+    if(!count){
+      $('nlMsg').textContent = 'No subscribers available to send to.';
+      $('nlMsg').style.color = 'var(--danger)';
+      return;
+    }
+    if(!confirm('Broadcast this announcement to all ' + count + ' subscriber(s)?')) return;
+
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Broadcasting…';
+    $('nlMsg').textContent = 'Sending announcement to ' + count + ' subscriber(s)…';
+    $('nlMsg').style.color = 'var(--brown)';
+
+    aeraApi('admin-send-newsletter', {
+      subject: subject,
+      preheader: $('nlPreheader').value.trim(),
+      title: $('nlTitle').value.trim() || subject,
+      message: message,
+      ctaLabel: $('nlCtaLabel').value.trim(),
+      ctaUrl: $('nlCtaUrl').value.trim()
+    }).then(function(res){
+      $('nlMsg').textContent = res.message || 'Newsletter broadcast sent successfully!';
+      $('nlMsg').style.color = 'var(--ok)';
+      toast('Newsletter broadcast completed!');
+    }).catch(function(err){
+      $('nlMsg').textContent = err.message || 'Broadcast failed.';
+      $('nlMsg').style.color = 'var(--danger)';
+    }).finally(function(){
+      btn.disabled = false;
+      btn.textContent = 'Broadcast to All Subscribers';
+    });
+  };
+}
 
 /* ── INIT ── */
 function startApp(){

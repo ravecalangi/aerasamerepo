@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AERA — All Official Email Templates & Live Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0f121d;
+      color: #e4e7f2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #171c2d;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      letter-spacing: 0.25em;
+      color: #fff;
+      font-weight: 600;
+    }
+    .badge {
+      background: rgba(220, 180, 140, 0.15);
+      color: #e6c5a0;
+      border: 1px solid rgba(220, 180, 140, 0.3);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tabs {
+      display: flex;
+      background: #20273c;
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #9aa3c2;
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active {
+      background: #384168;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .btn-group {
+      display: flex;
+      background: #20273c;
+      padding: 4px;
+      border-radius: 10px;
+      gap: 4px;
+    }
+    .btn-toggle {
+      background: transparent;
+      border: none;
+      color: #9aa3c2;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-toggle.active {
+      background: #2d3652;
+      color: #e6c5a0;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 20%, #1a2033 0%, #0d101a 100%);
+    }
+    .preview-wrapper {
+      width: 100%;
+      max-width: 680px;
+      background: #171c2d;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      transition: max-width 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-wrapper.mobile {
+      max-width: 395px;
+    }
+    .meta-bar {
+      padding: 12px 18px;
+      background: #1c2338;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: #8c97ba;
+    }
+    .meta-bar strong { color: #f0f2fa; }
+    iframe {
+      width: 100%;
+      height: 640px;
+      border: none;
+      background: transparent;
+      transition: background 0.2s ease;
+    }
+    .notice {
+      max-width: 720px;
+      margin: 16px auto 0;
+      padding: 12px 20px;
+      background: rgba(45, 54, 82, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      font-size: 12.5px;
+      color: #b0b8d4;
+      line-height: 1.5;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>AERA</h1>
+      <span class="badge">Live Email Templates</span>
+    </div>
+
+    <div class="controls">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTemplate(0)">1. Order Confirmation</button>
+        <button class="tab-btn" onclick="switchTemplate(1)">2. Newsletter Broadcast</button>
+        <button class="tab-btn" onclick="switchTemplate(2)">3. Welcome / Circle</button>
+        <button class="tab-btn" onclick="switchTemplate(3)">4. Contact Inquiry</button>
+      </div>
+
+      <div class="btn-group">
+        <button id="btnLight" class="btn-toggle active" onclick="setMode('light')">☀️ Light</button>
+        <button id="btnDark" class="btn-toggle" onclick="setMode('dark')">🌙 Dark</button>
+      </div>
+
+      <div class="btn-group">
+        <button id="btnDesktop" class="btn-toggle active" onclick="setViewport('desktop')">💻 Desktop</button>
+        <button id="btnMobile" class="btn-toggle" onclick="setViewport('mobile')">📱 Mobile</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="previewCard" class="preview-wrapper">
+      <div class="meta-bar">
+        <div>Subject: <strong id="subjectText">Loading...</strong></div>
+        <div id="senderText">From: contactaeraofficial@gmail.com</div>
+      </div>
+      <iframe id="emailFrame" src="about:blank"></iframe>
+    </div>
+
+    <div class="notice">
+      ✨ <strong>Adaptive Responsive Luxury Layout:</strong> Ginawa gamit ang AERA color palette, typographic rhythm, rounded borders, and direct call-to-action buttons. Kusa itong sumasabay sa <em>Light</em> at <em>Dark Mode</em> ng Gmail, Apple Mail, Outlook, at mobile devices.
+    </div>
+  </main>
+
+  <script>
+    let currentIdx = 0;
+    let currentMode = 'light';
+    let currentViewport = 'desktop';
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    const templates = [
+      {
+        id: "order",
+        subject: "AERA — Order Confirmation & Tracking (Order #AERA-2026-87B2C091FA)",
+        render: (isDark) => {
+          const bg = isDark ? "#121520" : "#f7f4ee";
+          const cardBg = isDark ? "#1c2133" : "#ffffff";
+          const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+          const titleCol = isDark ? "#fdfaf6" : "#242b4b";
+          const bodyCol = isDark ? "#d2d6e4" : "#434c74";
+          const mutedCol = isDark ? "#8e96b3" : "#727b9e";
+          const pillBg = isDark ? "#272d45" : "#f8f6f0";
+          const chipBg = isDark ? "rgba(255,255,255,0.08)" : "#eef1f8";
+          const btnBg = isDark ? "#f7f4ee" : "#384168";
+          const btnText = isDark ? "#1c2133" : "#ffffff";
+          const divider = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+
+          return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin:0; padding:32px 16px; background:${bg}; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:${bodyCol}; }
+  .wrapper { max-width:600px; margin:0 auto; }
+  .logo { text-align:center; margin-bottom:28px; }
+  .card { background:${cardBg}; border:1px solid ${cardBorder}; border-radius:24px; padding:38px 32px; box-shadow:0 12px 36px rgba(0,0,0,0.04); }
+  .chip { display:inline-block; padding:5px 12px; background:${chipBg}; color:${titleCol}; border-radius:999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; }
+  .h1 { font-size:24px; font-weight:600; color:${titleCol}; margin:16px 0 8px; line-height:1.25; }
+  .order-box { background:${pillBg}; border:1px solid ${divider}; border-radius:16px; padding:18px 22px; margin:22px 0 26px; display:flex; justify-content:space-between; align-items:center; }
+  .table { width:100%; border-collapse:collapse; margin-top:14px; }
+  .table th { text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:0.12em; color:${mutedCol}; padding-bottom:10px; border-bottom:1px solid ${divider}; }
+  .table td { padding:14px 0; border-bottom:1px solid ${divider}; vertical-align:top; }
+  .totals-row { display:flex; justify-content:space-between; font-size:14px; padding:6px 0; }
+  .btn { display:inline-block; padding:14px 32px; background:${btnBg}; color:${btnText}; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin-top:30px; }
+  .footer { text-align:center; margin-top:28px; font-size:11.5px; color:${mutedCol}; line-height:1.6; }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo">
+      <img src="images/aera-logo-black.png" alt="AERA" style="display:block;width:96px;height:auto;margin:0 auto;filter:${isDark ? 'brightness(0) invert(1)' : 'none'};">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.2em; color:${mutedCol}; margin-top:8px; font-weight:600;">Stay a little longer</div>
+    </div>
+    <div class="card">
+      <span class="chip">Order Received</span>
+      <div class="h1">Thank you for your order, Ray.</div>
+      <p style="font-size:14.5px; line-height:1.6; margin-bottom:18px;">
+        We've received your order and payment verification is underway. You do not need to create an account—track your package anytime with your unique order reference.
+      </p>
+      <div class="order-box">
+        <div>
+          <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:${mutedCol}; font-weight:600; margin-bottom:3px;">Order Tracking Reference</div>
+          <div style="font-family:monospace; font-size:19px; font-weight:700; color:${titleCol}; letter-spacing:0.04em;">AERA-2026-87B2C091FA</div>
+        </div>
+        <div style="text-align:right; font-size:12px; color:${mutedCol};">Nov 7, 2026</div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th style="text-align:center;">Qty</th>
+            <th style="text-align:right;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div style="font-weight:600; color:${titleCol}; font-size:14.5px;">AERA Amber &amp; Vanilla Body Mist</div>
+              <div style="font-size:12px; color:${mutedCol}; margin-top:2px;">100ml / Glass Bottle</div>
+            </td>
+            <td style="text-align:center; color:${mutedCol}; font-size:13px;">× 2</td>
+            <td style="text-align:right; font-weight:600; color:${titleCol};">₱960.00</td>
+          </tr>
+          <tr>
+            <td>
+              <div style="font-weight:600; color:${titleCol}; font-size:14.5px;">AERA Ceramic Ritual Scented Candle</div>
+              <div style="font-size:12px; color:${mutedCol}; margin-top:2px;">220g / Soy Wax Blend</div>
+            </td>
+            <td style="text-align:center; color:${mutedCol}; font-size:13px;">× 1</td>
+            <td style="text-align:right; font-weight:600; color:${titleCol};">₱650.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px;">
+        <div class="totals-row"><span style="color:${mutedCol};">Subtotal</span><span style="font-weight:500;">₱1,610.00</span></div>
+        <div class="totals-row"><span style="color:${mutedCol};">Shipping (San Jose del Monte, Bulacan)</span><span style="font-weight:500;">₱120.00</span></div>
+        <div style="height:1px; background:${divider}; margin:10px 0;"></div>
+        <div class="totals-row" style="font-size:17px; font-weight:700; color:${titleCol};"><span>Total</span><span>₱1,730.00</span></div>
+      </div>
+
+      <div style="text-align:center;">
+        <a href="https://ravecalangi.github.io/area-new/track-order.html?order=AERA-2026-87B2C091FA" target="_blank" class="btn">
+          Track Order Status &rarr;
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      Questions? Email us anytime at <a href="mailto:contactaeraofficial@gmail.com" style="color:${titleCol};">contactaeraofficial@gmail.com</a><br>
+      &copy; 2026 AERA Official &bull; San Jose del Monte, Bulacan, Philippines
+    </div>
+  </div>
+</body>
+</html>`;
+        }
+      },
+      {
+        id: "newsletter",
+        subject: "AERA Notes — Autumn Rituals & Exclusive Member Drop",
+        render: (isDark) => {
+          const bg = isDark ? "#121520" : "#f7f4ee";
+          const cardBg = isDark ? "#1c2133" : "#ffffff";
+          const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+          const titleCol = isDark ? "#fdfaf6" : "#242b4b";
+          const bodyCol = isDark ? "#d2d6e4" : "#434c74";
+          const mutedCol = isDark ? "#8e96b3" : "#7882a5";
+          const chipBg = isDark ? "rgba(255,255,255,0.08)" : "#f1ede4";
+          const btnBg = isDark ? "#f7f4ee" : "#384168";
+          const btnText = isDark ? "#1c2133" : "#ffffff";
+          const divider = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+
+          return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin:0; padding:32px 16px; background:${bg}; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:${bodyCol}; }
+  .wrapper { max-width:600px; margin:0 auto; }
+  .logo { text-align:center; margin-bottom:28px; }
+  .card { background:${cardBg}; border:1px solid ${cardBorder}; border-radius:24px; padding:40px 32px; box-shadow:0 12px 36px rgba(0,0,0,0.04); }
+  .chip { display:inline-block; padding:5px 14px; background:${chipBg}; color:${titleCol}; border-radius:999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; }
+  .h1 { font-size:24px; font-weight:600; color:${titleCol}; margin:18px 0 16px; line-height:1.3; }
+  p { font-size:15px; line-height:1.7; margin-bottom:16px; }
+  .btn { display:inline-block; padding:13px 32px; background:${btnBg}; color:${btnText}; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin:20px 0 10px; }
+  .footer { text-align:center; margin-top:28px; font-size:11.5px; color:${mutedCol}; line-height:1.6; }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo">
+      <img src="images/aera-logo-black.png" alt="AERA" style="display:block;width:96px;height:auto;margin:0 auto;filter:${isDark ? 'brightness(0) invert(1)' : 'none'};">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.2em; color:${mutedCol}; margin-top:8px; font-weight:600;">Stay a little longer</div>
+    </div>
+
+    <div class="card">
+      <span class="chip">AERA Bulletin</span>
+      <div class="h1">Crafted for Quiet Moments: Discover The New Botanical Collection</div>
+
+      <p>We believe self-care shouldn't feel like a routine — it should feel like an invitation to stay a little longer.</p>
+      <p>Today, we're sharing our newest curation of fine scents and restorative body care essentials. Formulated with skin-kind botanicals, delicate textures, and lingering notes crafted right here in the Philippines.</p>
+      <p>As a valued subscriber of our circle, you have early access to explore the complete ritual ahead of our official seasonal drop.</p>
+
+      <div style="text-align:center;">
+        <a href="https://ravecalangi.github.io/area-new/shop.html" target="_blank" class="btn">
+          Explore The Collection &rarr;
+        </a>
+      </div>
+
+      <div style="height:1px; background:${divider}; margin:28px 0 18px;"></div>
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:${mutedCol}; font-weight:600; margin-bottom:3px;">With gratitude,</div>
+        <div style="font-size:15px; font-weight:600; color:${titleCol};">The AERA Team</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      You are receiving this note because you subscribed to the AERA newsletter.<br>
+      &copy; 2026 AERA Official &bull; San Jose del Monte, Bulacan, Philippines
+    </div>
+  </div>
+</body>
+</html>`;
+        }
+      },
+      {
+        id: "welcome",
+        subject: "Welcome to the AERA Circle",
+        render: (isDark) => {
+          const bg = isDark ? "#121520" : "#f7f4ee";
+          const cardBg = isDark ? "#1c2133" : "#ffffff";
+          const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+          const titleCol = isDark ? "#fdfaf6" : "#242b4b";
+          const bodyCol = isDark ? "#d2d6e4" : "#434c74";
+          const mutedCol = isDark ? "#8e96b3" : "#7882a5";
+          const chipBg = isDark ? "rgba(255,255,255,0.08)" : "#f1ede4";
+          const btnBg = isDark ? "#f7f4ee" : "#384168";
+          const btnText = isDark ? "#1c2133" : "#ffffff";
+          const divider = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.1)";
+
+          return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin:0; padding:32px 16px; background:${bg}; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:${bodyCol}; }
+  .wrapper { max-width:600px; margin:0 auto; }
+  .logo { text-align:center; margin-bottom:28px; }
+  .card { background:${cardBg}; border:1px solid ${cardBorder}; border-radius:24px; padding:40px 32px; box-shadow:0 12px 36px rgba(0,0,0,0.04); }
+  .chip { display:inline-block; padding:5px 14px; background:${chipBg}; color:${titleCol}; border-radius:999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; }
+  .h1 { font-size:24px; font-weight:600; color:${titleCol}; margin:18px 0 16px; line-height:1.3; }
+  p { font-size:15px; line-height:1.7; margin-bottom:16px; }
+  .btn { display:inline-block; padding:13px 32px; background:${btnBg}; color:${btnText}; border-radius:999px; text-decoration:none; font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin:20px 0 10px; }
+  .footer { text-align:center; margin-top:28px; font-size:11.5px; color:${mutedCol}; line-height:1.6; }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo">
+      <img src="images/aera-logo-black.png" alt="AERA" style="display:block;width:96px;height:auto;margin:0 auto;filter:${isDark ? 'brightness(0) invert(1)' : 'none'};">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.2em; color:${mutedCol}; margin-top:8px; font-weight:600;">Stay a little longer</div>
+    </div>
+
+    <div class="card">
+      <span class="chip">The AERA Circle</span>
+      <div class="h1">Welcome to our quiet space.</div>
+
+      <p>Thank you for taking a pause to join our circle.</p>
+      <p>Here at AERA, we craft scents and daily self-care essentials meant to ground your day and help you stay a little longer in quiet comfort.</p>
+      <p>As a circle member, you'll receive thoughtful notes, early notices of seasonal drops, and private subscriber offerings directly in your inbox. No noise or spam — just quiet, mindful updates.</p>
+
+      <div style="text-align:center;">
+        <a href="https://ravecalangi.github.io/area-new/shop.html" target="_blank" class="btn">
+          Visit AERA Online &rarr;
+        </a>
+      </div>
+
+      <div style="height:1px; background:${divider}; margin:28px 0 18px;"></div>
+      <div>
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.12em; color:${mutedCol}; font-weight:600; margin-bottom:3px;">Warmly,</div>
+        <div style="font-size:15px; font-weight:600; color:${titleCol};">The AERA Team</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Welcome note from AERA Circle &bull; San Jose del Monte, Bulacan, Philippines
+    </div>
+  </div>
+</body>
+</html>`;
+        }
+      },
+      {
+        id: "contact",
+        subject: "AERA Contact Inquiry — Wholesale & Reseller Inquiries for Bulacan Hub",
+        render: (isDark) => {
+          const bg = isDark ? "#121520" : "#f7f4ee";
+          const cardBg = isDark ? "#1c2133" : "#ffffff";
+          const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(56,65,104,0.12)";
+          const titleCol = isDark ? "#fdfaf6" : "#242b4b";
+          const bodyCol = isDark ? "#d2d6e4" : "#384168";
+          const mutedCol = isDark ? "#8e96b3" : "#727b9e";
+          const metaBg = isDark ? "#22293e" : "#faf9f7";
+          const chipBg = isDark ? "rgba(255,255,255,0.08)" : "#e8ecf6";
+          const btnBg = isDark ? "#f7f4ee" : "#384168";
+          const btnText = isDark ? "#1c2133" : "#ffffff";
+
+          return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { margin:0; padding:32px 16px; background:${bg}; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:${bodyCol}; }
+  .card { max-width:600px; margin:0 auto; background:${cardBg}; border-radius:20px; border:1px solid ${cardBorder}; padding:36px 32px; box-shadow:0 8px 30px rgba(0,0,0,0.05); }
+  .chip { display:inline-block; padding:5px 12px; background:${chipBg}; color:${titleCol}; border-radius:999px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; }
+  .title { font-size:22px; font-weight:700; color:${titleCol}; margin:14px 0 20px; }
+  .meta-box { background:${metaBg}; border-radius:12px; padding:16px 20px; margin-bottom:22px; border:1px solid ${cardBorder}; }
+  .meta-row { margin:6px 0; font-size:14px; }
+  .meta-label { font-weight:600; color:${mutedCol}; display:inline-block; width:80px; }
+  .msg-body { font-size:15px; line-height:1.7; color:${bodyCol}; background:${metaBg}; border-left:3px solid ${btnBg}; padding:14px 18px; margin:16px 0; border-radius:0 8px 8px 0; }
+  .btn { display:inline-block; padding:12px 28px; background:${btnBg}; color:${btnText}; text-decoration:none; border-radius:999px; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+  <div style="text-align:center;margin-bottom:20px;">
+    <img src="images/aera-logo-black.png" alt="AERA" style="display:block;width:96px;height:auto;margin:0 auto;filter:${isDark ? 'brightness(0) invert(1)' : 'none'};">
+  </div>
+  <div class="card">
+    <span class="chip">New Website Inquiry</span>
+    <h1 class="title">Wholesale &amp; Reseller Inquiries for Bulacan Hub</h1>
+    <div class="meta-box">
+      <div class="meta-row"><span class="meta-label">From:</span> <b>Ray Quirante</b></div>
+      <div class="meta-row"><span class="meta-label">Email:</span> <a href="mailto:rayquirante@gmail.com" style="color:${titleCol};">rayquirante@gmail.com</a></div>
+      <div class="meta-row"><span class="meta-label">Phone:</span> +63 917 123 4567</div>
+      <div class="meta-row"><span class="meta-label">Received:</span> Nov 7, 2026, 1:15 PM</div>
+    </div>
+    <div style="font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:${mutedCol};">Customer Message:</div>
+    <div class="msg-body">Hi AERA Team! I am interested in becoming a regional reseller for our boutique shop in Bulacan. Could you provide details on the initial inventory minimums and wholesale catalog? Thank you!</div>
+    <div style="text-align:center; margin-top:28px;">
+      <a href="mailto:rayquirante@gmail.com?subject=Re: Wholesale &amp; Reseller Inquiries for Bulacan Hub" class="btn">Reply Directly to Customer</a>
+    </div>
+  </div>
+</body>
+</html>`;
+        }
+      }
+    ];
+
+    function updatePreview() {
+      const tmpl = templates[currentIdx];
+      document.getElementById('subjectText').textContent = tmpl.subject;
+      const html = tmpl.render(currentMode === 'dark');
+      const frame = document.getElementById('emailFrame');
+      frame.srcdoc = html;
+    }
+
+    function switchTemplate(idx) {
+      currentIdx = idx;
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+      });
+      updatePreview();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnLight').classList.toggle('active', mode === 'light');
+      document.getElementById('btnDark').classList.toggle('active', mode === 'dark');
+      updatePreview();
+    }
+
+    function setViewport(vp) {
+      currentViewport = vp;
+      document.getElementById('btnDesktop').classList.toggle('active', vp === 'desktop');
+      document.getElementById('btnMobile').classList.toggle('active', vp === 'mobile');
+      document.getElementById('previewCard').classList.toggle('mobile', vp === 'mobile');
+    }
+
+    updatePreview();
+  </script>
+</body>
+</html>
+
