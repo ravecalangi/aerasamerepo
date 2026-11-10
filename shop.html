@@ -217,14 +217,17 @@ function renderGrid(products){
     /* Calculate discounted price if discount exists */
     var discount = p.discount || 0;
     var originalPrice = p.price;
-    var finalPrice = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
+    var isFixed = p.discount_type === 'fixed';
+    var finalPrice = discount > 0 ? (isFixed ? Math.max(0, originalPrice - discount) : Math.round(originalPrice * (1 - discount / 100))) : originalPrice;
     
     /* Build price display HTML */
     var priceHTML = '';
     if(discount > 0){
-      priceHTML = '<span style="display:flex;align-items:center;gap:.5rem">'
+      var badgeTxt = isFixed ? '-₱' + discount : '-' + discount + '%';
+      priceHTML = '<span style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">'
         +'<span style="text-decoration:line-through;color:rgba(56,65,104,.5);font-size:.875rem">'+peso(originalPrice)+'</span>'
         +'<span style="font-weight:700;color:#384168">'+peso(finalPrice)+'</span>'
+        +'<span style="font-size:.65rem;font-weight:700;background:#b3261e;color:#fff;padding:2px 6px;border-radius:999px">'+badgeTxt+'</span>'
         +'</span>';
     } else {
       priceHTML = '<span>'+peso(originalPrice)+'</span>';
@@ -473,7 +476,7 @@ var chatFlow={
   products:{bot:["We have three product lines:","• Hair & Body Mists — 5 scents, 110mL (\u20B1299\u2013\u20B1329)\n• Soaps — 2 variants, 90g (\u20B1129\u2013\u20B1149)\n• Second Skin Body Serum — 100mL (\u20B1449)","Our mists: No Fixed Plans, White Shirt, First Flowers, Open Windows, and After Hours."],options:[{label:"How do I place an order?",next:"ordering"},{label:"What payment methods do you accept?",next:"payment"},{label:"Back to main menu",next:"start"}]},
   ordering:{bot:["Ordering is easy — no account needed!","1. Add items to your bag\n2. Go to checkout\n3. Enter your contact & delivery details\n4. Pay via GCash, BPI or Maribank\n5. Upload your receipt\n6. Tap Place Order to confirm","Your order isn't reserved until you complete Step 6."],options:[{label:"What payment methods do you accept?",next:"payment"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
   payment:{bot:["We accept:","• GCash\n• BPI\n• Maribank","After paying, upload a clear screenshot of your receipt showing the amount, date and reference number. Then tap Place Order."],options:[{label:"Can I cancel or return my order?",next:"returns"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
-  shipping:{bot:["Shipping fees by area:","• Metro Manila — \u20B180\n• Luzon (outside MM) — \u20B1120\n• Visayas — \u20B1150\n• Mindanao — \u20B1150","Orders are packed within 3\u20135 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
+  shipping:{bot:["Shipping fees (Origin: Greater Metro Manila via GGX):","• Metro Manila (all cities) — ₱80\n• Cavite (Bacoor, Dasma, GenTri, Imus, Tanza, Trece) — ₱150\n• Rizal (Antipolo, Cainta, San Mateo, Taytay, Binangonan, Rodriguez) — ₱150\n• Bulacan (Balagtas, Baliuag, Bulacan, Guiguinto, Malolos, Plaridel, Pulilan) — ₱150\n• Other Luzon — ₱150\n• Visayas — ₱180\n• Mindanao — ₱200","Orders are packed within 3–5 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
   returns:{bot:["Once your order is placed, it cannot be cancelled or refunded.","For damaged or wrong items, contact us within 7 days of delivery with your order number and photos or an unboxing video.","Email us at contactaeraofficial@gmail.com and we'll help you right away."],options:[{label:"How do I place an order?",next:"ordering"},{label:"AERA Circle reseller program",next:"circle"},{label:"Back to main menu",next:"start"}]},
   circle:{bot:["AERA Circle is our reseller program with three tiers:","• 1st Tier — 15% off, min. net PO \u20B16,000\n• 2nd Tier — 20% off, min. net PO \u20B115,000\n• 3rd Tier — 30% off, min. net PO \u20B125,000","For orders over \u20B150,000, email us at contactaeraofficial@gmail.com.","Apply by emailing contactaeraofficial@gmail.com with subject \"AERA Circle Application\"."],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Back to main menu",next:"start"}]}
 };

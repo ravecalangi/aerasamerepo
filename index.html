@@ -53,7 +53,7 @@ a{color:inherit;text-decoration:none}
   transform:rotate(var(--whirl-rotate));transform-origin:50% 50%;
 }
 /* whirl text (cream on brown) */
-.rt{fill:#f0ede8;font-family:Urbanist,"Instrument Sans",Arial,sans-serif;font-size:22px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;dominant-baseline:central}
+.rt{fill:#f0ede8;font-family:Urbanist,"Instrument Sans",Arial,sans-serif;font-size:22px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;dominant-baseline:central;alignment-baseline:central}
 .panel{position:absolute;inset:0;background:rgb(var(--banner-cream));overflow:hidden;z-index:1}
 
 :where(.hero) :where(h1,p,button){margin:0;padding:0}
@@ -395,7 +395,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="ribbon-wrap">
-    <svg class="ribbon" viewBox="0 0 3092 888" aria-hidden="true"><path fill="#384168" d="M3041.19,632.87c-26.73,18.27-124.01,81.25-253.21,124.65-56.93,19.12-112.09,31.72-163.94,37.45-58.59,6.47-113.27,4.16-162.53-6.87-49.25-11.03-94.1-31.08-133.29-59.58-43.6-31.71-81.62-74.89-112.99-128.36-17.64-30.06-34.09-66.06-51.5-104.16-40.15-87.85-85.65-187.43-168.28-267.48-96.72-93.7-223.9-140.52-388.81-143.13-189.9-3.01-346.47,97.78-484.61,186.69-81.87,52.7-159.21,102.48-232.96,124.18-36.6,10.77-69.85,13.93-101.68,9.67-35.31-4.73-69.23-18.58-103.71-42.34-18.56-12.79-31.4-28.84-40.23-45.55,29.17-16.49,55.6-34.71,78.45-54.17,44.16-37.62,73.57-78.45,85.03-118.07,8.56-29.6,6.85-58.07-4.94-82.35-8.55-17.59-26.77-41.58-65.05-55.94-34.24-12.84-70.76-9.1-102.85,10.53-25.76,15.76-48.53,41.62-65.84,74.79-27.08,51.88-38.67,116.12-31.79,176.23,.03,.29,.07,.58,.1,.87-4.91,2.01-9.91,3.99-15,5.92-65.89,25.02-139.21,40.5-217.92,46.01-90.64,6.35-186.66-.81-285.36-21.27L0,388.69c106.78,22.14,211.05,29.85,309.92,22.92,87.5-6.13,169.44-23.51,243.57-51.65,2.88-1.09,5.75-2.2,8.6-3.33,.77,1.51,1.55,3.02,2.35,4.52,16.63,31.07,39.56,56.82,68.16,76.53,87.48,60.28,179.67,74.97,281.86,44.9,86.17-25.35,168.79-78.54,256.27-134.84,131.74-84.8,267.89-172.44,427.58-172.44,2.29,0,4.59,.02,6.9,.05,75.54,1.2,142.53,13.08,199.09,35.32,49.16,19.33,91.19,46.3,128.51,82.46,70.45,68.25,110.41,155.69,149.05,240.25,18.4,40.25,35.77,78.28,55.74,112.31,72.66,123.81,175.02,201.27,304.24,230.21,37.55,8.41,77.39,12.63,119.06,12.62,23.77,0,48.14-1.37,73.01-4.12,58.23-6.43,119.71-20.42,182.72-41.59,136.35-45.8,237.97-110.12,275.33-135.65l-50.78-74.31ZM648.03,134.46c9.62-18.43,21.35-32.52,33.03-39.66,5.95-3.64,10.89-4.87,15.12-4.87,3.48,0,6.48,.83,9.15,1.83,16.46,6.17,19.86,12.68,15.14,29.01-8.22,28.42-40.48,67.24-95.69,103.33,1.5-31.66,9.6-63.5,23.25-89.64Z"/><path id="rlA" fill="none" d="M6.2 342.5 C14 344 39 350 55 353 C72 356 89 359 105 361 C122 363 139 364 155 366 C172 367 189 368 206 369 C222 370 239 372 256 372 C273 372 289 370 306 369 C323 367 339 365 356 362 C373 360 389 357 406 354 C422 351 439 348 455 344 C471 340 488 335 503 330 C519 324 535 317 550 310"/><path id="rlB" fill="none" d="M640.2 265.7 C655 257 669 248 682 238 C695 227 708 216 719 204 C731 192 743 179 751 165 C759 151 767 133 767 118 C767 102 761 83 751 71 C741 60 723 50 708 47 C692 45 673 48 659 55 C645 62 633 77 623 90 C613 103 605 119 599 134 C592 149 588 166 584 182 C581 199 579 216 580 232 C580 249 583 266 586 282 C590 298 594 315 601 330 C608 345 616 360 627 373 C638 386 651 396 665 406 C679 415 694 423 709 430 C725 436 741 442 757 446 C773 449 790 452 807 453 C824 453 840 452 857 449 C874 447 890 443 906 438 C922 434 938 427 953 421 C969 414 984 407 999 399 C1014 392 1028 383 1043 375 C1057 366 1072 357 1086 348 C1100 339 1114 330 1128 321 C1142 312 1156 303 1171 295 C1185 286 1201 279 1215 270 C1229 261 1240 248 1255 239 C1269 230 1284 224 1299 216 C1314 209 1329 201 1345 194 C1360 187 1375 180 1391 174 C1406 167 1422 161 1438 156 C1454 151 1470 147 1486 143 C1503 139 1519 136 1536 134 C1553 132 1570 131 1586 131 C1603 130 1620 130 1637 131 C1653 132 1670 134 1687 136 C1703 138 1720 141 1737 144 C1753 148 1769 152 1785 157 C1801 162 1817 167 1833 174 C1848 181 1863 188 1878 196 C1892 204 1906 214 1920 224 C1934 233 1947 244 1959 255 C1971 267 1983 279 1994 292 C2005 305 2015 318 2024 332 C2034 345 2043 360 2052 374 C2061 388 2071 402 2079 417 C2086 432 2090 448 2097 463 C2104 479 2112 493 2120 508 C2127 524 2133 539 2141 554 C2148 569 2156 584 2164 599 C2172 614 2180 629 2189 643 C2198 657 2207 671 2218 684 C2228 697 2240 710 2252 721 C2264 732 2278 743 2291 752 C2305 762 2319 770 2334 779 C2349 787 2364 794 2379 801 C2395 808 2410 814 2426 818 C2443 823 2459 826 2476 828 C2492 830 2509 830 2526 830 C2543 830 2560 829 2576 829 C2593 828 2610 827 2627 826 C2644 826 2660 824 2677 823 C2694 821 2711 820 2727 817 C2744 815 2760 812 2777 808 C2793 804 2809 798 2825 793 C2840 787 2856 781 2871 774 C2887 768 2902 761 2918 754 C2933 747 2948 739 2963 731 C2978 724 2992 716 3007 707 C3021 699 3036 690 3050 681 C3064 673 3086 660 3093 655"/><text class="rt" xml:space="preserve"><textPath href="#rlA" startOffset="70">STAY A LITTLE LONGER</textPath></text><text class="rt" xml:space="preserve"><textPath href="#rlB">&#8211; BLOOM          STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            </textPath></text></svg>
+    <svg class="ribbon" viewBox="0 0 3092 888" aria-hidden="true"><path fill="#384168" d="M3041.19,632.87c-26.73,18.27-124.01,81.25-253.21,124.65-56.93,19.12-112.09,31.72-163.94,37.45-58.59,6.47-113.27,4.16-162.53-6.87-49.25-11.03-94.1-31.08-133.29-59.58-43.6-31.71-81.62-74.89-112.99-128.36-17.64-30.06-34.09-66.06-51.5-104.16-40.15-87.85-85.65-187.43-168.28-267.48-96.72-93.7-223.9-140.52-388.81-143.13-189.9-3.01-346.47,97.78-484.61,186.69-81.87,52.7-159.21,102.48-232.96,124.18-36.6,10.77-69.85,13.93-101.68,9.67-35.31-4.73-69.23-18.58-103.71-42.34-18.56-12.79-31.4-28.84-40.23-45.55,29.17-16.49,55.6-34.71,78.45-54.17,44.16-37.62,73.57-78.45,85.03-118.07,8.56-29.6,6.85-58.07-4.94-82.35-8.55-17.59-26.77-41.58-65.05-55.94-34.24-12.84-70.76-9.1-102.85,10.53-25.76,15.76-48.53,41.62-65.84,74.79-27.08,51.88-38.67,116.12-31.79,176.23,.03,.29,.07,.58,.1,.87-4.91,2.01-9.91,3.99-15,5.92-65.89,25.02-139.21,40.5-217.92,46.01-90.64,6.35-186.66-.81-285.36-21.27L0,388.69c106.78,22.14,211.05,29.85,309.92,22.92,87.5-6.13,169.44-23.51,243.57-51.65,2.88-1.09,5.75-2.2,8.6-3.33,.77,1.51,1.55,3.02,2.35,4.52,16.63,31.07,39.56,56.82,68.16,76.53,87.48,60.28,179.67,74.97,281.86,44.9,86.17-25.35,168.79-78.54,256.27-134.84,131.74-84.8,267.89-172.44,427.58-172.44,2.29,0,4.59,.02,6.9,.05,75.54,1.2,142.53,13.08,199.09,35.32,49.16,19.33,91.19,46.3,128.51,82.46,70.45,68.25,110.41,155.69,149.05,240.25,18.4,40.25,35.77,78.28,55.74,112.31,72.66,123.81,175.02,201.27,304.24,230.21,37.55,8.41,77.39,12.63,119.06,12.62,23.77,0,48.14-1.37,73.01-4.12,58.23-6.43,119.71-20.42,182.72-41.59,136.35-45.8,237.97-110.12,275.33-135.65l-50.78-74.31ZM648.03,134.46c9.62-18.43,21.35-32.52,33.03-39.66,5.95-3.64,10.89-4.87,15.12-4.87,3.48,0,6.48,.83,9.15,1.83,16.46,6.17,19.86,12.68,15.14,29.01-8.22,28.42-40.48,67.24-95.69,103.33,1.5-31.66,9.6-63.5,23.25-89.64Z"/><path id="rlA" fill="none" d="M6.2 342.5 C14 344 39 350 55 353 C72 356 89 359 105 361 C122 363 139 364 155 366 C172 367 189 368 206 369 C222 370 239 372 256 372 C273 372 289 370 306 369 C323 367 339 365 356 362 C373 360 389 357 406 354 C422 351 439 348 455 344 C471 340 488 335 503 330 C519 324 535 317 550 310"/><path id="rlB" fill="none" d="M640.2 265.7 C655 257 669 248 682 238 C695 227 708 216 719 204 C731 192 743 179 751 165 C759 151 767 133 767 118 C767 102 761 83 751 71 C741 60 723 50 708 47 C692 45 673 48 659 55 C645 62 633 77 623 90 C613 103 605 119 599 134 C592 149 588 166 584 182 C581 199 579 216 580 232 C580 249 583 266 586 282 C590 298 594 315 601 330 C608 345 616 360 627 373 C638 386 651 396 665 406 C679 415 694 423 709 430 C725 436 741 442 757 446 C773 449 790 452 807 453 C824 453 840 452 857 449 C874 447 890 443 906 438 C922 434 938 427 953 421 C969 414 984 407 999 399 C1014 392 1028 383 1043 375 C1057 366 1072 357 1086 348 C1100 339 1114 330 1128 321 C1142 312 1156 303 1171 295 C1185 286 1201 279 1215 270 C1229 261 1240 248 1255 239 C1269 230 1284 224 1299 216 C1314 209 1329 201 1345 194 C1360 187 1375 180 1391 174 C1406 167 1422 161 1438 156 C1454 151 1470 147 1486 143 C1503 139 1519 136 1536 134 C1553 132 1570 131 1586 131 C1603 130 1620 130 1637 131 C1653 132 1670 134 1687 136 C1703 138 1720 141 1737 144 C1753 148 1769 152 1785 157 C1801 162 1817 167 1833 174 C1848 181 1863 188 1878 196 C1892 204 1906 214 1920 224 C1934 233 1947 244 1959 255 C1971 267 1983 279 1994 292 C2005 305 2015 318 2024 332 C2034 345 2043 360 2052 374 C2061 388 2071 402 2079 417 C2086 432 2090 448 2097 463 C2104 479 2112 493 2120 508 C2127 524 2133 539 2141 554 C2148 569 2156 584 2164 599 C2172 614 2180 629 2189 643 C2198 657 2207 671 2218 684 C2228 697 2240 710 2252 721 C2264 732 2278 743 2291 752 C2305 762 2319 770 2334 779 C2349 787 2364 794 2379 801 C2395 808 2410 814 2426 818 C2443 823 2459 826 2476 828 C2492 830 2509 830 2526 830 C2543 830 2560 829 2576 829 C2593 828 2610 827 2627 826 C2644 826 2660 824 2677 823 C2694 821 2711 820 2727 817 C2744 815 2760 812 2777 808 C2793 804 2809 798 2825 793 C2840 787 2856 781 2871 774 C2887 768 2902 761 2918 754 C2933 747 2948 739 2963 731 C2978 724 2992 716 3007 707 C3021 699 3036 690 3050 681 C3064 673 3086 660 3093 655"/><text class="rt" xml:space="preserve" dominant-baseline="central" alignment-baseline="central"><textPath href="#rlA" startOffset="70">STAY A LITTLE LONGER</textPath></text><text class="rt" xml:space="preserve" dominant-baseline="central" alignment-baseline="central"><textPath href="#rlB">&#8211; BLOOM          STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            STAY A LITTLE LONGER &#8211; BLOOM            </textPath></text></svg>
   </div>
 </section>
 
@@ -972,12 +972,54 @@ a{color:inherit;text-decoration:none}
         return;
       }
 
+      /* reviews enabled toggle */
+      if(k==='reviews_enabled' && v==='false'){
+        var rvSec = document.getElementById('reviews');
+        if(rvSec) rvSec.style.display = 'none';
+        return;
+      }
+
       /* all other text fields */
       var el=document.getElementById(k);
       if(el) el.textContent=v;
     });
   })
   .catch(function(){/* fail silently */});
+})();
+
+/* ── Dynamic Reviews loader ── */
+(function(){
+  var SUPA_URL='https://vhyveinrqamzycixhjsu.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';
+  fetch(SUPA_URL+'/rest/v1/reviews?select=*&status=eq.approved&is_visible=eq.true&order=created_at.desc&limit=6',{
+    headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  })
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(reviews){
+    if(!Array.isArray(reviews) || !reviews.length) return;
+    var grid = document.querySelector('.rv-grid');
+    if(!grid) return;
+    var esc = function(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+    grid.innerHTML = reviews.slice(0, 3).map(function(rv){
+      var stars = '';
+      for(var i=0; i<rv.rating; i++) stars += '<svg class="star" aria-hidden="true"><use href="#star"/></svg>';
+      var initial = (rv.customer_name || 'A').charAt(0).toUpperCase();
+      return '<article class="rv-card">'
+        +'<div class="rv-top">'
+          +'<div>'
+            +'<h3 class="rv-name">'+esc(rv.customer_name)+'</h3>'
+            +'<span class="stars" aria-label="'+rv.rating+' out of 5 stars">'+stars+'</span>'
+          +'</div>'
+          +'<div class="rv-avatar" aria-hidden="true" style="background:#e8ecf6;display:flex;align-items:center;justify-content:center;font-weight:700;color:#384168;border-radius:50%;width:48px;height:48px;font-size:18px">'
+            +initial
+          +'</div>'
+        +'</div>'
+        +'<p class="rv-text">'+esc(rv.review_content)+'</p>'
+        +(rv.product_name ? '<p style="margin-top:.75rem;font-size:.75rem;color:rgba(56,65,104,.6);font-weight:600">&bull; '+esc(rv.product_name)+'</p>' : '')
+      +'</article>';
+    }).join('');
+  })
+  .catch(function(){});
 })();
 
 /* ── Homepage product grid — always exactly 8 from Supabase ── */
@@ -1266,10 +1308,14 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
 
     // back text (existing element, now on path 1 + masked)
     var t1 = tp1.parentNode;
+    t1.setAttribute('dominant-baseline', 'central');
+    t1.setAttribute('alignment-baseline', 'central');
     tp1.setAttribute('href', '#' + p1.id);
     t1.setAttribute('mask', 'url(#' + mask.id + ')');
     // front text (new element on path 2, drawn on top)
     var t2 = t1.cloneNode(true);
+    t2.setAttribute('dominant-baseline', 'central');
+    t2.setAttribute('alignment-baseline', 'central');
     t2.removeAttribute('mask');
     var tp2 = t2.querySelector('textPath');
     tp2.setAttribute('href', '#' + p2.id);
@@ -1380,8 +1426,16 @@ document.querySelectorAll('.add-to-bag').forEach(function(btn){
   .hero-btns{flex-direction:column;width:100%;max-width:18rem;gap:.7rem}
   .hero-btns .btn-primary,.hero-btns .btn-ghost{width:100%;justify-content:center}
 
-  /* ribbon text was ~4px on phones: scale it up */
-  .rt{font-size:38px;letter-spacing:.14em}
+  /* ribbon & text centered on phones */
+  .ribbon-wrap{
+    --hw-pull:-12vw;
+    --whirl-rotate:8deg;--whirl-width:210%;--whirl-left:-55%;
+  }
+  .bottom-whirl-outer{
+    --whirl-rotate:8deg;--whirl-width:210%;--whirl-left:-55%;
+    height:clamp(200px,40vw,320px);
+  }
+  .rt{font-size:26px;letter-spacing:.16em;dominant-baseline:central;alignment-baseline:central}
 
   .products-header h2{font-size:2.1rem}
   .cat-tabs{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;gap:.5rem;margin-left:-1rem;margin-right:-1rem;padding:0 1rem .25rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -1788,7 +1842,7 @@ var chatFlow={
     ]
   },
   shipping:{
-    bot:["Shipping fees by area:","• Metro Manila — ₱80\n• Luzon (outside MM) — ₱120\n• Visayas — ₱150\n• Mindanao — ₱150","Orders are packed within 3–5 business days. Make sure your address and phone number are correct before placing your order."],
+    bot:["Shipping fees (Origin: Greater Metro Manila via GGX):","• Metro Manila (all cities) — ₱80\n• Cavite (Bacoor, Dasma, GenTri, Imus, Tanza, Trece) — ₱150\n• Rizal (Antipolo, Cainta, San Mateo, Taytay, Binangonan, Rodriguez) — ₱150\n• Bulacan (Balagtas, Baliuag, Bulacan, Guiguinto, Malolos, Plaridel, Pulilan) — ₱150\n• Other Luzon — ₱150\n• Visayas — ₱180\n• Mindanao — ₱200","Orders are packed within 3–5 business days. Make sure your address and phone number are correct before placing your order."],
     options:[
       {label:"How do I place an order?",next:"ordering"},
       {label:"Can I cancel or return my order?",next:"returns"},

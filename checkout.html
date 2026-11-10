@@ -245,13 +245,16 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
         <div class="fld span2"><label for="fStreet">House no., street, building <em>*</em></label><input id="fStreet" autocomplete="address-line1" placeholder="Blk 1 Lot 2, Sampaguita St."><span class="msg">Please enter your street address.</span></div>
         <div class="fld"><label for="fBrgy">Barangay <em>*</em></label><input id="fBrgy" placeholder="Barangay"><span class="msg">Please enter your barangay.</span></div>
         <div class="fld"><label for="fCity">City / Municipality <em>*</em></label><input id="fCity" autocomplete="address-level2" placeholder="City"><span class="msg">Please enter your city.</span></div>
-        <div class="fld"><label for="fProv">Province / Region <em>*</em></label>
-          <select id="fProv"><option value="">Select area</option>
-            <option value="mm">Metro Manila</option>
-            <option value="luzon">Luzon (outside Metro Manila)</option>
-            <option value="visayas">Visayas</option>
-            <option value="mindanao">Mindanao</option>
-          </select><span class="msg">Please select your area.</span></div>
+        <div class="fld"><label for="fProv">Delivery Area / Region <em>*</em></label>
+          <select id="fProv"><option value="">Select delivery area</option>
+            <option value="mm">Metro Manila (All Cities) — ₱80</option>
+            <option value="cavite">Cavite (Bacoor, Dasma, GenTri, Imus, Tanza, Trece) — ₱150</option>
+            <option value="rizal">Rizal (Antipolo, Cainta, San Mateo, Taytay, Binangonan, Rodriguez) — ₱150</option>
+            <option value="bulacan">Bulacan (Balagtas, Baliuag, Bulacan, Guiguinto, Malolos, Plaridel, Pulilan) — ₱150</option>
+            <option value="luzon">Luzon (Outside Greater Metro Manila) — ₱150</option>
+            <option value="visayas">Visayas — ₱180</option>
+            <option value="mindanao">Mindanao — ₱200</option>
+          </select><span class="msg">Please select your delivery area.</span></div>
         <div class="fld"><label for="fZip">Postal code <em>*</em></label><input id="fZip" inputmode="numeric" maxlength="4" placeholder="3023"><span class="msg">Enter a 4-digit postal code.</span></div>
         <div class="fld span2"><label for="fNote">Delivery notes (optional)</label><textarea id="fNote" placeholder="Landmarks, preferred delivery time, etc."></textarea></div>
       </div>
@@ -270,9 +273,11 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
       <div class="box"><p class="box-label">Delivery details</p><div id="sumDeliver"></div></div>
       <div class="box" style="padding-bottom:.4rem"><p class="box-label">Items</p><div id="sumItems"></div></div>
       <p class="box-label" style="margin-top:1.6rem">Payment breakdown</p>
-      <div class="sum-line"><span>Subtotal</span><span id="sumSub"></span></div>
-      <div class="sum-line"><span>Shipping</span><span id="sumShip"></span></div>
-      <div class="sum-total"><span>Total</span><span id="sumTotal"></span></div>
+      <div class="sum-line"><span>Net of VAT</span><span id="sumNetSub"></span></div>
+      <div class="sum-line"><span>12% VAT</span><span id="sumVat"></span></div>
+      <div class="sum-line" style="font-weight:600"><span>Items Subtotal</span><span id="sumSub"></span></div>
+      <div class="sum-line"><span>Shipping (<span id="sumAreaLabel">Area</span>)</span><span id="sumShip"></span></div>
+      <div class="sum-total"><span>Total Payable</span><span id="sumTotal"></span></div>
     </div>
 
     <div class="side">
@@ -394,7 +399,7 @@ var CART_KEY   = 'aeraCart';            // must match the key saved in index.htm
 var INFO_KEY   = 'aera-checkout-info';
 var ORDER_KEY  = 'aera-last-order';
 var ORDERS_KEY = 'aera-guest-orders';
-var SHIPPING   = { mm:80, luzon:120, visayas:150, mindanao:150 };   // PHP per area
+var SHIPPING   = { mm:80, cavite:150, rizal:150, bulacan:150, luzon:150, visayas:180, mindanao:200 };   // PHP per area
 var FREE_SHIP_OVER = 0;                  // e.g. 1500 = free shipping at ₱1,500+. 0 = off
 var PAYMENTS = [
   { id:'gcash',    label:'GCash',    name:'VI*****A JA*E D.', number:'0995 192 1895',  qr:'images/gcash.png' },
@@ -484,7 +489,53 @@ $('infoForm').addEventListener('submit', function(e){
 });
 
 /* ---------- STEP 2: review ---------- */
-var AREA_NAME = { mm:'Metro Manila', luzon:'Luzon', visayas:'Visayas', mindanao:'Mindanao' };
+var AREA_NAME = {
+  mm: 'Metro Manila (₱80)',
+  cavite: 'Cavite GMM (₱150)',
+  rizal: 'Rizal GMM (₱150)',
+  bulacan: 'Bulacan GMM (₱150)',
+  luzon: 'Luzon - Outside GMM (₱150)',
+  visayas: 'Visayas (₱180)',
+  mindanao: 'Mindanao (₱200)'
+};
+
+// Smart city auto-selector for delivery area
+var CITY_TO_AREA = {
+  'bacoor': 'cavite', 'bacoor city': 'cavite',
+  'dasmarinas': 'cavite', 'dasmarinas city': 'cavite', 'dasmariñas': 'cavite', 'dasmariñas city': 'cavite', 'dasma': 'cavite',
+  'general trias': 'cavite', 'general trias city': 'cavite', 'gen trias': 'cavite', 'gentri': 'cavite',
+  'imus': 'cavite', 'imus city': 'cavite',
+  'tanza': 'cavite',
+  'trece martires': 'cavite', 'trece martires city': 'cavite', 'trece': 'cavite',
+  'antipolo': 'rizal', 'antipolo city': 'rizal',
+  'cainta': 'rizal', 'cainta city': 'rizal',
+  'san mateo': 'rizal', 'san mateo city': 'rizal',
+  'taytay': 'rizal', 'taytay city': 'rizal',
+  'binangonan': 'rizal',
+  'rodriguez': 'rizal', 'montalban': 'rizal',
+  'balagtas': 'bulacan',
+  'baliuag': 'bulacan', 'baliuag city': 'bulacan', 'baliwag': 'bulacan',
+  'bulacan': 'bulacan', 'bulakan': 'bulacan',
+  'guiguinto': 'bulacan',
+  'malolos': 'bulacan', 'malolos city': 'bulacan',
+  'plaridel': 'bulacan',
+  'pulilan': 'bulacan',
+  'manila': 'mm', 'quezon city': 'mm', 'qc': 'mm', 'makati': 'mm', 'taguig': 'mm', 'bgc': 'mm', 'pasig': 'mm',
+  'mandaluyong': 'mm', 'san juan': 'mm', 'marikina': 'mm', 'pasay': 'mm', 'paranaque': 'mm', 'parañaque': 'mm',
+  'las pinas': 'mm', 'las piñas': 'mm', 'muntinlupa': 'mm', 'malabon': 'mm', 'navotas': 'mm', 'valenzuela': 'mm', 'pateros': 'mm',
+  'caloocan': 'mm', 'kalookan': 'mm'
+};
+
+if($('fCity')){
+  $('fCity').addEventListener('change', function(){
+    var raw = this.value.trim().toLowerCase();
+    var match = CITY_TO_AREA[raw];
+    if(match && $('fProv') && !$('fProv').value){
+      $('fProv').value = match;
+    }
+  });
+}
+
 function renderReview(){
   $('sumContact').innerHTML =
     '<div class="dl"><span>Name</span><span>'+esc(info.name)+'</span></div>'+
@@ -497,11 +548,19 @@ function renderReview(){
   $('sumItems').innerHTML = cart.map(function(i){
     return '<div class="item"><img src="'+esc(i.img)+'" alt=""><div class="nm"><b>'+esc(i.name)+'</b><small>'+esc(i.meta)+' \u00B7 Qty '+i.qty+'</small></div><div class="pr">'+peso((Number(i.price)||0)*i.qty)+'</div></div>';
   }).join('');
+  var sub = subtotal();
+  var netSub = Math.round((sub / 1.12) * 100) / 100;
+  var vatAmt = Math.round((sub - netSub) * 100) / 100;
   var ship = shipping();
-  $('sumSub').textContent = peso(subtotal());
+  var tot = sub + ship;
+
+  if($('sumNetSub')) $('sumNetSub').textContent = peso(netSub);
+  if($('sumVat')) $('sumVat').textContent = peso(vatAmt);
+  $('sumSub').textContent = peso(sub);
+  if($('sumAreaLabel')) $('sumAreaLabel').textContent = (AREA_NAME[info.area] || 'Standard').split('(')[0].trim();
   $('sumShip').textContent = ship===0 ? 'Free' : peso(ship);
-  $('sumTotal').textContent = peso(total());
-  $('confAmt').textContent = peso(total());
+  $('sumTotal').textContent = peso(tot);
+  $('confAmt').textContent = peso(tot);
   $('confCnt').textContent = count()+(count()===1?' item':' items');
   updateGate();
 }
@@ -621,7 +680,11 @@ function saveOrderSecurely(order, receipt){
       customer: order.customer,
       delivery: order.delivery,
       items: order.items,
+      subtotal: order.subtotal,
+      vat_rate: order.vat_rate,
+      vat_amount: order.vat_amount,
       shipping: order.shipping,
+      total: order.total,
       paymentMethod: order.paymentMethod,
       receipt: receipt
     })
@@ -636,11 +699,17 @@ function saveOrderSecurely(order, receipt){
 /* ---------- place order ---------- */
 function doPlaceOrder(){
   var btn = $('placeBtn'); btn.disabled = true; btn.textContent = 'Placing order...';
+  var sub = subtotal();
+  var netSub = Math.round((sub / 1.12) * 100) / 100;
+  var vatAmt = Math.round((sub - netSub) * 100) / 100;
+  var ship = shipping();
+  var tot = sub + ship;
+
   var order = {
     date: new Date().toISOString(),
     customer: { name:info.name, email:info.email, phone:info.phone },
     delivery: { street:info.street, barangay:info.brgy, city:info.city, area:info.area, zip:info.zip, note:info.note||'' },
-    items: cart, subtotal: subtotal(), shipping: shipping(), total: total(),
+    items: cart, subtotal: sub, vat_rate: 12, vat_amount: vatAmt, shipping: ship, total: tot,
     paymentMethod: payment.label, receiptName: receiptFile ? receiptFile.name : ''
   };
 
@@ -784,7 +853,7 @@ var chatFlow={
   products:{bot:["We have three product lines:","• Hair & Body Mists — 5 scents, 110mL (\u20B1299\u2013\u20B1329)\n• Soaps — 2 variants, 90g (\u20B1129\u2013\u20B1149)\n• Second Skin Body Serum — 100mL (\u20B1449)","Our mists: No Fixed Plans, White Shirt, First Flowers, Open Windows, and After Hours."],options:[{label:"How do I place an order?",next:"ordering"},{label:"What payment methods do you accept?",next:"payment"},{label:"Back to main menu",next:"start"}]},
   ordering:{bot:["Ordering is easy — no account needed!","1. Add items to your bag\n2. Go to checkout\n3. Enter your contact & delivery details\n4. Pay via GCash, BPI or Maribank\n5. Upload your receipt\n6. Tap Place Order to confirm","Your order isn't reserved until you complete Step 6."],options:[{label:"What payment methods do you accept?",next:"payment"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
   payment:{bot:["We accept:","• GCash\n• BPI\n• Maribank","After paying, upload a clear screenshot of your receipt showing the amount, date and reference number. Then tap Place Order."],options:[{label:"Can I cancel or return my order?",next:"returns"},{label:"Shipping & delivery",next:"shipping"},{label:"Back to main menu",next:"start"}]},
-  shipping:{bot:["Shipping fees by area:","• Metro Manila — \u20B180\n• Luzon (outside MM) — \u20B1120\n• Visayas — \u20B1150\n• Mindanao — \u20B1150","Orders are packed within 3\u20135 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
+  shipping:{bot:["Shipping fees (Origin: Greater Metro Manila via GGX):","• Metro Manila (all cities) — ₱80\n• Cavite (Bacoor, Dasma, GenTri, Imus, Tanza, Trece) — ₱150\n• Rizal (Antipolo, Cainta, San Mateo, Taytay, Binangonan, Rodriguez) — ₱150\n• Bulacan (Balagtas, Baliuag, Bulacan, Guiguinto, Malolos, Plaridel, Pulilan) — ₱150\n• Other Luzon — ₱150\n• Visayas — ₱180\n• Mindanao — ₱200","Orders are packed within 3–5 business days."],options:[{label:"How do I place an order?",next:"ordering"},{label:"Can I cancel or return my order?",next:"returns"},{label:"Back to main menu",next:"start"}]},
   returns:{bot:["Once your order is placed, it cannot be cancelled or refunded.","For damaged or wrong items, contact us within 7 days of delivery with your order number and photos or an unboxing video.","Email us at contactaeraofficial@gmail.com and we'll help you right away."],options:[{label:"How do I place an order?",next:"ordering"},{label:"AERA Circle reseller program",next:"circle"},{label:"Back to main menu",next:"start"}]},
   circle:{bot:["AERA Circle is our reseller program with three tiers:","• 1st Tier — 15% off, min. net PO \u20B16,000\n• 2nd Tier — 20% off, min. net PO \u20B115,000\n• 3rd Tier — 30% off, min. net PO \u20B125,000","For orders over \u20B150,000, email us at contactaeraofficial@gmail.com.","Apply by emailing contactaeraofficial@gmail.com with subject \"AERA Circle Application\"."],options:[{label:"What products do you sell?",next:"products"},{label:"How do I place an order?",next:"ordering"},{label:"Back to main menu",next:"start"}]}
 };

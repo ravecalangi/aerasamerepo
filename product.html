@@ -109,6 +109,40 @@ h1,h2,h3{font-family:Urbanist,Arial,sans-serif;font-weight:500;margin:0}
 .miss{text-align:center;padding:6rem 0}.miss h1{font-size:2.5rem;margin-bottom:1rem}
 .miss a{display:inline-block;margin-top:1rem;padding:.8rem 1.5rem;border-radius:9999px;background:var(--brown);color:#fff;font-size:.875rem}
 
+/* ── PRODUCT GALLERY ── */
+.gallery-wrap{display:flex;flex-direction:column;gap:.85rem}
+.thumb-row{display:flex;gap:.6rem;overflow-x:auto;padding-bottom:.4rem;scrollbar-width:thin}
+.thumb-btn{width:68px;height:68px;border-radius:14px;overflow:hidden;border:2px solid transparent;background:rgba(56,65,104,.06);padding:0;cursor:pointer;flex-shrink:0;transition:all .2s;opacity:.7}
+.thumb-btn:hover{opacity:1}
+.thumb-btn.active{border-color:var(--brown);opacity:1;box-shadow:0 2px 8px rgba(56,65,104,.15)}
+.thumb-btn img{width:100%;height:100%;object-fit:cover;display:block}
+.vat-note{display:block;font-size:.8125rem;font-weight:400;color:rgba(56,65,104,.6);margin-top:.25rem}
+
+/* ── PRODUCT REVIEWS ── */
+.prod-reviews{padding:3.5rem 0 2rem;border-top:1px solid rgba(56,65,104,.14);margin-top:2rem}
+.prod-reviews-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.25rem}
+.rv-summary-box{display:flex;align-items:center;gap:1rem}
+.rv-avg-score{font-family:Urbanist,sans-serif;font-size:2.75rem;font-weight:600;color:var(--ink);line-height:1}
+.write-rv-btn{padding:.7rem 1.6rem;background:none;border:1.5px solid var(--brown);border-radius:9999px;font:inherit;font-size:.875rem;font-weight:600;color:var(--brown);cursor:pointer;transition:all .2s}
+.write-rv-btn:hover{background:var(--brown);color:#fff}
+.prod-rv-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:768px){.prod-rv-grid{grid-template-columns:repeat(2,1fr)}}
+.prod-rv-card{background:#fcfbfa;border:1px solid rgba(56,65,104,.12);border-radius:18px;padding:1.4rem;display:flex;flex-direction:column;gap:.6rem}
+.prod-rv-head{display:flex;justify-content:space-between;align-items:flex-start}
+.prod-rv-stars{color:#f59e0b;font-size:14px;letter-spacing:2px}
+.prod-rv-title{font-weight:600;font-size:.95rem;color:var(--ink);margin:0}
+.prod-rv-text{font-size:.875rem;line-height:1.65;color:rgba(56,65,104,.8);margin:0}
+.prod-rv-meta{font-size:.75rem;color:rgba(56,65,104,.5);margin-top:auto}
+
+/* Review Modal */
+.rv-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:970;display:flex;align-items:center;justify-content:center;padding:1.25rem;opacity:0;visibility:hidden;transition:all .25s ease}
+.rv-modal-ov.open{opacity:1;visibility:visible}
+.rv-modal-box{background:#fff;border-radius:24px;padding:2.25rem;width:min(500px,100%);box-shadow:0 16px 48px rgba(0,0,0,.15);max-height:90vh;overflow-y:auto;position:relative}
+.rv-modal-box h2{font-family:Urbanist,sans-serif;font-size:1.6rem;margin:0 0 .5rem}
+.rv-modal-close{position:absolute;top:1.25rem;right:1.25rem;border:none;background:none;font-size:1.5rem;cursor:pointer;padding:4px;border-radius:50%;color:var(--brown)}
+.star-rating-select{display:flex;gap:6px;font-size:28px;cursor:pointer;color:#d1d5db;margin:.35rem 0 .75rem}
+.star-rating-select span.active{color:#f59e0b}
+
 /* ── CART DRAWER ── */
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:900;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
 .cart-overlay.open{opacity:1;visibility:visible;transition:opacity .3s}
@@ -410,23 +444,101 @@ function renderProduct(AERA_PRODUCTS){
   /* Calculate discounted price if discount exists */
   var discount = p.discount || 0;
   var originalPrice = p.price;
-  var finalPrice = discount > 0 ? originalPrice * (1 - discount / 100) : originalPrice;
+  var isFixed = p.discount_type === 'fixed';
+  var finalPrice = discount > 0 ? (isFixed ? Math.max(0, originalPrice - discount) : Math.round(originalPrice * (1 - discount / 100))) : originalPrice;
   var priceHTML = '';
   if(discount > 0){
+    var badgeTxt = isFixed ? '-₱' + discount : '-' + discount + '%';
     priceHTML = '<span style="text-decoration:line-through;color:rgba(56,65,104,.5);font-size:1.125rem;margin-right:.75rem">'+peso(originalPrice)+'</span>'
-      +'<span style="font-size:2rem;font-weight:700;color:#384168">'+peso(finalPrice)+'</span>';
+      +'<span style="font-size:2rem;font-weight:700;color:#384168">'+peso(finalPrice)+'</span>'
+      +'<span style="font-size:.75rem;font-weight:700;background:#b3261e;color:#fff;padding:3px 8px;border-radius:999px;margin-left:.6rem;vertical-align:middle">'+badgeTxt+' SALE</span>';
   } else {
     priceHTML = peso(originalPrice);
   }
-  
+
+  /* 12% VAT Breakdown */
+  var vatRate = 12;
+  var netPrice = Math.round((finalPrice / (1 + vatRate / 100)) * 100) / 100;
+  var vatAmount = Math.round((finalPrice - netPrice) * 100) / 100;
+  var vatHTML = '<span class="vat-note">('+peso(netPrice)+' + 12% VAT '+peso(vatAmount)+')</span>';
+
+  /* Multi-photo Gallery */
+  var images = Array.isArray(p.images) && p.images.length ? p.images : [p.img].filter(Boolean);
+  if(!images.length) images = ['images/whirl-template.png'];
+  var galleryHTML = '<div class="gallery-wrap">'
+    +'<div class="pic"><img id="mainProductImg" src="'+images[0]+'" alt="'+esc(p.name)+'"></div>'
+    +(images.length > 1 ? '<div class="thumb-row" id="thumbRow">'
+      +images.map(function(imgUrl, idx){
+        return '<button type="button" class="thumb-btn '+(idx===0?'active':'')+'" data-idx="'+idx+'" data-src="'+imgUrl+'" aria-label="Photo '+(idx+1)+'">'
+          +'<img src="'+imgUrl+'" alt="Thumbnail '+(idx+1)+'" loading="lazy">'
+        +'</button>';
+      }).join('')
+      +'</div>' : '')
+    +'</div>';
+
+  /* Customer Reviews section */
+  var reviewsSectionHTML = '<section class="prod-reviews" id="prodReviews">'
+    +'<div class="prod-reviews-header">'
+      +'<div>'
+        +'<h2 style="font-family:Urbanist,sans-serif;font-size:1.85rem;margin:0 0 .5rem">Customer Reviews</h2>'
+        +'<p style="margin:0;font-size:.875rem;color:rgba(56,65,104,.6)" id="rvCountSummary">Verified thoughts on '+esc(p.name)+'</p>'
+      +'</div>'
+      +'<button class="write-rv-btn" id="openReviewModalBtn" type="button">Write a Review</button>'
+    +'</div>'
+    +'<div class="prod-rv-grid" id="prodRvGrid">'
+      +'<p style="color:rgba(56,65,104,.5);font-size:.9rem;grid-column:1/-1;padding:1rem 0">Loading reviews...</p>'
+    +'</div>'
+  +'</section>';
+
+  /* Review Submission Modal */
+  var reviewModalHTML = '<div class="rv-modal-ov" id="rvModalOv" aria-hidden="true">'
+    +'<div class="rv-modal-box">'
+      +'<button class="rv-modal-close" id="closeReviewModalBtn" type="button">&times;</button>'
+      +'<h2>Write a Review</h2>'
+      +'<p style="margin:0 0 1.25rem;font-size:.875rem;color:rgba(56,65,104,.65)">Share your thoughts on '+esc(p.name)+'. Reviews are moderated before publishing.</p>'
+      +'<form id="prodReviewForm" style="display:grid;gap:1rem">'
+        +'<div>'
+          +'<label style="display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(56,65,104,.7);margin-bottom:.2rem">Rating</label>'
+          +'<div class="star-rating-select" id="starRatingSelect">'
+            +'<span class="active" data-val="1">&#9733;</span>'
+            +'<span class="active" data-val="2">&#9733;</span>'
+            +'<span class="active" data-val="3">&#9733;</span>'
+            +'<span class="active" data-val="4">&#9733;</span>'
+            +'<span class="active" data-val="5">&#9733;</span>'
+          +'</div>'
+          +'<input type="hidden" id="rvRatingInput" value="5">'
+        +'</div>'
+        +'<div>'
+          +'<label style="display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(56,65,104,.7);margin-bottom:.2rem">Your Name *</label>'
+          +'<input id="rvNameInput" type="text" required placeholder="e.g. Maria Santos" style="width:100%;padding:.7rem;border:1px solid rgba(56,65,104,.2);border-radius:10px;font:inherit">'
+        +'</div>'
+        +'<div>'
+          +'<label style="display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(56,65,104,.7);margin-bottom:.2rem">Email Address *</label>'
+          +'<input id="rvEmailInput" type="email" required placeholder="you@email.com" style="width:100%;padding:.7rem;border:1px solid rgba(56,65,104,.2);border-radius:10px;font:inherit">'
+          +'<small style="color:rgba(56,65,104,.5);font-size:.75rem">Your email will not be published publicly.</small>'
+        +'</div>'
+        +'<div>'
+          +'<label style="display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(56,65,104,.7);margin-bottom:.2rem">Review Headline</label>'
+          +'<input id="rvTitleInput" type="text" placeholder="e.g. Beautiful everyday scent" style="width:100%;padding:.7rem;border:1px solid rgba(56,65,104,.2);border-radius:10px;font:inherit">'
+        +'</div>'
+        +'<div>'
+          +'<label style="display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(56,65,104,.7);margin-bottom:.2rem">Your Review *</label>'
+          +'<textarea id="rvContentInput" rows="4" required placeholder="Tell us how it feels, how long it lasts, or what you like about it..." style="width:100%;padding:.7rem;border:1px solid rgba(56,65,104,.2);border-radius:10px;font:inherit"></textarea>'
+        +'</div>'
+        +'<p id="rvFormMsg" style="margin:0;font-size:.85rem"></p>'
+        +'<button class="add" type="submit" id="submitReviewBtn" style="width:100%;height:48px">Submit Review</button>'
+      +'</form>'
+    +'</div>'
+  +'</div>';
+
   app.innerHTML=
     '<nav class="crumb"><a href="index.html">Home</a> / <a href="shop.html">Shop</a> / '+esc(p.name)+'</nav>'
     +'<div class="pd">'
-      +'<div class="pic"><img src="'+p.img+'" alt="'+esc(p.name)+'"></div>'
+      +galleryHTML
       +'<div class="info">'
         +'<p class="cat">'+CATN[p.category]+' &middot; '+p.size+'</p>'
         +'<h1>'+esc(p.name)+'</h1>'
-        +'<p class="price">'+priceHTML+'</p>'
+        +'<p class="price">'+priceHTML+' '+vatHTML+'</p>'
         +'<p class="stock '+stClass+'"><i></i> '+stLabel+'</p>'
         +'<p class="desc">'+esc(p.desc)+'</p>'
         +(p.cat==='mist'?'<p class="scent-notes"><span class="sn-label">Scent notes</span>'+p.notes.split(', ').map(function(n){return '<span class="sn-pill">'+esc(n)+'</span>'}).join('')+'</p>':'')
@@ -443,6 +555,7 @@ function renderProduct(AERA_PRODUCTS){
         +'</div>'
       +'</div>'
     +'</div>'
+    +reviewsSectionHTML
     +'<section class="more"><h2>You might also like</h2>'
       +'<div class="rel">'
         +related.map(function(x){
@@ -464,7 +577,8 @@ function renderProduct(AERA_PRODUCTS){
           +'</a>';
         }).join('')
       +'</div>'
-    +'</section>';
+    +'</section>'
+    +reviewModalHTML;
 
   /* qty controls */
   var q=1, qv=document.getElementById("qv"), qm=document.getElementById("qm"), qp=document.getElementById("qp");
@@ -476,6 +590,137 @@ function renderProduct(AERA_PRODUCTS){
   document.getElementById("addBtn").onclick=function(){
     window.addToCart(p.name, CATN[p.category]+" \u00B7 "+p.size, finalPrice, p.thumb, q);
   };
+
+  /* Thumbnail image gallery switcher */
+  document.querySelectorAll('.thumb-btn').forEach(function(btn){
+    btn.onclick = function(){
+      document.querySelectorAll('.thumb-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var mainImg = document.getElementById('mainProductImg');
+      if(mainImg){
+        mainImg.style.opacity = '0.35';
+        setTimeout(function(){
+          mainImg.src = btn.dataset.src;
+          mainImg.style.opacity = '1';
+        }, 120);
+      }
+    };
+  });
+
+  /* Review modal controls */
+  var rvModal = document.getElementById('rvModalOv');
+  var openRvBtn = document.getElementById('openReviewModalBtn');
+  var closeRvBtn = document.getElementById('closeReviewModalBtn');
+  if(openRvBtn && rvModal){
+    openRvBtn.onclick = function(){ rvModal.classList.add('open'); rvModal.setAttribute('aria-hidden','false'); };
+  }
+  if(closeRvBtn && rvModal){
+    closeRvBtn.onclick = function(){ rvModal.classList.remove('open'); rvModal.setAttribute('aria-hidden','true'); };
+  }
+  if(rvModal){
+    rvModal.onclick = function(e){ if(e.target === rvModal){ rvModal.classList.remove('open'); rvModal.setAttribute('aria-hidden','true'); } };
+  }
+
+  /* Star rating picker */
+  var selectedRating = 5;
+  var stars = document.querySelectorAll('#starRatingSelect span');
+  var ratingInput = document.getElementById('rvRatingInput');
+  stars.forEach(function(s){
+    s.onclick = function(){
+      selectedRating = parseInt(this.dataset.val, 10);
+      if(ratingInput) ratingInput.value = selectedRating;
+      stars.forEach(function(st){
+        var v = parseInt(st.dataset.val, 10);
+        st.classList.toggle('active', v <= selectedRating);
+      });
+    };
+  });
+
+  /* Review submission handler */
+  var rvForm = document.getElementById('prodReviewForm');
+  if(rvForm){
+    rvForm.onsubmit = function(e){
+      e.preventDefault();
+      var msg = document.getElementById('rvFormMsg');
+      var subBtn = document.getElementById('submitReviewBtn');
+      if(subBtn) subBtn.disabled = true;
+      if(msg) { msg.style.color = 'var(--brown)'; msg.textContent = 'Submitting your review...'; }
+      var payload = {
+        action: 'submit-review',
+        productId: p.id,
+        productName: p.name,
+        customerName: document.getElementById('rvNameInput').value.trim(),
+        customerEmail: document.getElementById('rvEmailInput').value.trim(),
+        rating: selectedRating,
+        reviewTitle: document.getElementById('rvTitleInput').value.trim(),
+        reviewContent: document.getElementById('rvContentInput').value.trim()
+      };
+      fetch('https://vhyveinrqamzycixhjsu.supabase.co/functions/v1/aera-api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r){ return r.json().then(function(x){ if(!r.ok) throw new Error(x.error || 'Submission failed.'); return x; }); })
+      .then(function(res){
+        if(msg){
+          msg.style.color = '#15803d';
+          msg.textContent = res.message || 'Thank you! Your review has been submitted for moderation.';
+        }
+        rvForm.reset();
+        setTimeout(function(){
+          if(rvModal) rvModal.classList.remove('open');
+        }, 2200);
+      })
+      .catch(function(err){
+        if(msg){ msg.style.color = '#b91c1c'; msg.textContent = err.message; }
+      })
+      .finally(function(){ if(subBtn) subBtn.disabled = false; });
+    };
+  }
+
+  /* Fetch approved reviews for this product */
+  var rvGrid = document.getElementById('prodRvGrid');
+  var rvSummary = document.getElementById('rvCountSummary');
+  fetch(SUPA_URL + '/rest/v1/reviews?select=*&status=eq.approved&is_visible=eq.true&order=created_at.desc', {
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+  })
+  .then(function(r){ return r.ok ? r.json() : []; })
+  .then(function(allRv){
+    var matched = (allRv || []).filter(function(r){
+      return r.product_id === p.id || (r.product_name && r.product_name.toLowerCase().indexOf(p.name.toLowerCase()) !== -1);
+    });
+    if(!matched.length && allRv.length){
+      matched = allRv.slice(0, 4);
+    }
+    if(rvSummary){
+      rvSummary.textContent = matched.length + ' review' + (matched.length === 1 ? '' : 's') + ' for ' + p.name;
+    }
+    if(!matched.length){
+      if(rvGrid) rvGrid.innerHTML = '<p style="color:rgba(56,65,104,.55);font-size:.9rem;grid-column:1/-1;padding:1.5rem 0">No reviews yet. Be the first to share your ritual with ' + esc(p.name) + '!</p>';
+      return;
+    }
+    if(rvGrid){
+      rvGrid.innerHTML = matched.map(function(rv){
+        var starsStr = '';
+        for(var i=0; i<rv.rating; i++) starsStr += '&#9733;';
+        var dateStr = new Date(rv.created_at || Date.now()).toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+        return '<div class="prod-rv-card">'
+          +'<div class="prod-rv-head">'
+            +'<div>'
+              +'<h4 style="margin:0 0 .2rem;font-size:.95rem;font-weight:600;color:var(--ink)">'+esc(rv.customer_name)+'</h4>'
+              +'<div class="prod-rv-stars" aria-label="'+rv.rating+' stars">'+starsStr+'</div>'
+            +'</div>'
+            +'<span class="prod-rv-meta">'+dateStr+'</span>'
+          +'</div>'
+          +(rv.review_title ? '<p class="prod-rv-title">'+esc(rv.review_title)+'</p>' : '')
+          +'<p class="prod-rv-text">'+esc(rv.review_content)+'</p>'
+        +'</div>';
+      }).join('');
+    }
+  })
+  .catch(function(){
+    if(rvGrid) rvGrid.innerHTML = '<p style="color:rgba(56,65,104,.5);font-size:.875rem">Reviews unavailable at this moment.</p>';
+  });
 }
 
 /* fetch products from Supabase then render */

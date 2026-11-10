@@ -92,12 +92,13 @@ function getSiteUrl() {
   return Deno.env.get("PUBLIC_SITE_URL") || "https://ravecalangi.github.io/area-new/";
 }
 
-function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, items, subtotal, shipping, total, deliveryArea, trackUrl }) {
+function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, items, subtotal, shipping, vatAmount, vatRate, total, deliveryArea, trackUrl }) {
   const itemsRows = items.map((item) => `
     <tr>
       <td style="padding: 16px 0; vertical-align: top;">
-        <div class="text-title" style="font-weight: 600; font-size: 15px; color: #242b4b; line-height: 1.35;">${item.name}</div>
-        ${item.meta ? `<div class="text-muted" style="font-size: 12px; color: #7882a5; margin-top: 3px;">${item.meta}</div>` : ""}
+        <div class="text-title" style="font-weight: 600; font-size: 15px; color: #242b4b; line-height: 1.35;">${escapeHtml(item.name)}</div>
+        ${item.meta ? `<div class="text-muted" style="font-size: 12px; color: #7882a5; margin-top: 3px;">${escapeHtml(item.meta)}</div>` : ""}
+        ${item.discount > 0 ? `<div style="font-size: 11px; color: #c2410c; margin-top: 2px;">Sale: -${item.discount}% off regular SRP</div>` : ""}
       </td>
       <td style="padding: 16px 12px; text-align: center; vertical-align: top; white-space: nowrap;">
         <span class="text-muted" style="font-size: 13px; color: #7882a5;">× ${item.qty}</span>
@@ -109,6 +110,8 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
     <tr>
       <td colspan="3" class="divider" style="border-bottom: 1px solid rgba(56, 65, 104, 0.06); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
     </tr>`).join("");
+
+  const netSubtotal = Math.max(0, subtotal - (vatAmount || 0));
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -129,12 +132,11 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
     @media (prefers-color-scheme: dark) {
       body, .email-bg { background-color: #121520 !important; }
       .card-surface { background-color: #1c2133 !important; border-color: rgba(255, 255, 255, 0.08) !important; }
-      .order-pill { background-color: #272d45 !important; border-color: rgba(255, 255, 255, 0.12) !important; }
       .text-title { color: #fdfaf6 !important; }
       .text-body { color: #d2d6e4 !important; }
       .text-muted { color: #8e96b3 !important; }
       .divider { border-color: rgba(255, 255, 255, 0.08) !important; }
-      .btn-primary { background-color: #f7f4ee !important; color: #1c2133 !important; }
+      .btn-primary { background-color: #f7f4ee !important; }
       .btn-primary-text { color: #1c2133 !important; }
       .tag-chip { background-color: rgba(255, 255, 255, 0.08) !important; color: #d2d6e4 !important; }
       .footer-text { color: #6e7694 !important; }
@@ -145,13 +147,14 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
     [data-ogsc] .text-title { color: #fdfaf6 !important; }
     [data-ogsc] .text-body { color: #d2d6e4 !important; }
     [data-ogsc] .text-muted { color: #8e96b3 !important; }
-    [data-ogsc] .btn-primary { background-color: #f7f4ee !important; color: #1c2133 !important; }
+    [data-ogsc] .btn-primary { background-color: #f7f4ee !important; }
+    [data-ogsc] .btn-primary-text { color: #1c2133 !important; }
     [data-ogsc] .brand-logo { filter: brightness(0) invert(1) !important; }
   </style>
 </head>
 <body class="email-bg" style="margin: 0; padding: 0; background-color: #f7f4ee; -webkit-font-smoothing: antialiased;">
   <div style="display: none; font-size: 1px; color: #f7f4ee; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-    Your AERA order ${orderNumber} is confirmed. Track your package status anytime without creating an account.
+    Thank you for your order, ${escapeHtml(customerName)}. We are preparing your AERA items. Order ${orderNumber}.
   </div>
   <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="email-bg" style="background-color: #f7f4ee; table-layout: fixed;">
     <tr>
@@ -170,24 +173,29 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
               <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
                 <tr>
                   <td>
-                    <span class="tag-chip" style="display: inline-block; padding: 6px 14px; background-color: #eef1f8; color: #242b4b; border-radius: 9999px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;">Order Received</span>
-                    <h1 class="text-title" style="margin: 18px 0 8px; font-size: 26px; line-height: 1.25; font-weight: 600; color: #242b4b; letter-spacing: -0.02em;">Thank you for your order, ${customerName}.</h1>
-                    <p class="text-body" style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #434c74;">We've received your order and payment verification is underway. You can track your order status anytime using your unique Order ID.</p>
+                    <span class="tag-chip" style="display: inline-block; padding: 6px 14px; background-color: #f1ede4; color: #384168; border-radius: 9999px; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;">
+                      Order Received
+                    </span>
+                    <h1 class="text-title" style="margin: 20px 0 8px; font-size: 26px; line-height: 1.25; font-weight: 600; color: #242b4b; letter-spacing: -0.02em;">
+                      Thank you, ${escapeHtml(customerName)}.
+                    </h1>
+                    <p class="text-body" style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #434c74;">
+                      We’ve received your order and payment details. Our team is now verifying your receipt and packing your items with care.
+                    </p>
                   </td>
                 </tr>
               </table>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" class="order-pill" style="background-color: #f8f6f0; border-radius: 16px; border: 1px solid rgba(56, 65, 104, 0.08); margin-bottom: 32px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="background-color: #faf9f7; border-radius: 16px; border: 1px solid rgba(56, 65, 104, 0.08); margin-bottom: 28px;">
                 <tr>
-                  <td style="padding: 20px 24px;">
+                  <td style="padding: 18px 22px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
                       <tr>
-                        <td>
-                          <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #727b9e; font-weight: 600; margin-bottom: 4px;">Order Tracking Reference</div>
-                          <div class="text-title" style="font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 20px; font-weight: 700; color: #242b4b; letter-spacing: 0.04em;">${orderNumber}</div>
-                        </td>
-                        <td align="right" valign="middle">
-                          <span class="text-muted" style="font-size: 12px; color: #727b9e;">${orderDate}</span>
-                        </td>
+                        <td class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #7882a5; font-weight: 600; padding-bottom: 4px;">Order Number</td>
+                        <td align="right" class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #7882a5; font-weight: 600; padding-bottom: 4px;">Date</td>
+                      </tr>
+                      <tr>
+                        <td class="text-title" style="font-size: 14px; font-weight: 700; color: #242b4b; font-family: monospace;">${orderNumber}</td>
+                        <td align="right" class="text-title" style="font-size: 13px; font-weight: 600; color: #242b4b;">${orderDate}</td>
                       </tr>
                     </table>
                   </td>
@@ -195,18 +203,25 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
               </table>
               <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation">
                 <tr>
-                  <td colspan="3" class="text-title" style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #242b4b; padding-bottom: 12px;">Items Ordered</td>
+                  <td colspan="3" class="text-muted" style="padding-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: #7882a5; font-weight: 700;">
+                    Your Items
+                  </td>
                 </tr>
                 <tr>
                   <td colspan="3" class="divider" style="border-bottom: 1px solid rgba(56, 65, 104, 0.1); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
                 </tr>
                 ${itemsRows}
                 <tr>
-                  <td colspan="2" class="text-muted" style="padding: 14px 0 4px; font-size: 14px; color: #6a7499;">Subtotal</td>
-                  <td style="padding: 14px 0 4px; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${subtotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
+                  <td colspan="2" class="text-muted" style="padding: 14px 0 4px; font-size: 14px; color: #6a7499;">Subtotal (Net of VAT)</td>
+                  <td style="padding: 14px 0 4px; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${netSubtotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
                 </tr>
+                ${vatAmount > 0 ? `
                 <tr>
-                  <td colspan="2" class="text-muted" style="padding: 4px 0; font-size: 14px; color: #6a7499;">Shipping (${deliveryArea || "Standard"})</td>
+                  <td colspan="2" class="text-muted" style="padding: 4px 0; font-size: 14px; color: #6a7499;">12% VAT</td>
+                  <td style="padding: 4px 0; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${Number(vatAmount).toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
+                </tr>` : ""}
+                <tr>
+                  <td colspan="2" class="text-muted" style="padding: 4px 0; font-size: 14px; color: #6a7499;">Shipping (${escapeHtml(deliveryArea || "Standard")})</td>
                   <td style="padding: 4px 0; text-align: right; font-size: 14px; color: #242b4b; font-weight: 500;">₱${shipping.toLocaleString("en-PH", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr>
@@ -262,16 +277,7 @@ function renderOrderConfirmationEmail({ customerName, orderNumber, orderDate, it
 </html>`;
 }
 
-function escapeHtml(str) {
-  return String(str || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, ctaUrl, unsubscribeEmail }) {
+function renderNewsletterEmail({ subject, preheader, title, message, imageUrl, imageCaption, ctaLabel, ctaUrl, unsubscribeEmail }) {
   const safeTitle = escapeHtml(title || subject || "Notes from AERA");
   const safePreheader = escapeHtml(preheader || "A quiet moment with AERA.");
   const paragraphs = (message || "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
@@ -286,6 +292,16 @@ function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, c
           <a href="${escapeHtml(ctaUrl)}" target="_blank" class="btn-primary-text" style="display: inline-block; padding: 14px 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #ffffff; text-decoration: none; border-radius: 9999px;">
             ${escapeHtml(ctaLabel)} &rarr;
           </a>
+        </td>
+      </tr>
+    </table>` : "";
+
+  const imageBlock = imageUrl ? `
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin: 18px 0 24px;">
+      <tr>
+        <td align="center">
+          <img src="${escapeHtml(imageUrl)}" alt="${safeTitle}" width="528" style="width: 100%; max-width: 528px; height: auto; border-radius: 14px; display: block; border: 1px solid rgba(56, 65, 104, 0.08);" />
+          ${imageCaption ? `<div class="text-muted" style="font-size: 12px; color: #7882a5; margin-top: 8px; text-align: center; font-style: italic;">${escapeHtml(imageCaption)}</div>` : ''}
         </td>
       </tr>
     </table>` : "";
@@ -360,6 +376,7 @@ function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, c
                   </td>
                 </tr>
               </table>
+              ${imageBlock}
               <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 10px;">
                 <tr>
                   <td>
@@ -368,38 +385,27 @@ function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, c
                   </td>
                 </tr>
               </table>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 36px;">
-                <tr>
-                  <td class="divider" style="border-top: 1px solid rgba(56, 65, 104, 0.1); font-size: 0; line-height: 0; height: 1px;">&nbsp;</td>
-                </tr>
-              </table>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation" style="margin-top: 24px;">
-                <tr>
-                  <td>
-                    <div class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: #7882a5; font-weight: 600; margin-bottom: 4px;">With gratitude,</div>
-                    <div class="text-title" style="font-size: 16px; font-weight: 600; color: #242b4b;">The AERA Team</div>
-                  </td>
-                </tr>
-              </table>
             </td>
           </tr>
           <tr>
-            <td align="center" style="padding-top: 32px; padding-bottom: 24px;">
-              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 16px;">
+            <td align="center" style="padding: 32px 20px 0;">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
-                  <td style="padding: 0 10px;"><a href="https://www.instagram.com/aeraclucofficial" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">Instagram</a></td>
-                  <td class="footer-text" style="color: #cbd0e0;">&bull;</td>
-                  <td style="padding: 0 10px;"><a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">TikTok</a></td>
-                  <td class="footer-text" style="color: #cbd0e0;">&bull;</td>
-                  <td style="padding: 0 10px;"><a href="https://www.facebook.com/thisisaera" target="_blank" class="footer-text" style="font-size: 12px; color: #7882a5; text-decoration: none; font-weight: 500;">Facebook</a></td>
+                  <td align="center" style="padding-bottom: 12px;">
+                    <a href="https://www.instagram.com/aeraclucofficial" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">Instagram</a>
+                    <span class="footer-text" style="color: #c4c7d5;">&bull;</span>
+                    <a href="https://www.tiktok.com/@aeraclucofficial" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">TikTok</a>
+                    <span class="footer-text" style="color: #c4c7d5;">&bull;</span>
+                    <a href="https://www.facebook.com/thisisaera" target="_blank" class="footer-text" style="color: #727b9e; font-size: 12px; text-decoration: none; margin: 0 8px;">Facebook</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" class="footer-text" style="font-size: 12px; color: #7882a5; line-height: 1.6;">
+                    You’re receiving this because you subscribed to AERA newsletter.<br>
+                    &copy; 2026 AERA. All rights reserved.
+                  </td>
                 </tr>
               </table>
-              <p class="footer-text" style="margin: 0 0 8px; font-size: 12px; line-height: 1.6; color: #8e96b3;">
-                You are receiving this note because you subscribed to the AERA newsletter.
-              </p>
-              <p class="footer-text" style="margin: 0; font-size: 11px; line-height: 1.5; color: #a4accc;">
-                &copy; 2026 AERA Official &bull; San Jose del Monte, Bulacan, Philippines
-              </p>
             </td>
           </tr>
         </table>
@@ -408,6 +414,15 @@ function renderNewsletterEmail({ subject, preheader, title, message, ctaLabel, c
   </table>
 </body>
 </html>`;
+}
+
+function escapeHtml(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function renderContactInquiryEmail({ name, email, phone, subject, message }) {
@@ -477,6 +492,7 @@ Deno.serve(async (req) => {
         return json({ error: "Please provide a valid customer email, name, and order items." }, 400);
       }
       const normalizedItems = items.slice(0, 30).map((item) => ({
+        id: clean(item.id, 100),
         name: clean(item.name, 150),
         qty: Math.max(1, Math.min(99, Number(item.qty) || 1)),
         price: Math.max(0, Number(item.price) || 0),
@@ -486,8 +502,83 @@ Deno.serve(async (req) => {
       if (normalizedItems.some((item) => !item.name || !Number.isFinite(item.price))) {
         return json({ error: "Invalid order items." }, 400);
       }
-      const subtotal = normalizedItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-      const shipping = Math.max(0, Number(body.shipping) || 0), total = subtotal + shipping;
+
+      // Independent product price & active discount validation from DB
+      const { data: dbProducts } = await db.from("products").select("id,name,price,discount,discount_type,active");
+      let calculatedSubtotal = 0;
+      const verifiedItems = normalizedItems.map((item) => {
+        const match = dbProducts?.find((p) => (item.id && p.id === item.id) || p.name.toLowerCase() === item.name.toLowerCase());
+        let unitPrice = item.price;
+        let originalPrice = item.price;
+        let appliedDiscount = 0;
+        if (match) {
+          originalPrice = Number(match.price) || 0;
+          const disc = Number(match.discount) || 0;
+          if (disc > 0) {
+            appliedDiscount = disc;
+            if (match.discount_type === "fixed") {
+              unitPrice = Math.max(0, originalPrice - disc);
+            } else {
+              unitPrice = Math.max(0, originalPrice * (1 - disc / 100));
+            }
+          } else {
+            unitPrice = originalPrice;
+          }
+        }
+        unitPrice = Math.round(unitPrice * 100) / 100;
+        calculatedSubtotal += unitPrice * item.qty;
+        return {
+          ...item,
+          price: unitPrice,
+          originalPrice,
+          discount: appliedDiscount
+        };
+      });
+      calculatedSubtotal = Math.round(calculatedSubtotal * 100) / 100;
+
+      // Independent GGX shipping calculation (Origin: Greater Metro Manila)
+      const deliveryCity = clean(delivery.city, 120).toLowerCase();
+      const deliveryArea = clean(delivery.area, 60).toLowerCase();
+      let validatedShipping = 150; // default Luzon fallback
+
+      const { data: zones } = await db.from("shipping_zones").select("code,name,rate,cities,is_active");
+      if (deliveryArea === "mm" || deliveryArea === "metro manila" ||
+          ["caloocan", "las piñas", "makati", "malabon", "mandaluyong", "manila", "marikina", "muntinlupa", "navotas", "parañaque", "pasay", "pasig", "quezon city", "san juan", "taguig", "valenzuela", "pateros"].some((c) => deliveryCity.includes(c))) {
+        validatedShipping = 80;
+      } else if (deliveryArea === "cavite" || ["bacoor", "dasmarinas", "dasmariñas", "general trias", "imus", "tanza", "trece martires"].some((c) => deliveryCity.includes(c))) {
+        validatedShipping = 150;
+      } else if (deliveryArea === "rizal" || ["antipolo", "cainta", "san mateo", "taytay", "binangonan", "rodriguez"].some((c) => deliveryCity.includes(c))) {
+        validatedShipping = 150;
+      } else if (deliveryArea === "bulacan" || ["balagtas", "baliuag", "bulacan", "guiguinto", "malolos", "plaridel", "pulilan"].some((c) => deliveryCity.includes(c))) {
+        validatedShipping = 150;
+      } else if (deliveryArea === "visayas") {
+        validatedShipping = 180;
+      } else if (deliveryArea === "mindanao") {
+        validatedShipping = 200;
+      } else if (deliveryArea === "luzon") {
+        validatedShipping = 150;
+      }
+
+      if (zones && zones.length) {
+        const matched = zones.find((z) => z.is_active && (z.code === deliveryArea || (Array.isArray(z.cities) && z.cities.some((c: string) => deliveryCity.includes(c.toLowerCase())))));
+        if (matched) {
+          validatedShipping = Number(matched.rate) || validatedShipping;
+        }
+      }
+
+      // Check site_content for free shipping threshold
+      const { data: freeShipSetting } = await db.from("site_content").select("value").eq("key", "shipping_free_over").maybeSingle();
+      const freeShipThreshold = Number(freeShipSetting?.value) || 0;
+      if (freeShipThreshold > 0 && calculatedSubtotal >= freeShipThreshold) {
+        validatedShipping = 0;
+      }
+
+      // VAT calculation (12% default, inclusive for PH retail)
+      const vatRate = 12;
+      const netSubtotal = Math.round((calculatedSubtotal / (1 + vatRate / 100)) * 100) / 100;
+      const vatAmount = Math.round((calculatedSubtotal - netSubtotal) * 100) / 100;
+      const total = calculatedSubtotal + validatedShipping;
+
       const orderNumber = `AERA-${new Date().getUTCFullYear()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 10).toUpperCase()}`;
       const trackingToken = crypto.randomUUID() + crypto.randomUUID();
       const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(trackingToken));
@@ -506,6 +597,7 @@ Deno.serve(async (req) => {
         const { error: receiptError } = await db.storage.from("receipts").upload(receiptPath, bytes, { contentType: mime, upsert: false });
         if (receiptError) throw new Error("Receipt upload failed.");
       }
+
       const { data: order, error } = await db.from("orders").insert({
         order_number: orderNumber,
         customer_name: clean(customer.name, 120),
@@ -517,9 +609,11 @@ Deno.serve(async (req) => {
         province: clean(delivery.area, 60),
         zip: clean(delivery.zip, 20),
         delivery_notes: clean(delivery.note, 500),
-        items: normalizedItems,
-        subtotal,
-        shipping,
+        items: verifiedItems,
+        subtotal: calculatedSubtotal,
+        shipping: validatedShipping,
+        vat_rate: vatRate,
+        vat_amount: vatAmount,
         total,
         payment_method: clean(body.paymentMethod, 50),
         receipt_url: receiptPath,
@@ -534,9 +628,11 @@ Deno.serve(async (req) => {
         customerName: clean(customer.name, 120),
         orderNumber,
         orderDate: new Date().toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" }),
-        items: normalizedItems,
-        subtotal,
-        shipping,
+        items: verifiedItems,
+        subtotal: calculatedSubtotal,
+        shipping: validatedShipping,
+        vatAmount,
+        vatRate,
         total,
         deliveryArea: [clean(delivery.barangay, 120), clean(delivery.city, 120), clean(delivery.area, 60)].filter(Boolean).join(", "),
         trackUrl
@@ -548,7 +644,7 @@ Deno.serve(async (req) => {
     if (action === "track-order") {
       const orderNumber = clean(body.orderNumber, 40).toUpperCase();
       if (!/^[A-Z0-9-]{10,40}$/i.test(orderNumber)) return json({ error: "Enter a valid Order ID." }, 400);
-      let query = db.from("orders").select("id,order_number,created_at,status,status_updated_at,items,total,shipping").eq("order_number", orderNumber);
+      let query = db.from("orders").select("id,order_number,created_at,status,status_updated_at,items,total,shipping,vat_amount").eq("order_number", orderNumber);
       if (body.email && emailOk(body.email)) {
         query = query.eq("customer_email", clean(body.email, 254).toLowerCase());
       }
@@ -620,12 +716,10 @@ Deno.serve(async (req) => {
       await db.from("newsletter_subscribers").upsert({ email, status: "subscribed" }, { onConflict: "email" });
       const welcomeHtml = renderNewsletterEmail({
         subject: "Welcome to AERA Circle",
-        preheader: "Thank you for joining our circle of mindful scents and rituals.",
-        title: "Welcome to the AERA Circle",
-        message: "Thank you for joining us. You are now part of our quiet circle of scents, seasonal drops, and restorative rituals.\n\nWhenever we release a new blend or share an announcement, you'll be among the very first to know.",
-        ctaLabel: "Visit AERA",
-        ctaUrl: Deno.env.get("PUBLIC_SITE_URL") || "https://ravecalangi.github.io/area-new/index.html",
-        unsubscribeEmail: email
+        title: "Welcome to our ritual.",
+        message: "Thank you for joining AERA Circle. We’re glad to have you with us for quiet rituals, new releases, and subscriber-only notes.\n\nTake your time, breathe, and stay a little longer.",
+        ctaLabel: "Explore the Collection",
+        ctaUrl: `${getSiteUrl()}shop.html`
       });
       sendBrevo({
         sender: sender(),
@@ -646,17 +740,168 @@ Deno.serve(async (req) => {
       if (!emailOk(email) || name.length < 2 || message.length < 3) {
         return json({ error: "Please provide your name, valid email, and your message." }, 400);
       }
+
+      // 1. Immediately log inquiry to contact_inquiries table so no message is lost
+      let inquiryId = null;
+      try {
+        const { data: inq } = await db.from("contact_inquiries").insert({
+          name, email, phone, subject, message, email_sent: false
+        }).select("id").single();
+        if (inq) inquiryId = inq.id;
+      } catch (err) {
+        console.error("Inquiry logging notice:", err);
+      }
+
+      // 2. Deliver email notification
       const recipient = Deno.env.get("CONTACT_RECIPIENT_EMAIL") || "contactaeraofficial@gmail.com";
       const inquiryHtml = renderContactInquiryEmail({ name, email, phone, subject, message });
-      const emailSent = await sendBrevo({
-        sender: sender(),
-        replyTo: { email, name },
-        to: [{ email: recipient }],
-        subject: `AERA Contact Inquiry — ${subject}`,
-        htmlContent: inquiryHtml,
-        textContent: `Customer Contact Inquiry\n-----------------------\nFrom: ${name} <${email}>\nPhone: ${phone || "N/A"}\nSubject: ${subject}\nSubmitted: ${new Date().toISOString()}\n\nMessage:\n${message}`
+      let emailSent = false;
+      try {
+        emailSent = await sendBrevo({
+          sender: sender(),
+          replyTo: { email, name },
+          to: [{ email: recipient }],
+          subject: `AERA Contact Inquiry — ${subject}`,
+          htmlContent: inquiryHtml,
+          textContent: `Customer Contact Inquiry\n-----------------------\nFrom: ${name} <${email}>\nPhone: ${phone || "N/A"}\nSubject: ${subject}\nSubmitted: ${new Date().toISOString()}\n\nMessage:\n${message}`
+        });
+        if (emailSent && inquiryId) {
+          await db.from("contact_inquiries").update({ email_sent: true }).eq("id", inquiryId);
+        }
+      } catch (err) {
+        console.error("Contact email delivery notice:", err);
+      }
+
+      return json({
+        message: emailSent
+          ? "Your message has been sent successfully. We'll get back to you soon."
+          : "Your message was received and logged. Our team will get back to you soon."
       });
-      return json({ message: emailSent ? "Your message has been sent successfully. We'll get back to you soon." : "Your message was received. Email notifications are temporarily disabled." });
+    }
+
+    // ── REVIEWS API ──
+    if (action === "submit-review") {
+      const customerName = clean(body.customerName || body.name, 120);
+      const customerEmail = clean(body.customerEmail || body.email, 254).toLowerCase();
+      const rating = Math.max(1, Math.min(5, parseInt(body.rating, 10) || 5));
+      const reviewTitle = clean(body.reviewTitle || body.title, 200);
+      const reviewContent = clean(body.reviewContent || body.content || body.message, 2000);
+      const productId = clean(body.productId, 100) || null;
+      const productName = clean(body.productName, 200) || null;
+
+      if (!customerName || customerName.length < 2 || !emailOk(customerEmail) || !reviewContent || reviewContent.length < 3) {
+        return json({ error: "Please provide your name, valid email, and your review." }, 400);
+      }
+
+      // Check if reviews are globally enabled in site_content
+      const { data: setting } = await db.from("site_content").select("value").eq("key", "reviews_enabled").maybeSingle();
+      if (setting && setting.value === "false") {
+        return json({ error: "Product reviews are currently not accepting submissions." }, 403);
+      }
+
+      const { data, error } = await db.from("reviews").insert({
+        product_id: productId,
+        product_name: productName,
+        customer_name: customerName,
+        customer_email: customerEmail,
+        rating,
+        review_title: reviewTitle,
+        review_content: reviewContent,
+        status: "pending",
+        is_visible: true
+      }).select("id,customer_name,rating,created_at").single();
+
+      if (error) throw error;
+      return json({ message: "Thank you! Your review has been submitted for moderation.", review: data }, 201);
+    }
+
+    if (action === "admin-list-reviews") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("reviews").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return json({ reviews: data || [] });
+    }
+
+    if (action === "admin-update-review") {
+      const user = await requireAdmin(req);
+      const id = clean(body.id, 100);
+      if (!id) return json({ error: "Review ID is required." }, 400);
+      const updates = {
+        updated_at: new Date().toISOString(),
+        updated_by: user.id
+      };
+      if (body.rating !== undefined) updates.rating = Math.max(1, Math.min(5, parseInt(body.rating, 10) || 5));
+      if (body.reviewTitle !== undefined) updates.review_title = clean(body.reviewTitle, 200);
+      if (body.reviewContent !== undefined) updates.review_content = clean(body.reviewContent, 2000);
+      if (body.status && ["pending", "approved", "rejected"].includes(body.status)) updates.status = body.status;
+      if (typeof body.isVisible === "boolean") updates.is_visible = body.isVisible;
+
+      const { data, error } = await db.from("reviews").update(updates).eq("id", id).select().single();
+      if (error) throw error;
+      return json({ message: "Review updated successfully.", review: data });
+    }
+
+    if (action === "admin-delete-review") {
+      await requireAdmin(req);
+      const id = clean(body.id, 100);
+      if (!id) return json({ error: "Review ID is required." }, 400);
+      const { error } = await db.from("reviews").delete().eq("id", id);
+      if (error) throw error;
+      return json({ ok: true, message: "Review deleted successfully." });
+    }
+
+    if (action === "admin-toggle-reviews-global") {
+      await requireAdmin(req);
+      const enabled = body.enabled === true || body.enabled === "true";
+      const { error } = await db.from("site_content").upsert({
+        key: "reviews_enabled",
+        value: enabled ? "true" : "false",
+        updated_at: new Date().toISOString()
+      }, { onConflict: "key" });
+      if (error) throw error;
+      return json({ message: `Public reviews ${enabled ? 'enabled' : 'disabled'} successfully.`, enabled });
+    }
+
+    // ── SHIPPING ZONES API ──
+    if (action === "admin-list-shipping-zones") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("shipping_zones").select("*").order("sort_order", { ascending: true });
+      if (error) throw error;
+      return json({ zones: data || [] });
+    }
+
+    if (action === "admin-save-shipping-zone") {
+      await requireAdmin(req);
+      const code = clean(body.code, 40).toLowerCase();
+      const name = clean(body.name, 100);
+      const rate = Math.max(0, Number(body.rate) || 0);
+      const cities = Array.isArray(body.cities) ? body.cities.map((c) => clean(c, 100)).filter(Boolean) : [];
+      const description = clean(body.description, 250);
+      const isActive = body.isActive !== false;
+      const sortOrder = parseInt(body.sortOrder, 10) || 50;
+
+      if (!code || !name) return json({ error: "Zone code and name are required." }, 400);
+      const { data, error } = await db.from("shipping_zones").upsert({
+        code,
+        name,
+        rate,
+        cities,
+        description,
+        is_active: isActive,
+        sort_order: sortOrder,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "code" }).select().single();
+      if (error) throw error;
+      return json({ message: "Shipping zone saved successfully.", zone: data });
+    }
+
+    if (action === "admin-delete-shipping-zone") {
+      await requireAdmin(req);
+      const code = clean(body.code, 40).toLowerCase();
+      if (!code) return json({ error: "Zone code is required." }, 400);
+      const { error } = await db.from("shipping_zones").delete().eq("code", code);
+      if (error) throw error;
+      return json({ ok: true, message: "Shipping zone removed." });
     }
 
     if (action === "reseller-me") {
@@ -763,10 +1008,10 @@ Deno.serve(async (req) => {
     if (action === "admin-add-subscriber") {
       await requireAdmin(req);
       const email = clean(body.email, 254).toLowerCase();
-      if (!emailOk(email)) return json({ error: "Enter a valid email address." }, 400);
-      const { error } = await db.from("newsletter_subscribers").upsert({ email, status: "subscribed" }, { onConflict: "email" });
+      if (!emailOk(email)) return json({ error: "Valid email address required." }, 400);
+      const { data, error } = await db.from("newsletter_subscribers").upsert({ email, status: "subscribed", updated_at: new Date().toISOString() }, { onConflict: "email" }).select().single();
       if (error) throw error;
-      return json({ ok: true, message: "Subscriber added." });
+      return json({ ok: true, subscriber: data });
     }
 
     if (action === "admin-delete-subscriber") {
@@ -779,11 +1024,13 @@ Deno.serve(async (req) => {
     }
 
     if (action === "admin-send-newsletter") {
-      await requireAdmin(req);
+      const user = await requireAdmin(req);
       const subject = clean(body.subject, 180);
       const preheader = clean(body.preheader, 200);
       const title = clean(body.title, 200);
       const message = clean(body.message, 20000);
+      const imageUrl = clean(body.imageUrl, 1000);
+      const imageCaption = clean(body.imageCaption, 200);
       const ctaLabel = clean(body.ctaLabel, 80);
       const ctaUrl = clean(body.ctaUrl, 500);
       const testEmail = clean(body.testEmail, 254).toLowerCase();
@@ -795,6 +1042,8 @@ Deno.serve(async (req) => {
         preheader,
         title: title || subject,
         message,
+        imageUrl,
+        imageCaption,
         ctaLabel,
         ctaUrl,
         unsubscribeEmail: testEmail || "subscriber@aera.com"
@@ -832,6 +1081,20 @@ Deno.serve(async (req) => {
         }
       }
 
+      // Log into newsletter_campaigns
+      await db.from("newsletter_campaigns").insert({
+        subject,
+        preheader,
+        title,
+        message,
+        image_url: imageUrl,
+        image_caption: imageCaption,
+        cta_label: ctaLabel,
+        cta_url: ctaUrl,
+        recipients_count: sentCount,
+        sent_by: user.id
+      }).catch((err) => console.error("Log campaign notice:", err));
+
       return json({ ok: true, count: sentCount, message: `Newsletter broadcast sent to ${sentCount} subscriber(s).` });
     }
 
@@ -841,4 +1104,3 @@ Deno.serve(async (req) => {
     return json({ error: error instanceof Error ? error.message : "Request failed." }, 500);
   }
 });
-

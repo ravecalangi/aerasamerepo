@@ -117,7 +117,12 @@
 
         <h3 style="margin:24px 0 8px;font-size:1rem;font-family:Urbanist,sans-serif">Order Items</h3>
         <ul class="items" id="items"></ul>
-        <div class="total"><span>Total</span><span id="total"></span></div>
+        <div id="costBreakdown" style="border-top:1px solid rgba(56,65,104,.12);margin-top:12px;padding-top:10px;font-size:.875rem">
+          <div style="display:flex;justify-content:space-between;padding:3px 0;color:rgba(56,65,104,.7)"><span>Items Subtotal</span><span id="subtotal"></span></div>
+          <div id="vatRow" style="display:none;justify-content:space-between;padding:3px 0;color:rgba(56,65,104,.7)"><span>12% VAT (incl.)</span><span id="vatAmount"></span></div>
+          <div style="display:flex;justify-content:space-between;padding:3px 0;color:rgba(56,65,104,.7)"><span>Shipping (<span id="shippingArea">Standard</span>)</span><span id="shippingFee"></span></div>
+        </div>
+        <div class="total"><span>Total Paid</span><span id="total"></span></div>
       </div>
     </section>
   </main>
@@ -272,6 +277,21 @@
           return '<li><span>' + name + ' × ' + qty + '</span><strong>' + peso(price * qty) + '</strong></li>';
         }).join('');
 
+        var sub = Number(o.subtotal || 0);
+        var vat = Number(o.vat_amount || 0);
+        var ship = Number(o.shipping || 0);
+        var area = o.province || 'Standard';
+        if($('subtotal')) $('subtotal').textContent = peso(sub);
+        if($('vatRow')){
+          if(vat > 0){
+            $('vatRow').style.display = 'flex';
+            $('vatAmount').textContent = peso(vat);
+          } else {
+            $('vatRow').style.display = 'none';
+          }
+        }
+        if($('shippingArea')) $('shippingArea').textContent = area;
+        if($('shippingFee')) $('shippingFee').textContent = ship === 0 ? 'Free' : peso(ship);
         $('total').textContent = peso(o.total);
         $('result').classList.add('show');
       })

@@ -190,6 +190,23 @@ button:focus:not(:focus-visible){outline:none}
   .hide-mob{display:none}
 }
 .badge.published{background:var(--ok-bg);color:var(--ok)}.badge.draft{background:#eef0f4;color:var(--muted)}.badge.scheduled{background:var(--ship-bg);color:var(--ship)}
+.badge.approved{background:var(--ok-bg);color:var(--ok)}
+.badge.rejected{background:var(--danger-bg);color:var(--danger)}
+.badge.visible{background:#e0f2fe;color:#0369a1}
+.badge.hidden{background:#f3f4f6;color:#6b7280}
+.star-gold{color:#eab308}
+.star-gray{color:#d1d5db}
+.prod-sale-badge{background:var(--danger);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:9999px;letter-spacing:.04em;text-transform:uppercase}
+.p-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:.75rem;margin-top:.75rem}
+.p-gallery-item{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;aspect-ratio:1/1;display:flex;flex-direction:column}
+.p-gallery-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.p-gallery-badge{position:absolute;top:4px;left:4px;background:var(--brown);color:#fff;font-size:.6rem;font-weight:700;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
+.p-gallery-actions{position:absolute;bottom:0;left:0;right:0;background:rgba(20,25,45,.82);display:flex;justify-content:center;gap:3px;padding:3px;opacity:0;transition:opacity .2s}
+.p-gallery-item:hover .p-gallery-actions{opacity:1}
+.p-gallery-btn{background:none;border:0;color:#fff;font-size:.7rem;padding:2px 4px;cursor:pointer;border-radius:4px}
+.p-gallery-btn:hover{background:rgba(255,255,255,.25)}
+.p-gallery-btn.del:hover{background:var(--danger)}
+.city-tag{display:inline-block;background:var(--cream);color:var(--brown);padding:2px 8px;border-radius:6px;font-size:.75rem;margin:2px}
 .blog-editor-overlay{position:fixed;inset:0;z-index:300;background:#f5f3ef;overflow:auto;display:none}.blog-editor-overlay.open{display:block}.blog-editor-wrap{min-height:100vh}.blog-editor-header{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid var(--line);padding:1rem clamp(1rem,3vw,2.5rem);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.blog-editor-actions{display:flex;gap:.5rem;flex-wrap:wrap}.blog-editor-body{display:grid;gap:1.5rem;padding:1.5rem;max-width:1400px;margin:auto}.blog-editor-fields,.blog-editor-quill{background:#fff;border:1px solid var(--line);border-radius:16px;padding:1.25rem}.blog-editor-fields{display:grid;gap:.8rem;align-content:start}.blog-editor-fields textarea{resize:vertical}.blog-editor-fields input,.blog-editor-fields select,.blog-editor-fields textarea{width:100%;padding:.75rem;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--brown);background:#faf9f7}.blog-editor-fields input[type=checkbox]{width:16px;padding:0;flex:0 0 16px;accent-color:var(--brown)}.blog-editor-fields label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.blog-editor-fields>label:has(input[type=checkbox]){display:flex;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0}.blog-editor-quill{min-height:500px}.blog-editor-quill #beQuill{min-height:400px}.blog-editor-fields img{max-width:100%;max-height:180px;object-fit:cover;border-radius:10px}.blog-editor-fields .be-image-status{display:block;color:var(--muted);font-size:.78rem}.blog-editor-table-thumb{width:48px;height:40px;object-fit:cover;border-radius:6px}.blog-actions{display:flex;gap:.3rem;flex-wrap:wrap}.be-media-tools{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;margin:.75rem 0}.be-format-tools{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}.be-upload-tools{display:flex;align-items:center;gap:.45rem;margin-left:auto}.be-upload-btn,.be-upload-btn:visited{border:1px solid #384168!important;background:#384168!important;color:#fff!important;font-weight:700!important;box-shadow:0 3px 10px rgba(20,35,75,.18)}.be-upload-btn:hover{background:#fff!important;color:#384168!important}.be-upload-btn:focus-visible{outline:3px solid rgba(20,35,75,.25);outline-offset:2px}@media(max-width:600px){.be-media-tools{align-items:stretch}.be-format-tools,.be-upload-tools{width:100%}.be-upload-tools{margin-left:0}.be-upload-btn{flex:1}}@media(min-width:900px){.blog-editor-body{grid-template-columns:380px 1fr}}
 </style>
 <style>
@@ -252,6 +269,8 @@ button:focus:not(:focus-visible){outline:none}
 
   <nav class="admin-tabs">
     <button class="admin-tab on" data-tab="orders">Orders</button>
+    <button class="admin-tab" data-tab="reviews">Reviews</button>
+    <button class="admin-tab" data-tab="shipping">Shipping</button>
     <button class="admin-tab" data-tab="content">Home Content</button>
     <button class="admin-tab" data-tab="products">Products</button>
     <button class="admin-tab" data-tab="blogs">Blogs</button>
@@ -312,6 +331,93 @@ button:focus:not(:focus-visible){outline:none}
     </div>
 
     </div><!-- end orders panel -->
+
+    <!-- ── REVIEWS TAB ── -->
+    <div class="tab-panel" id="panel-reviews">
+      <div class="toolbar" style="margin-bottom:1rem;justify-content:space-between">
+        <div>
+          <h2 style="font-family:var(--head);margin:0;font-size:1.25rem">Customer Product Reviews</h2>
+          <p style="margin:.25rem 0 0;color:var(--muted);font-size:.85rem">Moderate, edit, approve, hide or delete submitted reviews. Toggle public visibility on the storefront anytime.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <button class="btn sm" id="globalReviewsToggleBtn" style="background:var(--ok)">Public Reviews: Active</button>
+          <button class="btn sm ghost" id="refreshReviewsBtn">Refresh</button>
+        </div>
+      </div>
+
+      <!-- stats -->
+      <div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:1.5rem">
+        <div class="stat"><div class="stat-val" id="revStatTotal">0</div><div class="stat-lbl">Total reviews</div></div>
+        <div class="stat"><div class="stat-val" id="revStatPending" style="color:var(--warn)">0</div><div class="stat-lbl">Pending moderation</div></div>
+        <div class="stat"><div class="stat-val" id="revStatApproved" style="color:var(--ok)">0</div><div class="stat-lbl">Approved</div></div>
+        <div class="stat"><div class="stat-val" id="revStatHidden" style="color:var(--muted)">0</div><div class="stat-lbl">Hidden</div></div>
+      </div>
+
+      <!-- toolbar -->
+      <div class="toolbar">
+        <input type="search" id="revSearchInput" placeholder="Search by customer, product, review title…">
+        <div class="filter-btns" id="revFilterBtns">
+          <button class="fbtn on" data-rev-filter="all">All</button>
+          <button class="fbtn" data-rev-filter="pending">Pending</button>
+          <button class="fbtn" data-rev-filter="approved">Approved</button>
+          <button class="fbtn" data-rev-filter="rejected">Rejected</button>
+          <button class="fbtn" data-rev-filter="hidden">Hidden</button>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:160px">Product</th>
+              <th style="width:160px">Reviewer</th>
+              <th style="width:110px">Rating</th>
+              <th>Review</th>
+              <th style="width:100px">Date</th>
+              <th style="width:90px">Status</th>
+              <th style="width:85px">Storefront</th>
+              <th style="width:200px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsTbody">
+            <tr><td colspan="8"><div class="tbl-empty">Loading reviews…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- end reviews panel -->
+
+    <!-- ── SHIPPING TAB ── -->
+    <div class="tab-panel" id="panel-shipping">
+      <div class="toolbar" style="margin-bottom:1rem;justify-content:space-between">
+        <div>
+          <h2 style="font-family:var(--head);margin:0;font-size:1.25rem">GGX Shipping Zones &amp; Rates</h2>
+          <p style="margin:.25rem 0 0;color:var(--muted);font-size:.85rem">Origin: Greater Metro Manila (GMM). Orders calculate rates automatically based on customer delivery address, validated on order creation.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <button class="btn sm" id="addShippingZoneBtn">+ Add shipping zone</button>
+          <button class="btn sm ghost" id="refreshShippingBtn">Refresh</button>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:140px">Zone Code</th>
+              <th style="width:180px">Zone Name</th>
+              <th style="width:110px">Base Rate (₱)</th>
+              <th>Covered Cities &amp; Coverage Rule</th>
+              <th style="width:90px">Status</th>
+              <th style="width:130px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="shippingTbody">
+            <tr><td colspan="6"><div class="tbl-empty">Loading shipping zones…</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- end shipping panel -->
 
     <!-- ── PRODUCTS TAB ── -->
     <div class="tab-panel" id="panel-products">
@@ -675,6 +781,22 @@ button:focus:not(:focus-visible){outline:none}
                 <input id="nlTitle" maxlength="200" placeholder="e.g. Crafted for Quiet Moments">
               </div>
               <div class="fld">
+                <label>Banner Image (Optional)</label>
+                <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+                  <input id="nlImageFile" type="file" accept="image/jpeg,image/png,image/webp" style="flex:1 1 200px;font-size:.8rem">
+                  <input id="nlImageUrl" type="url" placeholder="Or enter image URL (https://...)" style="flex:1 1 220px;padding:.6rem .8rem;border:1px solid var(--line);border-radius:10px;font:inherit;background:#faf9f7">
+                </div>
+                <div id="nlImagePreviewWrap" style="display:none;align-items:center;gap:.75rem;margin-top:.5rem;padding:.5rem;background:#faf9f7;border-radius:10px;border:1px solid var(--line)">
+                  <img id="nlImagePreview" src="" alt="Banner Preview" style="width:70px;height:48px;border-radius:6px;object-fit:cover">
+                  <div style="flex:1;min-width:0;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="nlImagePreviewText">Image selected</div>
+                  <button class="btn sm ghost" type="button" id="nlImageRemoveBtn" style="color:var(--danger);padding:0 .6rem;height:30px">Remove</button>
+                </div>
+              </div>
+              <div class="fld">
+                <label>Banner Caption (Optional)</label>
+                <input id="nlImageCaption" maxlength="120" placeholder="e.g. AERA Everyday Rituals in Morning Light">
+              </div>
+              <div class="fld">
                 <label>Announcement Body</label>
                 <textarea id="nlBody" rows="7" placeholder="Write your announcement or newsletter message here... (Separated paragraphs are formatted automatically)"></textarea>
               </div>
@@ -792,17 +914,36 @@ button:focus:not(:focus-visible){outline:none}
           </select>
         </div>
         <div class="fld"><label>Size <em style="color:var(--danger)">*</em></label><input id="pSize" type="text" placeholder="e.g. 110mL"></div>
-        <div class="fld"><label>Price (₱) <em style="color:var(--danger)">*</em></label><input id="pPrice" type="number" min="0" placeholder="450"></div>
-        <div class="fld"><label>Discount %</label><input id="pDiscount" type="number" min="0" max="100" placeholder="0 = no discount"></div>
+        <div class="fld"><label>SRP / Regular Price (₱) <em style="color:var(--danger)">*</em></label><input id="pPrice" type="number" min="0" placeholder="450"></div>
+        <div class="fld">
+          <label>Discount Type &amp; Value</label>
+          <div style="display:flex;gap:.4rem">
+            <select id="pDiscountType" style="width:70px">
+              <option value="percent">%</option>
+              <option value="fixed">₱</option>
+            </select>
+            <input id="pDiscount" type="number" min="0" placeholder="0" style="flex:1">
+          </div>
+        </div>
+        <div class="fld" style="grid-column:1/-1;margin:-0.4rem 0 0.2rem">
+          <div id="pSalePreview" style="font-size:.8rem;color:var(--muted);background:#faf9f7;padding:.5rem .75rem;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+            <span>Effective price: <b id="pEffectivePrice">₱0</b></span>
+            <span id="pSaleBadgePreview" class="prod-sale-badge" style="display:none">SALE</span>
+          </div>
+        </div>
         <div class="fld"><label>Stock <em style="color:var(--danger)">*</em></label><input id="pStock" type="number" min="0" placeholder="0"></div>
         <div class="fld" style="grid-column:1/-1"><label>Scent notes / Highlights</label><input id="pNotes" type="text" placeholder="e.g. Bergamot, Juicy Pear, White Musk"></div>
         <div class="fld" style="grid-column:1/-1"><label>Description</label><textarea id="pDesc" rows="3" placeholder="Short product description..."></textarea></div>
         <div class="fld" style="grid-column:1/-1">
-          <label>Product image</label>
-          <div style="display:flex;align-items:center;gap:.75rem">
-            <input id="pImgFile" type="file" accept="image/jpeg,image/png,image/webp" style="font-size:.8rem;flex:1">
-            <img id="pImgPreview" src="" alt="" style="width:56px;height:56px;border-radius:8px;object-fit:cover;border:1px solid var(--line);display:none">
+          <label>Product Images &amp; Gallery (Multiple Photos)</label>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+            <input id="pImgFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple style="font-size:.8rem;flex:1 1 200px">
+            <input id="pImgUrlInput" type="url" placeholder="Or paste image URL" style="font-size:.85rem;padding:.5rem .75rem;flex:1 1 200px;border:1px solid var(--line);border-radius:8px;background:#faf9f7">
+            <button class="btn sm ghost" type="button" id="pAddUrlBtn">Add URL</button>
           </div>
+          <small style="color:var(--muted);font-size:.75rem;margin-top:.25rem">Upload multiple photos (JPG, PNG, WebP) or add image links. First image is featured / primary.</small>
+          <div class="p-gallery-grid" id="pGalleryList"></div>
+          <input type="hidden" id="pImg">
         </div>
         <div class="fld" style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem">
           <input id="pActive" type="checkbox" checked style="width:16px;height:16px;accent-color:var(--brown)">
@@ -816,6 +957,89 @@ button:focus:not(:focus-visible){outline:none}
       <div style="display:flex;gap:.6rem">
         <button class="btn sm" id="prodModalSave">Save product</button>
         <button class="btn sm ghost" id="prodModalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── REVIEW EDIT MODAL ── -->
+<div class="ov" id="reviewEditOv" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewEditTitle" style="width:min(540px,100%)">
+    <div class="modal-h">
+      <h2 id="reviewEditTitle">Edit Review</h2>
+      <button class="modal-x" id="reviewEditClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-b" style="gap:.9rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem">
+        <div class="fld"><label>Customer Name</label><input id="reCustName" type="text"></div>
+        <div class="fld"><label>Customer Email</label><input id="reCustEmail" type="email"></div>
+        <div class="fld"><label>Rating (1–5)</label>
+          <select id="reRating">
+            <option value="5">★★★★★ (5 Stars)</option>
+            <option value="4">★★★★☆ (4 Stars)</option>
+            <option value="3">★★★☆☆ (3 Stars)</option>
+            <option value="2">★★☆☆☆ (2 Stars)</option>
+            <option value="1">★☆☆☆☆ (1 Star)</option>
+          </select>
+        </div>
+        <div class="fld"><label>Moderation Status</label>
+          <select id="reStatus">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="fld" style="grid-column:1/-1"><label>Review Title</label><input id="reTitle" type="text"></div>
+        <div class="fld" style="grid-column:1/-1"><label>Review Content</label><textarea id="reContent" rows="4"></textarea></div>
+        <div class="fld" style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem">
+          <input id="reVisible" type="checkbox" style="width:16px;height:16px;accent-color:var(--brown)">
+          <label for="reVisible" style="font-size:.875rem;letter-spacing:0;text-transform:none;color:var(--brown);font-weight:500">Visible on storefront (when public reviews are enabled)</label>
+        </div>
+      </div>
+      <p id="reviewEditErr" style="color:var(--danger);font-size:.8rem;min-height:1rem"></p>
+    </div>
+    <div class="modal-f">
+      <div></div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn sm" id="reviewEditSave">Save Changes</button>
+        <button class="btn sm ghost" id="reviewEditCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHIPPING ZONE MODAL ── -->
+<div class="ov" id="shippingZoneOv" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="shippingZoneTitle" style="width:min(540px,100%)">
+    <div class="modal-h">
+      <h2 id="shippingZoneTitle">Edit Shipping Zone</h2>
+      <button class="modal-x" id="shippingZoneClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-b" style="gap:.9rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem">
+        <div class="fld"><label>Zone Code <em style="color:var(--danger)">*</em></label><input id="szCode" type="text" placeholder="e.g. cavite"></div>
+        <div class="fld"><label>Zone Name <em style="color:var(--danger)">*</em></label><input id="szName" type="text" placeholder="e.g. Cavite GMM"></div>
+        <div class="fld"><label>Base Rate (₱) <em style="color:var(--danger)">*</em></label><input id="szRate" type="number" min="0" placeholder="150"></div>
+        <div class="fld"><label>Island Group</label>
+          <select id="szIsland">
+            <option value="Luzon">Luzon</option>
+            <option value="Visayas">Visayas</option>
+            <option value="Mindanao">Mindanao</option>
+          </select>
+        </div>
+        <div class="fld" style="grid-column:1/-1"><label>Covered Cities (Comma-separated)</label><textarea id="szCities" rows="3" placeholder="e.g. Bacoor City, Dasmariñas City, General Trias City, Imus City, Tanza, Trece Martires City"></textarea><small style="color:var(--muted)">Leave empty for catch-all (e.g. outside GMM or island-wide).</small></div>
+        <div class="fld" style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem">
+          <input id="szActive" type="checkbox" checked style="width:16px;height:16px;accent-color:var(--brown)">
+          <label for="szActive" style="font-size:.875rem;letter-spacing:0;text-transform:none;color:var(--brown);font-weight:500">Active (available at checkout)</label>
+        </div>
+      </div>
+      <p id="shippingZoneErr" style="color:var(--danger);font-size:.8rem;min-height:1rem"></p>
+    </div>
+    <div class="modal-f">
+      <div></div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn sm" id="shippingZoneSave">Save Zone</button>
+        <button class="btn sm ghost" id="shippingZoneCancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -1058,7 +1282,15 @@ $('searchInput').addEventListener('input', function(){
 function openDetail(o){
   var items = Array.isArray(o.items) ? o.items : (typeof o.items === 'string' ? JSON.parse(o.items) : []);
   var date  = o.created_at ? new Date(o.created_at).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}) : '—';
-  var AREA  = { mm:'Metro Manila', luzon:'Luzon', visayas:'Visayas', mindanao:'Mindanao' };
+  var AREA  = {
+    mm:'Metro Manila (₱80)',
+    cavite:'Cavite GMM (₱150)',
+    rizal:'Rizal GMM (₱150)',
+    bulacan:'Bulacan GMM (₱150)',
+    luzon:'Luzon - Outside GMM (₱150)',
+    visayas:'Visayas (₱180)',
+    mindanao:'Mindanao (₱200)'
+  };
 
   $('detailTitle').textContent = o.order_number || 'Order';
 
@@ -1092,11 +1324,13 @@ function openDetail(o){
     +'</div>'
     /* payment summary */
     +'<div class="dl-group">'
-      +'<p class="dl-group-label">Payment</p>'
-      +'<div class="dl"><span>Method</span><span>'+esc(o.payment_method||'—')+'</span></div>'
-      +'<div class="dl"><span>Subtotal</span><span>'+peso(o.subtotal||0)+'</span></div>'
-      +'<div class="dl"><span>Shipping</span><span>'+peso(o.shipping||0)+'</span></div>'
-      +'<div class="dl" style="font-weight:700;font-size:1rem"><span>Total</span><span>'+peso(o.total||0)+'</span></div>'
+      +'<p class="dl-group-label">Payment Breakdown</p>'
+      +'<div class="dl"><span>Payment Method</span><span>'+esc(o.payment_method||'—')+'</span></div>'
+      +(o.vat_amount ? '<div class="dl"><span>Net Subtotal (excl. VAT)</span><span>'+peso(Math.round(((o.subtotal||0) - (o.vat_amount||0))*100)/100)+'</span></div>' : '')
+      +(o.vat_amount ? '<div class="dl"><span>12% VAT</span><span>'+peso(o.vat_amount||0)+'</span></div>' : '')
+      +'<div class="dl"><span>Items Subtotal</span><span>'+peso(o.subtotal||0)+'</span></div>'
+      +'<div class="dl"><span>Shipping Fee</span><span>'+peso(o.shipping||0)+'</span></div>'
+      +'<div class="dl" style="font-weight:700;font-size:1rem;color:var(--brown)"><span>Total Paid</span><span>'+peso(o.total||0)+'</span></div>'
     +'</div>'
     /* receipt */
     +(o.receipt_url
@@ -1245,6 +1479,79 @@ function loadProducts(){
     });
 }
 
+var currentProductImages = [];
+
+function updateSalePreview(){
+  var price = parseFloat($('pPrice').value) || 0;
+  var discVal = parseFloat($('pDiscount').value) || 0;
+  var discType = $('pDiscountType') ? $('pDiscountType').value : 'percent';
+  var eff = price;
+  var hasSale = discVal > 0;
+
+  if(hasSale){
+    if(discType === 'percent'){
+      eff = Math.max(0, Math.round(price * (1 - (discVal / 100))));
+    } else {
+      eff = Math.max(0, price - discVal);
+    }
+  }
+
+  if($('pEffectivePrice')){
+    $('pEffectivePrice').innerHTML = hasSale
+      ? '<s style="color:var(--muted);font-weight:400;margin-right:4px">₱' + price.toLocaleString('en-PH') + '</s> ₱' + eff.toLocaleString('en-PH')
+      : '₱' + price.toLocaleString('en-PH');
+  }
+  if($('pSaleBadgePreview')){
+    $('pSaleBadgePreview').style.display = hasSale ? 'inline-block' : 'none';
+  }
+}
+
+function renderProductGallery(){
+  var container = $('pGalleryList');
+  if(!container) return;
+  if(!currentProductImages.length){
+    container.innerHTML = '<p style="font-size:.78rem;color:var(--muted);grid-column:1/-1;margin:0">No gallery images added yet.</p>';
+    return;
+  }
+  container.innerHTML = currentProductImages.map(function(url, idx){
+    var isPrimary = idx === 0;
+    return '<div class="p-gallery-item" data-idx="' + idx + '">' +
+      '<img class="p-gallery-thumb" src="' + esc(url) + '" alt="">' +
+      (isPrimary ? '<span class="p-gallery-badge">Primary</span>' : '') +
+      '<div class="p-gallery-actions">' +
+        (!isPrimary ? '<button type="button" class="p-gallery-btn" data-act="primary" title="Set as primary image">★ Primary</button>' : '') +
+        (idx > 0 ? '<button type="button" class="p-gallery-btn" data-act="up" title="Move left">←</button>' : '') +
+        (idx < currentProductImages.length - 1 ? '<button type="button" class="p-gallery-btn" data-act="down" title="Move right">→</button>' : '') +
+        '<button type="button" class="p-gallery-btn del" data-act="del" title="Remove image">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  container.querySelectorAll('.p-gallery-btn').forEach(function(btn){
+    btn.onclick = function(e){
+      e.stopPropagation();
+      var item = btn.closest('.p-gallery-item');
+      var idx = parseInt(item.dataset.idx, 10);
+      var act = btn.dataset.act;
+      if(act === 'primary'){
+        var selected = currentProductImages.splice(idx, 1)[0];
+        currentProductImages.unshift(selected);
+      } else if(act === 'up' && idx > 0){
+        var tmp = currentProductImages[idx];
+        currentProductImages[idx] = currentProductImages[idx - 1];
+        currentProductImages[idx - 1] = tmp;
+      } else if(act === 'down' && idx < currentProductImages.length - 1){
+        var tmp = currentProductImages[idx];
+        currentProductImages[idx] = currentProductImages[idx + 1];
+        currentProductImages[idx + 1] = tmp;
+      } else if(act === 'del'){
+        currentProductImages.splice(idx, 1);
+      }
+      renderProductGallery();
+    };
+  });
+}
+
 function renderProducts(){
   var grid = document.getElementById('prodGrid');
   if(!allProducts.length){
@@ -1254,12 +1561,34 @@ function renderProducts(){
   grid.innerHTML = allProducts.map(function(p){
     var stockClass = p.stock <= 0 ? 'out' : p.stock <= 5 ? 'low' : '';
     var stockLabel = p.stock <= 0 ? 'Out of stock' : p.stock <= 5 ? 'Low stock: '+p.stock : 'In stock: '+p.stock;
+    var price = Number(p.price) || 0;
+    var discVal = Number(p.discount) || 0;
+    var discType = p.discount_type || 'percent';
+    var effPrice = price;
+    var saleTag = '';
+    if(discVal > 0){
+      if(discType === 'percent'){
+        effPrice = Math.max(0, Math.round(price * (1 - (discVal / 100))));
+        saleTag = ' <span class="prod-sale-badge">-' + discVal + '% SALE</span>';
+      } else {
+        effPrice = Math.max(0, price - discVal);
+        saleTag = ' <span class="prod-sale-badge">-₱' + discVal + ' SALE</span>';
+      }
+    }
+    var priceDisplay = discVal > 0
+      ? '<s style="opacity:.6;font-weight:400;font-size:.85rem;margin-right:4px">₱' + price.toLocaleString('en-PH') + '</s> ₱' + effPrice.toLocaleString('en-PH') + saleTag
+      : '₱' + price.toLocaleString('en-PH');
+
+    var imgCount = Array.isArray(p.images) && p.images.length > 1
+      ? ' · <span style="color:var(--muted);font-weight:400">📷 ' + p.images.length + ' photos</span>'
+      : '';
+
     return '<div class="prod-card'+(p.active===false?' prod-inactive':'')+'" data-id="'+p.id+'">'
       +'<img class="prod-card-img" src="'+(p.img||'')+'" alt="'+esc(p.name)+'" onerror="this.style.background=\'#f0ede8\';this.src=\'\'">'
       +'<div class="prod-card-body">'
-        +'<p class="prod-card-cat">'+(p.category||'')+(p.active===false?' · Hidden':'')+'</p>'
+        +'<p class="prod-card-cat">'+(p.category||'')+(p.active===false?' · Hidden':'')+imgCount+'</p>'
         +'<p class="prod-card-name">'+esc(p.name)+'</p>'
-        +'<p class="prod-card-price">₱'+Number(p.price).toLocaleString('en-PH')+(p.discount>0?' <span style="font-size:.7rem;background:#e63946;color:#fff;padding:2px 7px;border-radius:9999px;font-weight:700;margin-left:4px">-'+p.discount+'%</span>':'')+'</p>'
+        +'<p class="prod-card-price">'+priceDisplay+'</p>'
         +'<p class="prod-card-stock '+stockClass+'">'+stockLabel+'</p>'
         +'<div class="prod-card-actions">'
           +'<button class="btn sm ghost edit-prod-btn" data-id="'+p.id+'">Edit</button>'
@@ -1285,16 +1614,27 @@ function openProductModal(id){
   document.getElementById('pCat').value     = p ? p.category : '';
   document.getElementById('pSize').value    = p ? p.size : '';
   document.getElementById('pPrice').value   = p ? p.price : '';
+  if(document.getElementById('pDiscountType')) document.getElementById('pDiscountType').value = p && p.discount_type ? p.discount_type : 'percent';
   document.getElementById('pDiscount').value = p ? (p.discount||0) : 0;
   document.getElementById('pStock').value   = p ? p.stock : '';
   document.getElementById('pNotes').value   = p ? (p.notes||'') : '';
   document.getElementById('pDesc').value    = p ? (p.description||'') : '';
   document.getElementById('pActive').checked = p ? (p.active !== false) : true;
   document.getElementById('prodModalErr').textContent = '';
-  var prev = document.getElementById('pImgPreview');
-  if(p && p.img){ prev.src = p.img; prev.style.display = 'block'; }
-  else { prev.src = ''; prev.style.display = 'none'; }
-  document.getElementById('pImgFile').value = '';
+
+  currentProductImages = [];
+  if(p){
+    if(Array.isArray(p.images) && p.images.length){
+      currentProductImages = p.images.slice();
+    } else if(p.img){
+      currentProductImages = [p.img];
+    }
+  }
+  renderProductGallery();
+  updateSalePreview();
+
+  if(document.getElementById('pImgFiles')) document.getElementById('pImgFiles').value = '';
+  if(document.getElementById('pImgUrlInput')) document.getElementById('pImgUrlInput').value = '';
   document.getElementById('prodOv').classList.add('open');
   document.getElementById('prodOv').setAttribute('aria-hidden','false');
 }
@@ -1305,12 +1645,40 @@ function closeProductModal(){
   editingProductId = null;
 }
 
-/* image preview */
-document.getElementById('pImgFile').addEventListener('change', function(){
-  var file = this.files[0]; if(!file) return;
-  var prev = document.getElementById('pImgPreview');
-  prev.src = URL.createObjectURL(file); prev.style.display = 'block';
-});
+if(document.getElementById('pAddUrlBtn')){
+  document.getElementById('pAddUrlBtn').addEventListener('click', function(){
+    var url = document.getElementById('pImgUrlInput').value.trim();
+    if(!url || !/^https?:\/\//i.test(url)){
+      toast('Please enter a valid image URL starting with http:// or https://');
+      return;
+    }
+    currentProductImages.push(url);
+    document.getElementById('pImgUrlInput').value = '';
+    renderProductGallery();
+  });
+}
+
+if(document.getElementById('pImgFiles')){
+  document.getElementById('pImgFiles').addEventListener('change', function(){
+    var files = Array.from(this.files || []);
+    if(!files.length) return;
+    toast('Uploading ' + files.length + ' image(s)…');
+    var promises = files.map(function(file){
+      return uploadProductImage(file, 'prod-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    });
+    Promise.all(promises).then(function(urls){
+      urls.forEach(function(u){ if(u) currentProductImages.push(u); });
+      renderProductGallery();
+      toast('Photos added to gallery!');
+    }).catch(function(err){
+      toast('Upload failed: ' + err.message);
+    });
+  });
+}
+
+if(document.getElementById('pPrice')) document.getElementById('pPrice').addEventListener('input', updateSalePreview);
+if(document.getElementById('pDiscount')) document.getElementById('pDiscount').addEventListener('input', updateSalePreview);
+if(document.getElementById('pDiscountType')) document.getElementById('pDiscountType').addEventListener('change', updateSalePreview);
 
 /* Content image preview handlers */
 ['review1_img','review2_img','review3_img','story_img','slide1_img','slide2_img','slide3_img','cat1_img','cat2_img','cat3_img'].forEach(function(key){
@@ -1364,12 +1732,12 @@ document.getElementById('prodModalSave').addEventListener('click', function(){
   var cat    = document.getElementById('pCat').value;
   var size   = document.getElementById('pSize').value.trim();
   var price  = parseFloat(document.getElementById('pPrice').value);
+  var discountType = document.getElementById('pDiscountType') ? document.getElementById('pDiscountType').value : 'percent';
   var discount = parseInt(document.getElementById('pDiscount').value)||0;
   var stock  = parseInt(document.getElementById('pStock').value);
   var notes  = document.getElementById('pNotes').value.trim();
   var desc   = document.getElementById('pDesc').value.trim();
   var active = document.getElementById('pActive').checked;
-  var file   = document.getElementById('pImgFile').files[0];
   var errEl  = document.getElementById('prodModalErr');
 
   if(!name || !cat || !size || isNaN(price) || isNaN(stock)){
@@ -1381,48 +1749,43 @@ document.getElementById('prodModalSave').addEventListener('click', function(){
   btn.disabled = true; btn.textContent = 'Saving…';
 
   var id = editingProductId || name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  var primaryImg = currentProductImages.length ? currentProductImages[0] : (editingProductId ? (allProducts.find(function(x){ return x.id === editingProductId; })||{}).img : null);
 
-  var doSave = function(finalImg){
-    var existingImg = editingProductId
-      ? (allProducts.find(function(x){ return x.id === editingProductId; })||{}).img || null
-      : null;
-    var payload = {
-      name: name, category: cat, size: size, price: price,
-      stock: stock, discount: discount, notes: notes, description: desc,
-      img: finalImg || existingImg,
-      thumb: finalImg || existingImg,
-      active: active
-    };
-    if(!editingProductId) payload.id = id;
-
-    var method = editingProductId ? 'PATCH' : 'POST';
-    var url = editingProductId
-      ? '/rest/v1/products?id=eq.' + editingProductId
-      : '/rest/v1/products';
-
-    supaFetch(url, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + (authToken || getToken()),
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
-    }).then(function(r){
-      if(!r.ok) return r.text().then(function(t){ throw new Error(t); });
-      closeProductModal();
-      loadProducts();
-      toast(editingProductId ? 'Product updated!' : 'Product added!');
-    }).catch(function(err){
-      errEl.textContent = 'Save failed: ' + err.message;
-    }).finally(function(){
-      btn.disabled = false; btn.textContent = 'Save product';
-    });
+  var payload = {
+    name: name, category: cat, size: size, price: price,
+    stock: stock, discount: discount, discount_type: discountType,
+    notes: notes, description: desc,
+    img: primaryImg,
+    thumb: primaryImg,
+    images: currentProductImages,
+    active: active
   };
+  if(!editingProductId) payload.id = id;
 
-  if(file){ uploadProductImage(file, id).then(doSave).catch(function(e){ errEl.textContent = e.message; btn.disabled=false; btn.textContent='Save product'; }); }
-  else { doSave(null); }
+  var method = editingProductId ? 'PATCH' : 'POST';
+  var url = editingProductId
+    ? '/rest/v1/products?id=eq.' + editingProductId
+    : '/rest/v1/products';
+
+  supaFetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + (authToken || getToken()),
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){ throw new Error(t); });
+    closeProductModal();
+    loadProducts();
+    toast(editingProductId ? 'Product updated!' : 'Product added!');
+  }).catch(function(err){
+    errEl.textContent = 'Save failed: ' + err.message;
+  }).finally(function(){
+    btn.disabled = false; btn.textContent = 'Save product';
+  });
 });
 
 function deleteProduct(id){
@@ -1518,6 +1881,9 @@ document.querySelectorAll('.admin-tab').forEach(function(tab){
     document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('on'); });
     tab.classList.add('on');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('on');
+    if(tab.dataset.tab === 'orders') loadOrders();
+    if(tab.dataset.tab === 'reviews') loadReviews();
+    if(tab.dataset.tab === 'shipping') loadShippingZones();
     if(tab.dataset.tab === 'products') loadProducts();
     if(tab.dataset.tab === 'content') loadContent();
     if(tab.dataset.tab === 'blogs') loadBlogs();
@@ -1525,6 +1891,414 @@ document.querySelectorAll('.admin-tab').forEach(function(tab){
     if(tab.dataset.tab === 'newsletter') loadNewsletter();
   });
 });
+
+/* ══════════════════════════════
+   REVIEWS MANAGEMENT
+   ══════════════════════════════ */
+var allReviews = [];
+var revFilter = 'all';
+var revSearchQ = '';
+var editingReviewId = null;
+var globalReviewsActive = true;
+
+function loadReviews(){
+  var tbody = $('reviewsTbody');
+  if(tbody) tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">Loading reviews…</div></td></tr>';
+  aeraApi('admin-list-reviews')
+    .then(function(res){
+      allReviews = Array.isArray(res.reviews) ? res.reviews : [];
+      globalReviewsActive = !!res.reviewsEnabled;
+      updateGlobalReviewsBtn();
+      renderReviewStats();
+      renderReviewsTable();
+    })
+    .catch(function(err){
+      console.error('Failed to load reviews:', err);
+      toast('Failed to load reviews: ' + err.message);
+      if(tbody) tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">' + esc(err.message) + '</div></td></tr>';
+    });
+}
+
+function updateGlobalReviewsBtn(){
+  var btn = $('globalReviewsToggleBtn');
+  if(!btn) return;
+  if(globalReviewsActive){
+    btn.textContent = 'Public Reviews: ON';
+    btn.style.background = 'var(--ok)';
+    btn.style.color = '#fff';
+  } else {
+    btn.textContent = 'Public Reviews: OFF';
+    btn.style.background = 'var(--danger)';
+    btn.style.color = '#fff';
+  }
+}
+
+function toggleGlobalReviews(){
+  var nextState = !globalReviewsActive;
+  var btn = $('globalReviewsToggleBtn');
+  btn.disabled = true;
+  btn.textContent = 'Updating…';
+  aeraApi('admin-toggle-reviews-global', { enabled: nextState })
+    .then(function(res){
+      globalReviewsActive = !!res.enabled;
+      updateGlobalReviewsBtn();
+      toast(globalReviewsActive ? 'Public reviews enabled on storefront.' : 'Public reviews disabled (storefront reviews hidden).');
+    })
+    .catch(function(err){
+      toast('Failed to toggle reviews: ' + err.message);
+    })
+    .finally(function(){
+      btn.disabled = false;
+      updateGlobalReviewsBtn();
+    });
+}
+
+function renderReviewStats(){
+  $('revStatTotal').textContent = allReviews.length;
+  $('revStatPending').textContent = allReviews.filter(function(r){ return r.status === 'pending'; }).length;
+  $('revStatApproved').textContent = allReviews.filter(function(r){ return r.status === 'approved'; }).length;
+  $('revStatHidden').textContent = allReviews.filter(function(r){ return r.is_visible === false; }).length;
+}
+
+function starString(n){
+  var s = '';
+  for(var i = 1; i <= 5; i++){
+    s += i <= n ? '<span class="star-gold">★</span>' : '<span class="star-gray">☆</span>';
+  }
+  return s;
+}
+
+function renderReviewsTable(){
+  var tbody = $('reviewsTbody');
+  if(!tbody) return;
+  var q = revSearchQ.toLowerCase();
+  var filtered = allReviews.filter(function(r){
+    var matchF = true;
+    if(revFilter === 'pending') matchF = r.status === 'pending';
+    else if(revFilter === 'approved') matchF = r.status === 'approved';
+    else if(revFilter === 'rejected') matchF = r.status === 'rejected';
+    else if(revFilter === 'hidden') matchF = r.is_visible === false;
+
+    var matchQ = !q ||
+      (r.customer_name||'').toLowerCase().includes(q) ||
+      (r.product_name||'').toLowerCase().includes(q) ||
+      (r.review_title||'').toLowerCase().includes(q) ||
+      (r.review_content||'').toLowerCase().includes(q);
+    return matchF && matchQ;
+  });
+
+  if(!filtered.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">No reviews match your filters.</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(function(r){
+    var d = r.created_at ? new Date(r.created_at).toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' }) : '—';
+    var statusBadge = '<span class="badge ' + esc(r.status) + '">' + esc(r.status) + '</span>';
+    var visBadge = r.is_visible !== false
+      ? '<span class="badge visible">Visible</span>'
+      : '<span class="badge hidden">Hidden</span>';
+    var toggleVisText = r.is_visible !== false ? 'Hide' : 'Unhide';
+
+    return '<tr>' +
+      '<td><b>' + esc(r.product_name || r.product_id || 'Product') + '</b></td>' +
+      '<td>' + esc(r.customer_name || 'Anonymous') + (r.customer_email ? '<br><small style="color:var(--muted)">' + esc(r.customer_email) + '</small>' : '') + '</td>' +
+      '<td>' + starString(r.rating || 5) + '</td>' +
+      '<td style="white-space:normal;max-width:280px">' +
+        (r.review_title ? '<b>' + esc(r.review_title) + '</b><br>' : '') +
+        '<span style="font-size:.8125rem;color:rgba(56,65,104,.85)">' + esc(r.review_content || '') + '</span>' +
+      '</td>' +
+      '<td><small style="color:var(--muted)">' + esc(d) + '</small></td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td>' + visBadge + '</td>' +
+      '<td>' +
+        '<div style="display:flex;gap:.3rem;flex-wrap:wrap">' +
+          (r.status !== 'approved' ? '<button class="btn sm" style="background:var(--ok);padding:0 .55rem;height:30px;font-size:.75rem" data-rev-approve="' + esc(r.id) + '">Approve</button>' : '') +
+          (r.status !== 'rejected' ? '<button class="btn sm danger" style="padding:0 .55rem;height:30px;font-size:.75rem" data-rev-reject="' + esc(r.id) + '">Reject</button>' : '') +
+          '<button class="btn sm ghost" style="padding:0 .55rem;height:30px;font-size:.75rem" data-rev-vis="' + esc(r.id) + '" data-cur-vis="' + (r.is_visible !== false ? '1' : '0') + '">' + toggleVisText + '</button>' +
+          '<button class="btn sm ghost" style="padding:0 .55rem;height:30px;font-size:.75rem" data-rev-edit="' + esc(r.id) + '">Edit</button>' +
+          '<button class="btn sm ghost" style="color:var(--danger);padding:0 .55rem;height:30px;font-size:.75rem" data-rev-del="' + esc(r.id) + '">Delete</button>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+
+  tbody.querySelectorAll('[data-rev-approve]').forEach(function(btn){
+    btn.onclick = function(){ updateReviewStatus(btn.dataset.revApprove, 'approved'); };
+  });
+  tbody.querySelectorAll('[data-rev-reject]').forEach(function(btn){
+    btn.onclick = function(){ updateReviewStatus(btn.dataset.revReject, 'rejected'); };
+  });
+  tbody.querySelectorAll('[data-rev-vis]').forEach(function(btn){
+    btn.onclick = function(){
+      var id = btn.dataset.revVis;
+      var cur = btn.dataset.curVis === '1';
+      toggleReviewVisibility(id, !cur);
+    };
+  });
+  tbody.querySelectorAll('[data-rev-edit]').forEach(function(btn){
+    btn.onclick = function(){ openReviewEditModal(btn.dataset.revEdit); };
+  });
+  tbody.querySelectorAll('[data-rev-del]').forEach(function(btn){
+    btn.onclick = function(){ deleteReview(btn.dataset.revDel); };
+  });
+}
+
+function updateReviewStatus(id, newStatus){
+  aeraApi('admin-update-review', { reviewId: id, status: newStatus })
+    .then(function(){
+      var r = allReviews.find(function(x){ return x.id === id; });
+      if(r) r.status = newStatus;
+      renderReviewStats();
+      renderReviewsTable();
+      toast('Review ' + newStatus + '.');
+    })
+    .catch(function(err){ toast(err.message); });
+}
+
+function toggleReviewVisibility(id, newVis){
+  aeraApi('admin-update-review', { reviewId: id, is_visible: newVis })
+    .then(function(){
+      var r = allReviews.find(function(x){ return x.id === id; });
+      if(r) r.is_visible = newVis;
+      renderReviewStats();
+      renderReviewsTable();
+      toast(newVis ? 'Review made visible on storefront.' : 'Review hidden from storefront.');
+    })
+    .catch(function(err){ toast(err.message); });
+}
+
+function openReviewEditModal(id){
+  editingReviewId = id;
+  var r = allReviews.find(function(x){ return x.id === id; });
+  if(!r) return;
+  $('reCustName').value = r.customer_name || '';
+  $('reCustEmail').value = r.customer_email || '';
+  $('reRating').value = String(r.rating || 5);
+  $('reStatus').value = r.status || 'pending';
+  $('reTitle').value = r.review_title || '';
+  $('reContent').value = r.review_content || '';
+  $('reVisible').checked = r.is_visible !== false;
+  $('reviewEditErr').textContent = '';
+  $('reviewEditOv').classList.add('open');
+  $('reviewEditOv').setAttribute('aria-hidden', 'false');
+}
+
+function closeReviewEditModal(){
+  $('reviewEditOv').classList.remove('open');
+  $('reviewEditOv').setAttribute('aria-hidden', 'true');
+  editingReviewId = null;
+}
+
+if($('reviewEditClose')) $('reviewEditClose').onclick = closeReviewEditModal;
+if($('reviewEditCancel')) $('reviewEditCancel').onclick = closeReviewEditModal;
+if($('reviewEditSave')){
+  $('reviewEditSave').onclick = function(){
+    if(!editingReviewId) return;
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    var payload = {
+      reviewId: editingReviewId,
+      customer_name: $('reCustName').value.trim(),
+      customer_email: $('reCustEmail').value.trim(),
+      rating: parseInt($('reRating').value, 10),
+      status: $('reStatus').value,
+      review_title: $('reTitle').value.trim(),
+      review_content: $('reContent').value.trim(),
+      is_visible: $('reVisible').checked
+    };
+
+    aeraApi('admin-update-review', payload)
+      .then(function(res){
+        toast('Review updated successfully.');
+        closeReviewEditModal();
+        loadReviews();
+      })
+      .catch(function(err){
+        $('reviewEditErr').textContent = err.message || 'Save failed.';
+      })
+      .finally(function(){
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+      });
+  };
+}
+
+function deleteReview(id){
+  if(!confirm('Delete this review permanently? This cannot be undone.')) return;
+  aeraApi('admin-delete-review', { reviewId: id })
+    .then(function(){
+      allReviews = allReviews.filter(function(x){ return x.id !== id; });
+      renderReviewStats();
+      renderReviewsTable();
+      toast('Review deleted.');
+    })
+    .catch(function(err){ toast(err.message); });
+}
+
+if($('revFilterBtns')){
+  $('revFilterBtns').addEventListener('click', function(e){
+    var b = e.target.closest('.fbtn');
+    if(!b) return;
+    $('revFilterBtns').querySelectorAll('.fbtn').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    revFilter = b.dataset.revFilter || 'all';
+    renderReviewsTable();
+  });
+}
+if($('revSearchInput')){
+  $('revSearchInput').addEventListener('input', function(){
+    revSearchQ = this.value;
+    renderReviewsTable();
+  });
+}
+if($('globalReviewsToggleBtn')){
+  $('globalReviewsToggleBtn').onclick = toggleGlobalReviews;
+}
+if($('refreshReviewsBtn')){
+  $('refreshReviewsBtn').onclick = function(){ loadReviews(); toast('Reviews refreshed.'); };
+}
+
+/* ══════════════════════════════
+   SHIPPING ZONES MANAGEMENT
+   ══════════════════════════════ */
+var allShippingZones = [];
+var editingZoneId = null;
+
+function loadShippingZones(){
+  var tbody = $('shippingTbody');
+  if(tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">Loading shipping zones…</div></td></tr>';
+  aeraApi('admin-list-shipping-zones')
+    .then(function(res){
+      allShippingZones = Array.isArray(res.zones) ? res.zones : [];
+      renderShippingTable();
+    })
+    .catch(function(err){
+      console.error('Failed to load shipping zones:', err);
+      toast('Failed to load shipping zones: ' + err.message);
+      if(tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">' + esc(err.message) + '</div></td></tr>';
+    });
+}
+
+function renderShippingTable(){
+  var tbody = $('shippingTbody');
+  if(!tbody) return;
+  if(!allShippingZones.length){
+    tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">No shipping zones configured. Click "+ Add shipping zone".</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = allShippingZones.map(function(z){
+    var cities = Array.isArray(z.covered_cities) && z.covered_cities.length
+      ? z.covered_cities.map(function(c){ return '<span class="city-tag">' + esc(c) + '</span>'; }).join(' ')
+      : '<em style="color:var(--muted)">All locations in ' + esc(z.island_group || 'zone') + ' (catch-all)</em>';
+
+    var statusBadge = z.is_active !== false
+      ? '<span class="badge approved">Active</span>'
+      : '<span class="badge rejected">Disabled</span>';
+
+    return '<tr>' +
+      '<td><code>' + esc(z.zone_code) + '</code></td>' +
+      '<td><b>' + esc(z.zone_name) + '</b></td>' +
+      '<td><b>₱' + Number(z.base_rate).toLocaleString('en-PH') + '</b></td>' +
+      '<td style="white-space:normal;max-width:380px">' + cities + '</td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td>' +
+        '<div style="display:flex;gap:.35rem">' +
+          '<button class="btn sm ghost" style="padding:0 .6rem;height:30px;font-size:.75rem" data-ship-edit="' + esc(z.id) + '">Edit</button>' +
+          '<button class="btn sm danger" style="padding:0 .6rem;height:30px;font-size:.75rem" data-ship-del="' + esc(z.id) + '">Delete</button>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+
+  tbody.querySelectorAll('[data-ship-edit]').forEach(function(btn){
+    btn.onclick = function(){ openShippingModal(btn.dataset.shipEdit); };
+  });
+  tbody.querySelectorAll('[data-ship-del]').forEach(function(btn){
+    btn.onclick = function(){ deleteShippingZone(btn.dataset.shipDel); };
+  });
+}
+
+function openShippingModal(id){
+  editingZoneId = id || null;
+  var z = id ? allShippingZones.find(function(x){ return x.id === id; }) : null;
+  $('shippingZoneTitle').textContent = z ? 'Edit Shipping Zone' : 'Add Shipping Zone';
+  $('szCode').value = z ? z.zone_code : '';
+  $('szCode').disabled = !!z;
+  $('szName').value = z ? z.zone_name : '';
+  $('szRate').value = z ? z.base_rate : '';
+  $('szIsland').value = z ? (z.island_group || 'Luzon') : 'Luzon';
+  $('szCities').value = z && Array.isArray(z.covered_cities) ? z.covered_cities.join(', ') : '';
+  $('szActive').checked = z ? (z.is_active !== false) : true;
+  $('shippingZoneErr').textContent = '';
+  $('shippingZoneOv').classList.add('open');
+  $('shippingZoneOv').setAttribute('aria-hidden', 'false');
+}
+
+function closeShippingModal(){
+  $('shippingZoneOv').classList.remove('open');
+  $('shippingZoneOv').setAttribute('aria-hidden', 'true');
+  editingZoneId = null;
+}
+
+if($('shippingZoneClose')) $('shippingZoneClose').onclick = closeShippingModal;
+if($('shippingZoneCancel')) $('shippingZoneCancel').onclick = closeShippingModal;
+if($('shippingZoneSave')){
+  $('shippingZoneSave').onclick = function(){
+    var code = $('szCode').value.trim().toLowerCase();
+    var name = $('szName').value.trim();
+    var rate = parseFloat($('szRate').value);
+    var island = $('szIsland').value;
+    var citiesRaw = $('szCities').value.trim();
+    var active = $('szActive').checked;
+    var errEl = $('shippingZoneErr');
+
+    if(!code || !name || isNaN(rate)){
+      errEl.textContent = 'Please fill in Zone Code, Name, and Base Rate.';
+      return;
+    }
+    errEl.textContent = '';
+    var cities = citiesRaw ? citiesRaw.split(',').map(function(c){ return c.trim(); }).filter(Boolean) : [];
+
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    aeraApi('admin-save-shipping-zone', {
+      id: editingZoneId,
+      zone_code: code,
+      zone_name: name,
+      base_rate: rate,
+      island_group: island,
+      covered_cities: cities,
+      is_active: active
+    }).then(function(){
+      toast('Shipping zone saved.');
+      closeShippingModal();
+      loadShippingZones();
+    }).catch(function(err){
+      errEl.textContent = err.message || 'Save failed.';
+    }).finally(function(){
+      btn.disabled = false;
+      btn.textContent = 'Save Zone';
+    });
+  };
+}
+
+function deleteShippingZone(id){
+  var z = allShippingZones.find(function(x){ return x.id === id; });
+  if(!confirm('Delete shipping zone "' + (z ? z.zone_name : id) + '"?')) return;
+  aeraApi('admin-delete-shipping-zone', { id: id })
+    .then(function(){
+      toast('Shipping zone deleted.');
+      loadShippingZones();
+    })
+    .catch(function(err){ toast(err.message); });
+}
+
+if($('addShippingZoneBtn')) $('addShippingZoneBtn').onclick = function(){ openShippingModal(null); };
+if($('refreshShippingBtn')) $('refreshShippingBtn').onclick = function(){ loadShippingZones(); toast('Shipping zones refreshed.'); };
 
 /* ══════════════════════════════
    CONTENT
@@ -1734,12 +2508,18 @@ function updateNlPreview(){
   var body = $('nlBody').value.trim() || "We believe self-care shouldn't feel like a routine — it should feel like an invitation to stay a little longer.\n\nFormulated with skin-kind botanicals, delicate textures, and lingering notes crafted right here in the Philippines.";
   var ctaLabel = $('nlCtaLabel').value.trim();
   var ctaUrl = $('nlCtaUrl').value.trim();
+  var bannerUrl = $('nlImageUrl') ? $('nlImageUrl').value.trim() : '';
+  var bannerCaption = $('nlImageCaption') ? $('nlImageCaption').value.trim() : '';
 
   var paragraphs = body.split(/\n\s*\n/).map(function(p){
     return '<p class="text-body" style="margin:0 0 16px;font-size:14px;line-height:1.7;color:' + (isNlPreviewDark ? '#d2d6e4' : '#434c74') + ';">' + esc(p).replace(/\n/g, '<br>') + '</p>';
   }).join('');
 
   var ctaHtml = (ctaLabel && ctaUrl) ? '<div style="margin:24px 0 12px;text-align:center;"><a href="' + esc(ctaUrl) + '" target="_blank" class="btn-primary-text" style="display:inline-block;padding:12px 28px;background:' + (isNlPreviewDark ? '#f7f4ee' : '#384168') + ';color:' + (isNlPreviewDark ? '#1c2133' : '#ffffff') + ';text-decoration:none;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">' + esc(ctaLabel) + ' &rarr;</a></div>' : '';
+
+  var bannerHtml = bannerUrl
+    ? '<div style="margin:16px 0 20px;border-radius:12px;overflow:hidden;border:1px solid ' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : 'rgba(56,65,104,0.1)') + ';"><img src="' + esc(bannerUrl) + '" alt="Newsletter visual" style="width:100%;max-height:360px;object-fit:cover;display:block;">' + (bannerCaption ? '<div style="padding:8px 12px;font-size:11px;color:' + (isNlPreviewDark ? '#8e96b3' : '#6a7499') + ';background:' + (isNlPreviewDark ? '#141824' : '#faf9f7') + ';text-align:center;">' + esc(bannerCaption) + '</div>' : '') + '</div>'
+    : '';
 
   frame.innerHTML =
     '<div style="max-width:540px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;">' +
@@ -1749,6 +2529,7 @@ function updateNlPreview(){
       '</div>' +
       '<div class="card-surface" style="background:' + (isNlPreviewDark ? '#1c2133' : '#ffffff') + ';border:1px solid ' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : 'rgba(56,65,104,0.1)') + ';border-radius:18px;padding:32px 24px;box-shadow:0 8px 24px rgba(36,43,75,0.04);">' +
         '<span class="tag-chip" style="display:inline-block;padding:5px 12px;background:' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : '#f1ede4') + ';color:' + (isNlPreviewDark ? '#d2d6e4' : '#384168') + ';border-radius:999px;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">AERA Bulletin</span>' +
+        bannerHtml +
         '<h2 class="text-title" style="margin:16px 0 12px;font-size:20px;line-height:1.3;font-weight:600;color:' + (isNlPreviewDark ? '#fdfaf6' : '#242b4b') + ';">' + esc(title) + '</h2>' +
         '<div style="margin-top:10px;">' + paragraphs + ctaHtml + '</div>' +
         '<div class="divider" style="margin-top:24px;border-top:1px solid ' + (isNlPreviewDark ? 'rgba(255,255,255,0.08)' : 'rgba(56,65,104,0.1)') + ';"></div>' +
@@ -1809,10 +2590,38 @@ function renderSubscribersTable(){
 }
 
 // Live preview event listeners
-['nlSubject','nlPreheader','nlTitle','nlBody','nlCtaLabel','nlCtaUrl'].forEach(function(id){
+['nlSubject','nlPreheader','nlTitle','nlBody','nlCtaLabel','nlCtaUrl','nlImageUrl','nlImageCaption'].forEach(function(id){
   var el = $(id);
   if(el) el.addEventListener('input', updateNlPreview);
 });
+
+if($('nlImageFile')){
+  $('nlImageFile').addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    toast('Uploading newsletter banner…');
+    uploadBlogMedia(file, 'newsletter').then(function(url){
+      $('nlImageUrl').value = url;
+      $('nlImagePreview').src = url;
+      $('nlImagePreviewText').textContent = file.name;
+      $('nlImagePreviewWrap').style.display = 'flex';
+      updateNlPreview();
+      toast('Banner uploaded and attached!');
+    }).catch(function(err){
+      toast('Upload failed: ' + err.message);
+    });
+  });
+}
+
+if($('nlImageRemoveBtn')){
+  $('nlImageRemoveBtn').addEventListener('click', function(){
+    $('nlImageFile').value = '';
+    $('nlImageUrl').value = '';
+    $('nlImagePreview').src = '';
+    $('nlImagePreviewWrap').style.display = 'none';
+    updateNlPreview();
+  });
+}
 
 if($('toggleNlPreviewTheme')){
   $('toggleNlPreviewTheme').onclick = function(){
@@ -1872,6 +2681,8 @@ if($('sendTestNewsletterBtn')){
       preheader: $('nlPreheader').value.trim(),
       title: $('nlTitle').value.trim() || subject,
       message: message,
+      imageUrl: $('nlImageUrl') ? $('nlImageUrl').value.trim() : '',
+      imageCaption: $('nlImageCaption') ? $('nlImageCaption').value.trim() : '',
       ctaLabel: $('nlCtaLabel').value.trim(),
       ctaUrl: $('nlCtaUrl').value.trim(),
       testEmail: testEmail
@@ -1917,6 +2728,8 @@ if($('sendBroadcastBtn')){
       preheader: $('nlPreheader').value.trim(),
       title: $('nlTitle').value.trim() || subject,
       message: message,
+      imageUrl: $('nlImageUrl') ? $('nlImageUrl').value.trim() : '',
+      imageCaption: $('nlImageCaption') ? $('nlImageCaption').value.trim() : '',
       ctaLabel: $('nlCtaLabel').value.trim(),
       ctaUrl: $('nlCtaUrl').value.trim()
     }).then(function(res){
