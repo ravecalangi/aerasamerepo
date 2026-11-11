@@ -91,6 +91,13 @@ button{font:inherit;cursor:pointer}
 .tbl-wrap tr:hover td{background:#faf9f7}
 .tbl-empty{padding:3rem;text-align:center;color:var(--muted)}
 
+/* ── SKELETON LOADERS & SHIMMER ── */
+.skeleton-box{display:inline-block;height:14px;background:linear-gradient(90deg,rgba(56,65,104,.05) 25%,rgba(56,65,104,.13) 50%,rgba(56,65,104,.05) 75%);background-size:200% 100%;animation:adminShimmer 1.5s infinite;border-radius:6px;vertical-align:middle}
+@keyframes adminShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.skeleton-card-img{width:100%;aspect-ratio:1;background:linear-gradient(90deg,rgba(56,65,104,.05) 25%,rgba(56,65,104,.13) 50%,rgba(56,65,104,.05) 75%);background-size:200% 100%;animation:adminShimmer 1.5s infinite}
+.skeleton-card-body{padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+
 .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;border-radius:9999px;font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .badge.pending{background:var(--warn-bg);color:var(--warn)}
 .badge.confirmed{background:var(--ok-bg);color:var(--ok)}
@@ -326,7 +333,11 @@ button:focus:not(:focus-visible){outline:none}
             <th></th>
           </tr>
         </thead>
-        <tbody id="tBody"></tbody>
+        <tbody id="tBody">
+          <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:14px"></span></td><td><span class="skeleton-box" style="width:85%;height:14px"></span></td><td class="hide-mob"><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:22px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:30px;height:24px"></span></td></tr>
+          <tr class="skeleton-row"><td><span class="skeleton-box" style="width:65%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td class="hide-mob"><span class="skeleton-box" style="width:35%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:22px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:30px;height:24px"></span></td></tr>
+          <tr class="skeleton-row"><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td><span class="skeleton-box" style="width:65%;height:14px"></span></td><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td class="hide-mob"><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:22px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:30px;height:24px"></span></td></tr>
+        </tbody>
       </table>
     </div>
 
@@ -381,7 +392,9 @@ button:focus:not(:focus-visible){outline:none}
             </tr>
           </thead>
           <tbody id="reviewsTbody">
-            <tr><td colspan="8"><div class="tbl-empty">Loading reviews…</div></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td><span class="skeleton-box" style="width:65%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:85%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:120px;height:26px;border-radius:6px"></span></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:120px;height:26px;border-radius:6px"></span></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:90%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:60%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:120px;height:26px;border-radius:6px"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -413,7 +426,9 @@ button:focus:not(:focus-visible){outline:none}
             </tr>
           </thead>
           <tbody id="shippingTbody">
-            <tr><td colspan="6"><div class="tbl-empty">Loading shipping zones…</div></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:60%;height:14px"></span></td><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:85%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:90px;height:26px;border-radius:6px"></span></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:90px;height:26px;border-radius:6px"></span></td></tr>
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:65%;height:14px"></span></td><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:90%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:90px;height:26px;border-radius:6px"></span></td></tr>
           </tbody>
         </table>
       </div>
@@ -425,7 +440,12 @@ button:focus:not(:focus-visible){outline:none}
         <div style="flex:1"></div>
         <button class="btn sm" id="addProductBtn">+ Add product</button>
       </div>
-      <div class="prod-grid" id="prodGrid"></div>
+      <div class="prod-grid" id="prodGrid">
+        <div class="skeleton-card"><div class="skeleton-card-img"></div><div class="skeleton-card-body"><span class="skeleton-box" style="width:35%;height:10px"></span><span class="skeleton-box" style="width:75%;height:16px;margin:2px 0"></span><span class="skeleton-box" style="width:40%;height:14px"></span><div style="display:flex;gap:.5rem;margin-top:.4rem"><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-card-img"></div><div class="skeleton-card-body"><span class="skeleton-box" style="width:35%;height:10px"></span><span class="skeleton-box" style="width:75%;height:16px;margin:2px 0"></span><span class="skeleton-box" style="width:40%;height:14px"></span><div style="display:flex;gap:.5rem;margin-top:.4rem"><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-card-img"></div><div class="skeleton-card-body"><span class="skeleton-box" style="width:35%;height:10px"></span><span class="skeleton-box" style="width:75%;height:16px;margin:2px 0"></span><span class="skeleton-box" style="width:40%;height:14px"></span><div style="display:flex;gap:.5rem;margin-top:.4rem"><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-card-img"></div><div class="skeleton-card-body"><span class="skeleton-box" style="width:35%;height:10px"></span><span class="skeleton-box" style="width:75%;height:16px;margin:2px 0"></span><span class="skeleton-box" style="width:40%;height:14px"></span><div style="display:flex;gap:.5rem;margin-top:.4rem"><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span><span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span></div></div></div>
+      </div>
     </div>
 
     <!-- ── CONTENT TAB ── -->
@@ -735,12 +755,18 @@ button:focus:not(:focus-visible){outline:none}
         <div class="stat"><div class="stat-val" id="bsSched">—</div><div class="stat-lbl">Scheduled</div></div>
       </div>
       <div class="toolbar"><input id="blogSearch" type="search" placeholder="Search blog titles…"><div style="flex:1"></div><button class="btn sm" id="createBlogBtn">+ Create blog</button></div>
-      <div class="tbl-wrap"><table><thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="blogTbody"></tbody></table></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="blogTbody">
+        <tr class="skeleton-row"><td><span class="skeleton-box" style="width:40px;height:40px;border-radius:6px"></span></td><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
+        <tr class="skeleton-row"><td><span class="skeleton-box" style="width:40px;height:40px;border-radius:6px"></span></td><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:45%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
+      </tbody></table></div>
     </div>
 
     <div class="tab-panel" id="panel-resellers">
       <div class="toolbar"><h2 style="margin:0;font-family:var(--head)">Resellers</h2><div style="flex:1"></div><button class="btn sm" id="newResellerBtn">Add reseller</button></div>
-      <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Business</th><th>Contact</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody id="resellerTbody"></tbody></table></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Business</th><th>Contact</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody id="resellerTbody">
+        <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
+        <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
+      </tbody></table></div>
       <div id="resellerEditor" hidden class="tbl-wrap" style="margin-top:1.25rem;padding:1.5rem"><h3 id="resellerEditorTitle">Add reseller</h3><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem"><div class="fld"><label>Full name</label><input id="rFullName"></div><div class="fld"><label>Business name</label><input id="rBusiness"></div><div class="fld"><label>Email</label><input id="rEmail" type="email"></div><div class="fld"><label>Contact number</label><input id="rContact"></div><div class="fld"><label>Address</label><input id="rAddress"></div><div class="fld"><label>Initial balance (₱)</label><input id="rBalance" type="number" min="0" value="0"></div><div class="fld" id="rPasswordWrap"><label>Temporary password (12+ characters)</label><input id="rPassword" type="password" minlength="12"></div><label style="display:flex;align-items:center;gap:.5rem"><input id="rActive" type="checkbox" checked> Active account</label></div><p id="resellerMsg" class="form-msg"></p><button class="btn sm" id="saveResellerBtn">Save reseller</button><button class="btn sm ghost" id="cancelResellerBtn">Cancel</button></div>
     </div>
 
@@ -863,7 +889,8 @@ button:focus:not(:focus-visible){outline:none}
                   </tr>
                 </thead>
                 <tbody id="nlSubscribersTbody">
-                  <tr><td colspan="3"><div class="tbl-empty">Loading subscribers…</div></td></tr>
+                  <tr class="skeleton-row"><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td></tr>
+                  <tr class="skeleton-row"><td><span class="skeleton-box" style="width:75%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -919,7 +946,7 @@ button:focus:not(:focus-visible){outline:none}
           <label>Discount Type &amp; Value</label>
           <div style="display:flex;gap:.4rem">
             <select id="pDiscountType" style="width:70px">
-              <option value="percent">%</option>
+              <option value="percentage">%</option>
               <option value="fixed">₱</option>
             </select>
             <input id="pDiscount" type="number" min="0" placeholder="0" style="flex:1">
@@ -1168,7 +1195,45 @@ function supaFetch(path, opts){
   }, opts || {}));
 }
 
+function renderTableSkeleton(tbodyId, rows, cols){
+  var tbody = $(tbodyId);
+  if(!tbody) return;
+  var html = '';
+  var widths = [60, 80, 45, 70, 50, 65, 75, 40];
+  for(var r = 0; r < (rows || 5); r++){
+    html += '<tr class="skeleton-row">';
+    for(var c = 0; c < (cols || 6); c++){
+      var w = widths[(r + c) % widths.length];
+      html += '<td><span class="skeleton-box" style="width:' + w + '%;height:14px"></span></td>';
+    }
+    html += '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function renderProductsSkeleton(){
+  var grid = $('prodGrid');
+  if(!grid) return;
+  var html = '';
+  for(var i = 0; i < 8; i++){
+    html += '<div class="skeleton-card">' +
+      '<div class="skeleton-card-img"></div>' +
+      '<div class="skeleton-card-body">' +
+        '<span class="skeleton-box" style="width:35%;height:10px"></span>' +
+        '<span class="skeleton-box" style="width:75%;height:16px;margin:2px 0"></span>' +
+        '<span class="skeleton-box" style="width:40%;height:14px"></span>' +
+        '<div style="display:flex;gap:.5rem;margin-top:.4rem">' +
+          '<span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span>' +
+          '<span class="skeleton-box" style="width:52px;height:26px;border-radius:999px"></span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  grid.innerHTML = html;
+}
+
 function loadOrders(){
+  if(!allOrders.length) renderTableSkeleton('tBody', 6, 7);
   aeraApi('admin-list-orders')
     .then(function(data){
       allOrders = Array.isArray(data.orders) ? data.orders : [];
@@ -1355,28 +1420,32 @@ function openDetail(o){
 
   /* footer: status update */
   $('detailFoot').innerHTML =
-    '<div style="display:flex;align-items:center;gap:.5rem">'
-      +'<label style="font-size:.8rem;font-weight:600;color:var(--muted)">Status:</label>'
-      +'<select class="status-select" id="statusSel">'
-        +['order_received','processing','packed','shipped','delivered','cancelled'].map(function(s){
-          return '<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
-        }).join('')
-      +'</select>'
-    +'</div>'
-    +'<div style="display:flex;gap:.6rem">'
-      +'<button class="btn sm" id="saveStatus">Save</button>'
-      +'<button class="btn sm danger" id="deleteOrder">Delete</button>'
-      +'<button class="btn sm ghost" id="detailCloseBtn">Close</button>'
+    '<div style="display:flex;flex-direction:column;gap:.75rem;width:100%">'
+      +'<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">'
+        +'<label style="font-size:.8rem;font-weight:600;color:var(--muted)">Status:</label>'
+        +'<select class="status-select" id="statusSel">'
+          +['order_received','processing','packed','shipped','delivered','cancelled'].map(function(s){
+            return '<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
+          }).join('')
+        +'</select>'
+        +'<input id="statusCourierNote" type="text" placeholder="Courier & Tracking # (e.g. J&T: 7891234567)" style="flex:1;min-width:220px;padding:.45rem .65rem;border:1px solid var(--line);border-radius:6px;font-size:.82rem">'
+      +'</div>'
+      +'<div style="display:flex;gap:.6rem;justify-content:flex-end">'
+        +'<button class="btn sm" id="saveStatus">Save status</button>'
+        +'<button class="btn sm danger" id="deleteOrder">Delete</button>'
+        +'<button class="btn sm ghost" id="detailCloseBtn">Close</button>'
+      +'</div>'
     +'</div>';
 
   $('saveStatus').addEventListener('click', function(){
     var newStatus = $('statusSel').value;
-    updateStatus(o.id, newStatus, function(){
+    var note = $('statusCourierNote') ? $('statusCourierNote').value.trim() : '';
+    updateStatus(o.id, newStatus, note, function(){
       o.status = newStatus;
       renderStats();
       renderTable();
       closeDetail();
-      toast('Status updated to "' + newStatus + '"');
+      toast('Status updated to "' + newStatus + '"' + (note ? ' (with tracking code)' : ''));
     });
   });
   $('deleteOrder').addEventListener('click', function(){
@@ -1407,8 +1476,9 @@ $('detailOv').addEventListener('click', function(e){ if(e.target===$('detailOv')
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeDetail(); closeLightbox(); } });
 
 /* ── STATUS UPDATE ── */
-function updateStatus(id, status, cb){
-  aeraApi('admin-update-order-status', {orderId:id, status:status})
+function updateStatus(id, status, note, cb){
+  if(typeof note === 'function'){ cb = note; note = ''; }
+  aeraApi('admin-update-order-status', {orderId:id, status:status, note:note||''})
   .then(function(){
     if(cb) cb();
   }).catch(function(err){
@@ -1461,6 +1531,7 @@ var allProducts = [];
 var editingProductId = null;
 
 function loadProducts(){
+  if(!allProducts.length) renderProductsSkeleton();
   supaFetch('/rest/v1/products?select=*&order=created_at.asc')
     .then(function(r){ 
       if(!r.ok) {
@@ -1484,12 +1555,12 @@ var currentProductImages = [];
 function updateSalePreview(){
   var price = parseFloat($('pPrice').value) || 0;
   var discVal = parseFloat($('pDiscount').value) || 0;
-  var discType = $('pDiscountType') ? $('pDiscountType').value : 'percent';
+  var discType = $('pDiscountType') ? $('pDiscountType').value : 'percentage';
   var eff = price;
   var hasSale = discVal > 0;
 
   if(hasSale){
-    if(discType === 'percent'){
+    if(discType === 'percentage' || discType === 'percent'){
       eff = Math.max(0, Math.round(price * (1 - (discVal / 100))));
     } else {
       eff = Math.max(0, price - discVal);
@@ -1563,11 +1634,11 @@ function renderProducts(){
     var stockLabel = p.stock <= 0 ? 'Out of stock' : p.stock <= 5 ? 'Low stock: '+p.stock : 'In stock: '+p.stock;
     var price = Number(p.price) || 0;
     var discVal = Number(p.discount) || 0;
-    var discType = p.discount_type || 'percent';
+    var discType = p.discount_type || 'percentage';
     var effPrice = price;
     var saleTag = '';
     if(discVal > 0){
-      if(discType === 'percent'){
+      if(discType === 'percentage' || discType === 'percent'){
         effPrice = Math.max(0, Math.round(price * (1 - (discVal / 100))));
         saleTag = ' <span class="prod-sale-badge">-' + discVal + '% SALE</span>';
       } else {
@@ -1614,7 +1685,10 @@ function openProductModal(id){
   document.getElementById('pCat').value     = p ? p.category : '';
   document.getElementById('pSize').value    = p ? p.size : '';
   document.getElementById('pPrice').value   = p ? p.price : '';
-  if(document.getElementById('pDiscountType')) document.getElementById('pDiscountType').value = p && p.discount_type ? p.discount_type : 'percent';
+  if(document.getElementById('pDiscountType')) {
+    var rawDt = (p && p.discount_type) ? p.discount_type : 'percentage';
+    document.getElementById('pDiscountType').value = (rawDt === 'percent' ? 'percentage' : rawDt);
+  }
   document.getElementById('pDiscount').value = p ? (p.discount||0) : 0;
   document.getElementById('pStock').value   = p ? p.stock : '';
   document.getElementById('pNotes').value   = p ? (p.notes||'') : '';
@@ -1727,12 +1801,51 @@ function uploadContentImage(file, key){
   });
 }
 
+function formatUserError(err){
+  if(!err) return 'Hindi ma-save ang product. Pakisuri ang mga nilagay na fields.';
+  var raw = typeof err === 'string' ? err : (err.message || '');
+  var parsed = null;
+  try {
+    if(raw.indexOf('{') >= 0){
+      parsed = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+    }
+  } catch(e){}
+
+  var msg = (parsed && parsed.message) ? parsed.message : raw;
+  var code = (parsed && parsed.code) ? String(parsed.code) : '';
+
+  if(code === '23514' || msg.indexOf('products_discount_type_check') >= 0){
+    return 'Paki-check ang Discount Type: pumili ng Percentage (%) o Fixed (₱).';
+  }
+  if(code === '23514' || msg.indexOf('check constraint') >= 0){
+    return 'May maling halaga sa input (hal. negatibong presyo o maling discount). Pakisuri ang mga fields.';
+  }
+  if(code === '23505' || msg.indexOf('unique') >= 0){
+    return 'May kaparehong product na gumagamit ng Pangalan o ID na ito. Paki-iba ang pangalan.';
+  }
+  if(code === '23502' || msg.indexOf('violates not-null') >= 0){
+    return 'May kulang na required field. Pakisiguradong may laman ang Pangalan, Category, Size, Price, at Stock.';
+  }
+  if(/JWT|expired|unauthorized|401/i.test(msg)){
+    return 'Na-expire na ang login session mo. Paki-refresh ang page at mag-login ulit.';
+  }
+  if(/storage|upload/i.test(msg)){
+    return 'Hindi na-upload ang photo. Pakisubukan ulit o pumili ng ibang JPG/PNG file.';
+  }
+  if(/Unknown action/i.test(msg)){
+    return 'Kasalukuyang nag-uupdate ang backend functions. Paki-refresh ang page.';
+  }
+  if(parsed && parsed.message && typeof parsed.message === 'string') return parsed.message;
+  return raw.replace(/^\{.*\}$/s, 'Hindi ma-save ang product. Pakisuri ang mga fields.');
+}
+
 document.getElementById('prodModalSave').addEventListener('click', function(){
   var name   = document.getElementById('pName').value.trim();
   var cat    = document.getElementById('pCat').value;
   var size   = document.getElementById('pSize').value.trim();
   var price  = parseFloat(document.getElementById('pPrice').value);
-  var discountType = document.getElementById('pDiscountType') ? document.getElementById('pDiscountType').value : 'percent';
+  var discountType = document.getElementById('pDiscountType') ? document.getElementById('pDiscountType').value : 'percentage';
+  if(discountType === 'percent') discountType = 'percentage';
   var discount = parseInt(document.getElementById('pDiscount').value)||0;
   var stock  = parseInt(document.getElementById('pStock').value);
   var notes  = document.getElementById('pNotes').value.trim();
@@ -1741,7 +1854,7 @@ document.getElementById('prodModalSave').addEventListener('click', function(){
   var errEl  = document.getElementById('prodModalErr');
 
   if(!name || !cat || !size || isNaN(price) || isNaN(stock)){
-    errEl.textContent = 'Please fill in all required fields.'; return;
+    errEl.textContent = 'Please fill in all required fields (Name, Category, Size, Price, Stock).'; return;
   }
   errEl.textContent = '';
 
@@ -1782,7 +1895,7 @@ document.getElementById('prodModalSave').addEventListener('click', function(){
     loadProducts();
     toast(editingProductId ? 'Product updated!' : 'Product added!');
   }).catch(function(err){
-    errEl.textContent = 'Save failed: ' + err.message;
+    errEl.textContent = '⚠️ ' + formatUserError(err);
   }).finally(function(){
     btn.disabled = false; btn.textContent = 'Save product';
   });
@@ -1816,6 +1929,7 @@ var allBlogs=[], editingBlogId=null, blogSearchQ='';
 function blogDate(v){return v?new Date(v).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'}):'—';}
 function blogSlug(s){return String(s||'').toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');}
 function loadBlogs(){
+  if(!allBlogs.length) renderTableSkeleton('blogTbody', 4, 6);
   aeraApi('admin-list-blogs')
     .then(function(data){allBlogs=Array.isArray(data.blogs)?data.blogs:[];renderBlogStats();renderBlogTable();})
     .catch(function(err){console.error('Blog management could not be loaded:',err);toast('We could not load your blog posts right now. Please try again.');});
@@ -1907,15 +2021,34 @@ function loadReviews(){
   aeraApi('admin-list-reviews')
     .then(function(res){
       allReviews = Array.isArray(res.reviews) ? res.reviews : [];
-      globalReviewsActive = !!res.reviewsEnabled;
+      globalReviewsActive = typeof res.reviewsEnabled === 'boolean' ? res.reviewsEnabled : true;
       updateGlobalReviewsBtn();
       renderReviewStats();
       renderReviewsTable();
     })
     .catch(function(err){
+      // Fallback: If edge function returns "Unknown action" (older deployment), fetch directly from Supabase REST
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/reviews?select=*&order=created_at.desc')
+          .then(function(r){
+            if(!r.ok) throw new Error('Status ' + r.status);
+            return r.json();
+          })
+          .then(function(data){
+            allReviews = Array.isArray(data) ? data : [];
+            updateGlobalReviewsBtn();
+            renderReviewStats();
+            renderReviewsTable();
+          })
+          .catch(function(e){
+            console.error('Direct reviews fetch failed:', e);
+            toast('Failed to load reviews.');
+            if(tbody) tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">Unable to load reviews right now.</div></td></tr>';
+          });
+      }
       console.error('Failed to load reviews:', err);
-      toast('Failed to load reviews: ' + err.message);
-      if(tbody) tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">' + esc(err.message) + '</div></td></tr>';
+      toast('Failed to load reviews: ' + formatUserError(err));
+      if(tbody) tbody.innerHTML = '<tr><td colspan="8"><div class="tbl-empty">' + esc(formatUserError(err)) + '</div></td></tr>';
     });
 }
 
@@ -2053,7 +2186,22 @@ function updateReviewStatus(id, newStatus){
       renderReviewsTable();
       toast('Review ' + newStatus + '.');
     })
-    .catch(function(err){ toast(err.message); });
+    .catch(function(err){
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/reviews?id=eq.' + encodeURIComponent(id), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ status: newStatus })
+        }).then(function(){
+          var r = allReviews.find(function(x){ return x.id === id; });
+          if(r) r.status = newStatus;
+          renderReviewStats();
+          renderReviewsTable();
+          toast('Review ' + newStatus + '.');
+        }).catch(function(e){ toast('Failed to update review status.'); });
+      }
+      toast(formatUserError(err));
+    });
 }
 
 function toggleReviewVisibility(id, newVis){
@@ -2065,7 +2213,22 @@ function toggleReviewVisibility(id, newVis){
       renderReviewsTable();
       toast(newVis ? 'Review made visible on storefront.' : 'Review hidden from storefront.');
     })
-    .catch(function(err){ toast(err.message); });
+    .catch(function(err){
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/reviews?id=eq.' + encodeURIComponent(id), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ is_visible: newVis })
+        }).then(function(){
+          var r = allReviews.find(function(x){ return x.id === id; });
+          if(r) r.is_visible = newVis;
+          renderReviewStats();
+          renderReviewsTable();
+          toast(newVis ? 'Review made visible on storefront.' : 'Review hidden from storefront.');
+        }).catch(function(e){ toast('Failed to update review visibility.'); });
+      }
+      toast(formatUserError(err));
+    });
 }
 
 function openReviewEditModal(id){
@@ -2116,7 +2279,28 @@ if($('reviewEditSave')){
         loadReviews();
       })
       .catch(function(err){
-        $('reviewEditErr').textContent = err.message || 'Save failed.';
+        if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+          return supaFetch('/rest/v1/reviews?id=eq.' + encodeURIComponent(editingReviewId), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({
+              customer_name: payload.customer_name,
+              customer_email: payload.customer_email,
+              rating: payload.rating,
+              status: payload.status,
+              review_title: payload.review_title,
+              review_content: payload.review_content,
+              is_visible: payload.is_visible
+            })
+          }).then(function(){
+            toast('Review updated successfully.');
+            closeReviewEditModal();
+            loadReviews();
+          }).catch(function(e){
+            $('reviewEditErr').textContent = 'Save failed.';
+          });
+        }
+        $('reviewEditErr').textContent = formatUserError(err) || 'Save failed.';
       })
       .finally(function(){
         btn.disabled = false;
@@ -2134,7 +2318,20 @@ function deleteReview(id){
       renderReviewsTable();
       toast('Review deleted.');
     })
-    .catch(function(err){ toast(err.message); });
+    .catch(function(err){
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/reviews?id=eq.' + encodeURIComponent(id), {
+          method: 'DELETE',
+          headers: { 'Prefer': 'return=minimal' }
+        }).then(function(){
+          allReviews = allReviews.filter(function(x){ return x.id !== id; });
+          renderReviewStats();
+          renderReviewsTable();
+          toast('Review deleted.');
+        }).catch(function(e){ toast('Failed to delete review.'); });
+      }
+      toast(formatUserError(err));
+    });
 }
 
 if($('revFilterBtns')){
@@ -2175,9 +2372,35 @@ function loadShippingZones(){
       renderShippingTable();
     })
     .catch(function(err){
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/shipping_zones?select=*&order=sort_order.asc')
+          .then(function(r){
+            if(!r.ok) throw new Error('Status ' + r.status);
+            return r.json();
+          })
+          .then(function(data){
+            allShippingZones = (data || []).map(function(z){
+              return {
+                id: z.id,
+                zone_code: z.code || z.zone_code,
+                zone_name: z.name || z.zone_name,
+                base_rate: z.rate !== undefined ? z.rate : z.base_rate,
+                covered_cities: z.cities || z.covered_cities || [],
+                island_group: z.description || z.island_group,
+                is_active: z.is_active !== false,
+                sort_order: z.sort_order || 0
+              };
+            });
+            renderShippingTable();
+          })
+          .catch(function(e){
+            console.error('Direct shipping zones fetch failed:', e);
+            if(tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">Unable to load shipping zones right now.</div></td></tr>';
+          });
+      }
       console.error('Failed to load shipping zones:', err);
-      toast('Failed to load shipping zones: ' + err.message);
-      if(tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">' + esc(err.message) + '</div></td></tr>';
+      toast('Failed to load shipping zones: ' + formatUserError(err));
+      if(tbody) tbody.innerHTML = '<tr><td colspan="6"><div class="tbl-empty">' + esc(formatUserError(err)) + '</div></td></tr>';
     });
 }
 
@@ -2278,7 +2501,30 @@ if($('shippingZoneSave')){
       closeShippingModal();
       loadShippingZones();
     }).catch(function(err){
-      errEl.textContent = err.message || 'Save failed.';
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        var zonePayload = {
+          code: code,
+          name: name,
+          rate: rate,
+          cities: cities,
+          description: island,
+          is_active: active
+        };
+        var method = editingZoneId ? 'PATCH' : 'POST';
+        var url = editingZoneId ? '/rest/v1/shipping_zones?id=eq.' + encodeURIComponent(editingZoneId) : '/rest/v1/shipping_zones';
+        return supaFetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(zonePayload)
+        }).then(function(){
+          toast('Shipping zone saved.');
+          closeShippingModal();
+          loadShippingZones();
+        }).catch(function(e){
+          errEl.textContent = 'Save failed.';
+        });
+      }
+      errEl.textContent = formatUserError(err) || 'Save failed.';
     }).finally(function(){
       btn.disabled = false;
       btn.textContent = 'Save Zone';
@@ -2294,7 +2540,18 @@ function deleteShippingZone(id){
       toast('Shipping zone deleted.');
       loadShippingZones();
     })
-    .catch(function(err){ toast(err.message); });
+    .catch(function(err){
+      if(err && err.message && err.message.indexOf('Unknown action') >= 0){
+        return supaFetch('/rest/v1/shipping_zones?id=eq.' + encodeURIComponent(id), {
+          method: 'DELETE',
+          headers: { 'Prefer': 'return=minimal' }
+        }).then(function(){
+          toast('Shipping zone deleted.');
+          loadShippingZones();
+        }).catch(function(e){ toast('Failed to delete shipping zone.'); });
+      }
+      toast(formatUserError(err));
+    });
 }
 
 if($('addShippingZoneBtn')) $('addShippingZoneBtn').onclick = function(){ openShippingModal(null); };
@@ -2402,6 +2659,7 @@ document.getElementById('saveContentBtn').addEventListener('click', function(){
    ══════════════════════════════ */
 var resellerRows = [], editingResellerId = null;
 function loadResellers(){
+  if(!resellerRows.length) renderTableSkeleton('resellerTbody', 4, 6);
   aeraApi('admin-list-resellers').then(function(data){
     resellerRows = data.resellers || [];
     var body = $('resellerTbody');
@@ -2548,7 +2806,7 @@ function updateNlPreview(){
 function loadNewsletter(){
   updateNlPreview();
   var tbody = $('nlSubscribersTbody');
-  if(tbody) tbody.innerHTML = '<tr><td colspan="3"><div class="tbl-empty">Loading subscribers…</div></td></tr>';
+  if(!nlSubscribers.length) renderTableSkeleton('nlSubscribersTbody', 4, 3);
 
   aeraApi('admin-list-subscribers').then(function(res){
     nlSubscribers = res.subscribers || [];

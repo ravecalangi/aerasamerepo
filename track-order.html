@@ -34,6 +34,8 @@
     .message{min-height:24px;margin:14px 0 0;color:#c33;font-size:.9rem}
     .result{display:none;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
     .result.show{display:block}
+    .track-skel-box{display:block;border-radius:6px;background:linear-gradient(90deg,rgba(56,65,104,.06) 25%,rgba(56,65,104,.14) 50%,rgba(56,65,104,.06) 75%);background-size:200% 100%;animation:trackShimmer 1.5s infinite}
+    @keyframes trackShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
     .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}
     .meta span{display:block;font-size:.75rem;color:var(--muted)}
     .meta strong{font-size:.92rem;color:var(--deep)}
@@ -93,13 +95,30 @@
             <span class="hint">Found in your order confirmation screen or confirmation message</span>
           </label>
           <label>
-            Checkout Email <span style="font-weight:400;color:var(--muted)">(optional)</span>
-            <input id="orderEmail" type="email" autocomplete="email" placeholder="Email used when ordering (if available)">
+            Checkout Email <span style="color:#b3261e;font-weight:600">*</span>
+            <input id="orderEmail" type="email" autocomplete="email" placeholder="Email used when ordering" required>
           </label>
         </div>
         <button class="track-btn" id="submit" type="submit">Track order</button>
         <p class="message" id="message" aria-live="polite"></p>
       </form>
+
+      <div class="result" id="trackSkeleton">
+        <div class="meta">
+          <div><span>Order ID</span><span class="track-skel-box" style="width:75%;height:18px;margin-top:4px"></span></div>
+          <div><span>Order date</span><span class="track-skel-box" style="width:65%;height:18px;margin-top:4px"></span></div>
+          <div><span>Current status</span><span class="track-skel-box" style="width:55%;height:22px;border-radius:999px;margin-top:4px"></span></div>
+        </div>
+        <div style="margin:24px 0 16px"><span class="track-skel-box" style="width:100%;height:32px;border-radius:8px"></span></div>
+        <div style="margin-top:20px">
+          <span class="track-skel-box" style="width:30%;height:16px;margin-bottom:12px"></span>
+          <div style="display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)">
+            <span class="track-skel-box" style="width:48px;height:48px;border-radius:8px;flex:0 0 48px"></span>
+            <div style="flex:1"><span class="track-skel-box" style="width:60%;height:14px;margin-bottom:6px"></span><span class="track-skel-box" style="width:30%;height:12px"></span></div>
+            <span class="track-skel-box" style="width:60px;height:16px"></span>
+          </div>
+        </div>
+      </div>
 
       <div class="result" id="result">
         <div class="meta">
@@ -109,6 +128,15 @@
         </div>
 
         <div class="progress" id="progress"></div>
+
+        <div id="courierBox" style="display:none;background:#f3f6fc;border:1px solid #d4e0f5;border-radius:12px;padding:14px 18px;margin:20px 0">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:4px">
+            <span style="font-size:1.15rem">🚚</span>
+            <strong style="font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;color:#1e40af">Courier & Delivery Reference</strong>
+          </div>
+          <div id="courierText" style="font-size:1rem;color:#1e293b;font-weight:600"></div>
+          <p style="margin:4px 0 0;font-size:.78rem;color:#64748b">Use this reference or tracking number to follow your parcel on the courier's official tracking portal.</p>
+        </div>
 
         <div id="timelineWrap" class="timeline" style="display:none">
           <h3>Status Updates & Notes</h3>
@@ -197,17 +225,23 @@
         return;
       }
       var em = String(email !== undefined ? email : ($('orderEmail') ? $('orderEmail').value : '')).trim();
+      if(!em || em.indexOf('@') < 1){
+        $('message').textContent = 'Please enter the email address used when placing this order.';
+        if($('orderEmail')) $('orderEmail').focus();
+        return;
+      }
       var button = $('submit');
       $('message').textContent = '';
       $('result').classList.remove('show');
+      if($('trackSkeleton')) $('trackSkeleton').classList.add('show');
       button.disabled = true;
       button.textContent = 'Looking up order…';
 
       var payload = {
         action: 'track-order',
-        orderNumber: num
+        orderNumber: num,
+        email: em
       };
-      if(em) payload.email = em;
 
       fetch(API, {
         method: 'POST',
@@ -269,6 +303,33 @@
           tlWrap.style.display = 'none';
         }
 
+        // Courier reference / tracking banner
+        var shipNote = '';
+        for(var hi = hist.length - 1; hi >= 0; hi--){
+          var hn = String(hist[hi].note || '');
+          if(hn && (hist[hi].status === 'shipped' || /track|courier|j&t|flash|lbc|waybill|rider/i.test(hn))){
+            shipNote = hn;
+            break;
+          }
+        }
+        if(!shipNote && o.status === 'shipped' && hist.length){
+          var lastHist = hist[hist.length - 1];
+          if(lastHist && lastHist.note) shipNote = lastHist.note;
+        }
+
+        var cBox = $('courierBox');
+        if(cBox){
+          if(shipNote){
+            cBox.style.display = 'block';
+            $('courierText').textContent = shipNote;
+          } else if(o.status === 'shipped'){
+            cBox.style.display = 'block';
+            $('courierText').textContent = 'Your parcel is in transit with our delivery partner.';
+          } else {
+            cBox.style.display = 'none';
+          }
+        }
+
         // Items list
         $('items').innerHTML = (o.items || []).map(function(item){
           var name = String(item.name || 'Item');
@@ -299,6 +360,7 @@
         $('message').textContent = err.message || 'Unable to track order. Please verify the ID.';
       })
       .finally(function(){
+        if($('trackSkeleton')) $('trackSkeleton').classList.remove('show');
         button.disabled = false;
         button.textContent = 'Track order';
       });

@@ -643,13 +643,11 @@ Deno.serve(async (req) => {
 
     if (action === "track-order") {
       const orderNumber = clean(body.orderNumber, 40).toUpperCase();
+      const email = clean(body.email, 254).toLowerCase();
       if (!/^[A-Z0-9-]{10,40}$/i.test(orderNumber)) return json({ error: "Enter a valid Order ID." }, 400);
-      let query = db.from("orders").select("id,order_number,created_at,status,status_updated_at,items,total,shipping,vat_amount").eq("order_number", orderNumber);
-      if (body.email && emailOk(body.email)) {
-        query = query.eq("customer_email", clean(body.email, 254).toLowerCase());
-      }
-      const { data: order } = await query.maybeSingle();
-      if (!order) return json({ error: "We could not find an order matching that ID." }, 404);
+      if (!email || !emailOk(email)) return json({ error: "Enter your order ID and the email used at checkout." }, 400);
+      const { data: order } = await db.from("orders").select("id,order_number,created_at,status,status_updated_at,items,total,shipping,vat_amount").eq("order_number", orderNumber).eq("customer_email", email).maybeSingle();
+      if (!order) return json({ error: "We could not find an order matching that ID and email combination." }, 404);
       const { data: history } = await db.from("order_status_history").select("status,note,created_at").eq("order_id", order.id).order("created_at", { ascending: true });
       return json({ order: { ...order, history: history || [] } });
     }

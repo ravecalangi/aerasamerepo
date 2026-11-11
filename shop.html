@@ -150,6 +150,8 @@ a{color:inherit;text-decoration:none}h1,h2,h3{font-family:Urbanist,Arial,sans-se
 .srch-list span{flex:1;min-width:0;display:flex;flex-direction:column}.srch-list b{font-weight:500;font-size:.9375rem}.srch-list small{font-size:.75rem;color:rgba(56,65,104,.6)}.srch-list em{font-style:normal;font-size:.875rem;color:rgba(56,65,104,.7)}
 .srch-empty{padding:1.25rem .6rem;color:rgba(56,65,104,.6);font-size:.9375rem}
 .card.flash{border-color:var(--brown);box-shadow:0 0 0 3px rgba(56,65,104,.25)}
+.card-skeleton{aspect-ratio:3/4;pointer-events:none;background:linear-gradient(90deg,rgba(56,65,104,.06) 25%,rgba(56,65,104,.14) 50%,rgba(56,65,104,.06) 75%);background-size:200% 100%;animation:shopShimmer 1.4s infinite;border:none;border-radius:1rem}
+@keyframes shopShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* ---------- TOUCH DEVICES: remove the default blue/gray tap flash ---------- */
 a,button,input,.tab,.add-to-bag,.m-burger,.m-close,.cart-close,.srch-x,.pol-x{
@@ -182,7 +184,16 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 </header>
 <main><div class="wrap"><div class="head"><p class="lbl">Shop</p><h1>Meet the collection.</h1><p>Hair &amp; body mists, soaps and a body serum for everyday moments worth lingering in.</p></div>
 <div class="tabs"><button class="tab on" data-c="all">All</button><button class="tab" data-c="mist">Hair &amp; Body Mists</button><button class="tab" data-c="soap">Soaps</button><button class="tab" data-c="serum">Body Serum</button></div>
-<div class="grid" id="prodGrid"></div></div>
+<div class="grid" id="prodGrid">
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+  <div class="card card-skeleton"></div>
+</div></div>
 <script>
 var CATN={mist:"Hair & Body Mist",soap:"Soap",serum:"Body Serum"};
 var peso=function(n){return "\u20B1"+Number(n).toLocaleString("en-PH")};

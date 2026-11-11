@@ -182,6 +182,16 @@ a,button,input,.add,.qty button,.m-burger,.m-close,.cart-close,.srch-x,.rc{
 }
 button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 .add,.qty button,.m-burger,.m-close{-webkit-user-select:none;user-select:none}
+
+/* ---------- Skeleton loader for product details ---------- */
+@keyframes prodShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.prod-skel-crumb { width: 140px; height: 14px; border-radius: 4px; margin: 1.5rem 0; background: linear-gradient(90deg, rgba(56,65,104,.06) 25%, rgba(56,65,104,.14) 50%, rgba(56,65,104,.06) 75%); background-size: 200% 100%; animation: prodShimmer 1.4s infinite; }
+.prod-skel-pic { aspect-ratio: 1/1; max-height: 420px; border-radius: 24px; background: linear-gradient(90deg, rgba(56,65,104,.06) 25%, rgba(56,65,104,.14) 50%, rgba(56,65,104,.06) 75%); background-size: 200% 100%; animation: prodShimmer 1.4s infinite; }
+@media(min-width:900px){ .prod-skel-pic { aspect-ratio: 4/5; max-height: 520px; } }
+.prod-skel-box { display: block; border-radius: 6px; background: linear-gradient(90deg, rgba(56,65,104,.06) 25%, rgba(56,65,104,.14) 50%, rgba(56,65,104,.06) 75%); background-size: 200% 100%; animation: prodShimmer 1.4s infinite; }
 </style>
 </head>
 <body>
@@ -240,7 +250,21 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
 </header>
 
 <!-- MAIN CONTENT (rendered by JS) -->
-<main class="wrap" id="app"></main>
+<main class="wrap" id="app">
+  <div class="prod-skel-crumb"></div>
+  <div class="pd">
+    <div class="prod-skel-pic"></div>
+    <div class="info" style="display:flex;flex-direction:column">
+      <span class="prod-skel-box" style="width:28%;height:14px;margin-bottom:.5rem"></span>
+      <span class="prod-skel-box" style="width:70%;height:32px;margin-bottom:.8rem"></span>
+      <span class="prod-skel-box" style="width:30%;height:24px;margin-bottom:1.2rem"></span>
+      <span class="prod-skel-box" style="width:100%;height:14px;margin-bottom:.5rem"></span>
+      <span class="prod-skel-box" style="width:90%;height:14px;margin-bottom:.5rem"></span>
+      <span class="prod-skel-box" style="width:60%;height:14px;margin-bottom:1.5rem"></span>
+      <span class="prod-skel-box" style="width:160px;height:46px;border-radius:999px"></span>
+    </div>
+  </div>
+</main>
 
 <!-- FOOTER -->
 <footer class="foot">
