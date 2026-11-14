@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
+<title>Reseller Application Form | AERA Circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#384168;--deep:#2a3152;--cream:#f0ede8;--paper:#fdf8f3;--line:rgba(56,65,104,.16);--muted:rgba(56,65,104,.68);--danger:#b3261e;--ok:#1b6e44;--px:clamp(1rem,5vw,4rem)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-gutter:stable}
+body{margin:0;background:var(--cream);color:var(--brown);font-family:"Instrument Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.65}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{font-family:Urbanist,Arial,sans-serif;font-weight:600;margin:0;color:var(--deep)}
+.topbar{background:var(--brown);color:var(--cream);font-size:.8125rem;padding:.55rem 2.75rem;display:flex;align-items:center;justify-content:center;min-height:36px;text-align:center}
+.topbar a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(240,237,232,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);height:72px;padding:0 var(--px);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.logo{display:block;width:60px;height:auto;filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+.nav-links{display:flex;gap:1.5rem;align-items:center;font-size:.875rem;font-weight:500}
+.nav-links a:hover{text-decoration:underline;text-underline-offset:4px}
+.m-burger{display:none;background:none;border:0;color:var(--brown);padding:.5rem;cursor:pointer;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+.m-drawer{display:none;position:fixed;inset:0;z-index:200;background:var(--cream);padding:1.5rem var(--px);flex-direction:column;gap:1.25rem;overflow-y:auto}
+.m-drawer.open{display:flex}
+.m-drawer-top{display:flex;justify-content:space-between;align-items:center}
+.m-drawer a{font-family:Urbanist,sans-serif;font-size:1.35rem;font-weight:500;padding:.6rem 0;border-bottom:1px solid var(--line)}
+@media(max-width:860px){.nav-links{display:none}.m-burger{display:inline-flex}}
+
+.wrap{max-width:58rem;margin:0 auto;padding:clamp(1.75rem,5vw,3.5rem) var(--px) 5rem}
+.page-head{text-align:center;max-width:44rem;margin:0 auto 2.25rem}
+.lbl{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 .6rem;font-weight:600}
+.page-head h1{font-size:clamp(1.9rem,5vw,2.9rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:.9rem}
+.page-head p{color:rgba(56,65,104,.84);margin:0;font-size:.97rem}
+.inline-link{color:var(--deep);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+.notice-banner{background:#fff;border:1px solid var(--line);border-left:4px solid var(--brown);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.75rem;font-size:.9rem;color:rgba(56,65,104,.88)}
+
+.form-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:clamp(1.25rem,4vw,2.75rem);box-shadow:0 10px 30px rgba(56,65,104,.04)}
+.sec{padding:1.75rem 0;border-bottom:1px solid var(--line)}
+.sec:first-child{padding-top:0}
+.sec:last-child{border-bottom:0;padding-bottom:0}
+.sec-title{font-size:clamp(1.2rem,3vw,1.5rem);margin-bottom:.35rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.sec-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--brown);color:#fff;font-size:.82rem;font-weight:700;flex-shrink:0}
+.sec-sub{margin:0 0 1.25rem;font-size:.9rem;color:var(--muted)}
+
+.grid-2{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:680px){.grid-2{grid-template-columns:1fr 1fr}}
+.span-2{grid-column:1/-1}
+
+.fld{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem}
+.fld:last-child{margin-bottom:0}
+.fld-lbl{font-size:.85rem;font-weight:600;color:var(--deep)}
+.req{color:var(--danger)}
+.fld input[type="text"],.fld input[type="email"],.fld input[type="tel"],.fld input[type="date"],.fld textarea,.fld select{
+  width:100%;min-height:44px;padding:.7rem .95rem;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;font-size:.94rem;color:var(--brown);transition:border-color .2s,box-shadow .2s
+}
+.fld textarea{min-height:92px;resize:vertical}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--brown);box-shadow:0 0 0 3px rgba(56,65,104,.12)}
+.hint{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+
+.check-grid{display:grid;grid-template-columns:1fr;gap:.55rem;margin-top:.25rem}
+@media(min-width:600px){.check-grid.cols-2{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.65rem .85rem;border:1px solid var(--line);border-radius:12px;background:#faf9f7;cursor:pointer;min-height:44px;transition:border-color .2s,background .2s;font-size:.9rem}
+.opt:hover{border-color:rgba(56,65,104,.4);background:#fff}
+.opt input{margin-top:.22rem;width:18px;height:18px;accent-color:var(--brown);flex-shrink:0;cursor:pointer}
+.opt span{flex:1;line-height:1.45}
+
+.inline-extra{margin-top:.55rem;display:none}
+.inline-extra.show{display:block}
+
+.tbl-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.75rem 0 1.25rem;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:480px;font-size:.88rem;background:#fff}
+th,td{padding:.7rem .95rem;text-align:left;border-bottom:1px solid var(--line)}
+th{background:rgba(56,65,104,.06);font-family:Urbanist,sans-serif;font-weight:600;color:var(--deep);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+
+.upload-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.9rem;margin:1rem 0}
+@media(min-width:640px){.upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.up-box--full{grid-column:1/-1}}
+.up-box{min-width:0;border:1.5px dashed rgba(56,65,104,.32);border-radius:14px;padding:1rem;background:#faf9f7;display:flex;flex-direction:column;gap:.55rem;transition:border-color .2s,background .2s}
+.up-box:hover{border-color:rgba(56,65,104,.55);background:#fff}
+.up-box strong{font-size:.86rem;color:var(--deep)}
+.up-box small{font-size:.75rem;color:var(--muted)}
+.up-pick{position:relative;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.15rem}
+.up-pick input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.up-pick-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.45rem .9rem;border-radius:999px;border:1px solid rgba(56,65,104,.35);background:#fff;color:var(--deep);font-size:.8rem;font-weight:600;pointer-events:none;white-space:nowrap}
+.up-pick-name{font-size:.78rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;flex:1;min-width:0}
+.up-prev{display:none;width:100%;max-width:220px;height:120px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#fff}
+.up-prev.show{display:block}
+.up-status{font-size:.76rem;color:var(--ok);font-weight:600;min-height:1em;word-break:break-word}
+
+.consent-list{display:flex;flex-direction:column;gap:.65rem;margin:1.25rem 0}
+.sig-box{background:#faf9f7;border:1px solid var(--line);border-radius:16px;padding:1.25rem;margin-top:1.25rem}
+.sig-tabs{display:inline-flex;gap:.35rem;background:#eeeae3;padding:.25rem;border-radius:999px;margin-bottom:.65rem;flex-wrap:wrap}
+.sig-tab{border:0;background:transparent;color:var(--brown);font-family:inherit;font-size:.82rem;font-weight:600;padding:.4rem .9rem;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+.sig-tab.active{background:var(--brown);color:#fff}
+.sig-pad-wrap{position:relative;background:#fff;border:1.5px dashed rgba(56,65,104,.35);border-radius:12px;overflow:hidden}
+.sig-canvas{display:block;width:100%;height:170px;touch-action:none;cursor:crosshair}
+.sig-pad-foot{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-top:.45rem;font-size:.78rem;color:rgba(56,65,104,.72)}
+.sig-clear{border:1px solid rgba(56,65,104,.28);background:#fff;color:var(--brown);font-family:inherit;font-size:.78rem;font-weight:600;padding:.3rem .75rem;border-radius:999px;cursor:pointer}
+.sig-clear:hover{background:#f5f2ed}
+.sig-upload-box{background:#fff;border:1.5px dashed rgba(56,65,104,.3);border-radius:12px;padding:.9rem 1rem}
+.sig-upload-box input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.sig-preview{display:none;max-height:140px;max-width:100%;margin-top:.65rem;border:1px solid var(--line);border-radius:8px;background:#fff;padding:.25rem}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--brown);color:#fff;font-family:inherit;font-size:.95rem;font-weight:600;padding:.85rem 1.8rem;border-radius:9999px;border:0;cursor:pointer;min-height:48px;transition:background .2s,transform .2s}
+.btn:hover{background:var(--deep);transform:translateY(-1px)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.btn.ghost{background:transparent;color:var(--brown);border:1px solid rgba(56,65,104,.35)}
+
+.submit-bar{margin-top:1.75rem;display:flex;flex-direction:column;gap:.85rem;align-items:stretch}
+@media(min-width:600px){.submit-bar{flex-direction:row;align-items:center;justify-content:space-between}}
+.form-err{color:var(--danger);font-size:.9rem;font-weight:500;min-height:1.2em;margin:0}
+
+.success-card{display:none;background:#fff;border:1px solid var(--line);border-radius:24px;padding:clamp(2rem,5vw,3.5rem);text-align:center;box-shadow:0 10px 30px rgba(56,65,104,.05)}
+.success-card.show{display:block}
+.ref-pill{display:inline-block;margin:1rem 0;padding:.55rem 1.25rem;border-radius:999px;background:rgba(56,65,104,.08);color:var(--deep);font-family:Urbanist,sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:.04em}
+
+.contact{background:var(--brown);color:var(--cream);padding:3.5rem var(--px) 0;margin-top:2rem}
+.ct-bottom{max-width:80rem;margin:0 auto;padding:1.5rem 0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.8125rem;color:rgba(240,237,232,.72)}
+.ct-bottom nav{display:flex;gap:1.15rem;flex-wrap:wrap}
+.ct-bottom a:hover{color:#fff;text-decoration:underline}
+@media(max-width:639px){.ct-bottom{flex-direction:column;align-items:flex-start}}
+.doc-actions{margin-top:1rem;display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap}
+.doc-btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.15rem;border-radius:999px;border:1px solid rgba(56,65,104,.28);background:#fff;color:var(--brown);font-family:inherit;font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+.doc-btn:hover{background:#faf9f7;border-color:var(--brown)}
+.doc-print-view{display:none}
+@media print{
+  @page{size:A4 portrait;margin:12mm 15mm}
+  body{background:#fff!important;color:#111!important;font-family:"Instrument Sans","Segoe UI",Arial,sans-serif!important;font-size:8.6pt!important;line-height:1.34!important}
+  .topbar,.nav,.m-drawer,.wrap,.contact{display:none!important}
+  .doc-print-view{display:block!important;width:100%!important;margin:0!important;padding:0!important;color:#111!important}
+  .p-logo{display:block!important;width:82px!important;height:auto!important;margin:0 auto 6px!important;filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+  .p-title{text-align:center!important;font-size:18pt!important;font-weight:700!important;color:#2a3152!important;margin:0 0 8px!important;font-family:Urbanist,Arial,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .p-intro{font-size:8.4pt!important;line-height:1.35!important;margin:0 0 9px!important;color:#111!important}
+  .p-sec-head{font-size:11pt!important;font-weight:700!important;color:#2a3152!important;margin:7px 0 3px!important;font-family:Urbanist,Arial,sans-serif!important;break-after:avoid;page-break-after:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .p-text{font-size:8.4pt!important;line-height:1.34!important;color:#111!important;margin:0 0 5px!important}
+  .p-table{width:100%!important;border-collapse:collapse!important;border:1.2px solid #111!important;margin:3px 0 5px!important}
+  .p-table td,.p-table th{border:1px solid #111!important;padding:4px 6px!important;vertical-align:top!important;font-size:8.2pt!important;line-height:1.28!important;color:#111!important}
+  .p-navy-table th{background:#2a3152!important;color:#fff!important;font-weight:600!important;text-align:center!important;font-size:8pt!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .p-navy-table td{text-align:center!important}
+  .p-lbl{font-weight:600!important;font-size:8.2pt!important;margin-bottom:2px!important}
+  .p-sub{font-size:7.6pt!important;color:#475569!important;margin-bottom:2px!important}
+  .p-line{border-bottom:1px solid #111!important;display:block!important;min-height:14px!important;padding:0 3px!important;font-size:8.3pt!important;font-weight:500!important}
+  .p-inline-line{display:inline-block!important;border-bottom:1px solid #111!important;min-height:12px!important;min-width:110px!important;vertical-align:-2px!important;padding:0 3px!important;font-size:8.3pt!important;font-weight:500!important}
+  .p-chk-grid{display:flex!important;flex-direction:column!important;gap:2px!important}
+  .p-chk{font-size:8.2pt!important;line-height:1.28!important}
+  .p-box{display:inline-block!important;width:10px!important;height:10px!important;border:1.2px solid #111!important;margin-right:4px!important;vertical-align:-1px!important;text-align:center!important;line-height:9px!important;font-size:8px!important;font-weight:bold!important}
+  .p-box.checked::after{content:"✓"!important}
+  .print-page-1,.print-page-2{page-break-after:always!important;break-after:page!important}
+  .print-page-3{page-break-after:avoid!important;break-after:avoid!important}
+}
+</style></head>
+<body>
+<div class="topbar"><a href="shop.html">Bloom is here: our garden-party launch collection</a></div>
+<header class="nav">
+  <a href="index.html" aria-label="AERA home"><img src="images/aera-logo-black.png" class="logo" alt="AERA"></a>
+  <nav class="nav-links" aria-label="Primary navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">About Us</a>
+    <a href="circle.html">AERA Circle</a>
+    <a href="reseller-terms.html">Terms &amp; Conditions</a>
+    <a href="track-order.html">Track my order</a>
+  </nav>
+  <button class="m-burger" id="mBurger" type="button" aria-label="Open menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
+
+<div class="m-drawer" id="mDrawer" aria-hidden="true">
+  <div class="m-drawer-top">
+    <img src="images/aera-logo-black.png" class="logo" alt="AERA">
+    <button class="m-burger" id="mClose" type="button" aria-label="Close menu" style="display:inline-flex">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a href="index.html">Home</a>
+  <a href="shop.html">Shop</a>
+  <a href="about.html">About Us</a>
+  <a href="circle.html">AERA Circle</a>
+  <a href="reseller-terms.html">Reseller Terms &amp; Conditions</a>
+  <a href="privacy-notice.html">Privacy Notice</a>
+  <a href="track-order.html">Track my order</a>
+</div>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="lbl">AERA Circle</p>
+    <h1>Application Form for Resellers</h1>
+    <p>Thank you for your interest in becoming an AERA reseller. Tell us a little about yourself and how you would like to sell AERA products. If a question does not apply, write “N/A.” You may ask an AERA team member for assistance.</p>
+    <div class="doc-actions">
+      <a href="documents/AERA_Reseller_Application_Form.pdf" download="AERA_Reseller_Application_Form.pdf" class="doc-btn" target="_blank" rel="noopener">DOWNLOAD FORM (PDF)</a>
+      <a href="documents/AERA_Reseller_Terms_and_Conditions.pdf" download="AERA_Reseller_Terms_and_Conditions.pdf" class="doc-btn" target="_blank" rel="noopener">DOWNLOAD TERMS (PDF)</a>
+    </div>
+  </div>
+
+  <div class="notice-banner">
+    <strong>Important:</strong> Submitting this form does not guarantee approval. Please wait for AERA’s written approval and order confirmation before making a payment. Review our <a href="reseller-terms.html" target="_blank" rel="noopener" class="inline-link">AERA Reseller Terms &amp; Conditions</a> and <a href="privacy-notice.html" target="_blank" rel="noopener" class="inline-link">Privacy Notice</a> before applying.
+  </div>
+
+  <div class="success-card" id="successCard">
+    <p class="lbl">Application Submitted</p>
+    <h2>Thank you for applying to AERA Circle!</h2>
+    <div class="ref-pill" id="refCodeDisplay">AERA-RES-2026</div>
+    <p style="max-width:34rem;margin:.5rem auto 1.25rem;color:rgba(56,65,104,.82)">We have received your application and sent a confirmation to your email. Please wait for AERA’s written review and approval before making any payment.</p>
+    <div id="laterReminder" style="display:none;max-width:34rem;margin:0 auto 1.25rem;padding:.9rem 1.1rem;background:#faf9f7;border:1px solid var(--line);border-radius:12px;font-size:.9rem">
+      <strong>Verification Documents Reminder:</strong> Please send clear photos of your 2 valid IDs (front &amp; back) and 1 recent 2×2 profile photo via <a href="mailto:contactaeraofficial@gmail.com" class="inline-link">contactaeraofficial@gmail.com</a> or <a href="https://www.facebook.com/thisisaera" target="_blank" rel="noopener" class="inline-link">Facebook Messenger</a> with your reference code above.
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+      <a href="circle.html" class="btn">Back to AERA Circle</a>
+      <a href="documents/AERA_Reseller_Application_Form.pdf" download="AERA_Reseller_Application_Form.pdf" class="btn ghost">Download Official PDF Form</a>
+      <button type="button" class="btn ghost" onclick="triggerPrintDoc()">Print / Save Filed Copy</button>
+      <a href="documents/AERA_Reseller_Terms_and_Conditions.pdf" download="AERA_Reseller_Terms_and_Conditions.pdf" class="btn ghost">Terms &amp; Conditions (PDF)</a>
+    </div>
+  </div>
+
+  <form class="form-card" id="resellerApplyForm" novalidate>
+    <!-- SECTION A -->
+    <section class="sec">
+      <h2 class="sec-title"><span class="sec-badge">A</span> Applicant Information</h2>
+      <p class="sec-sub">Fields marked with <span class="req">*</span> are required.</p>
+      <div class="grid-2">
+        <div class="fld span-2">
+          <label class="fld-lbl" for="fullName">Full Name (Last Name, First Name, Middle Name) <span class="req">*</span></label>
+          <input id="fullName" type="text" placeholder="e.g. Dela Cruz, Maria Santos" required>
+        </div>
+        <div class="fld">
+          <label class="fld-lbl" for="mobileNumber">Mobile Number <span class="req">*</span></label>
+          <input id="mobileNumber" type="tel" placeholder="+63 9XX XXX XXXX" required>
+        </div>
+        <div class="fld">
+          <label class="fld-lbl" for="email">Email Address <span class="req">*</span></label>
+          <input id="email" type="email" placeholder="you@email.com" required>
+        </div>
+        <div class="fld span-2">
+          <label class="fld-lbl" for="currentAddress">Current Address <span class="req">*</span></label>
+          <textarea id="currentAddress" rows="2" placeholder="House/Unit No., Street, Barangay, City/Municipality, Province" required></textarea>
+        </div>
+        <div class="fld span-2">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <label class="fld-lbl" for="deliveryAddress">Delivery Address / Physical Selling Location <span class="req">*</span></label>
+            <label style="display:inline-flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer">
+              <input type="checkbox" id="sameAsCurrent" style="accent-color:var(--brown)"> Same as current address
+            </label>
+          </div>
+          <textarea id="deliveryAddress" rows="2" placeholder="Delivery address or physical selling location" required></textarea>
+        </div>
+        <div class="fld span-2">
+          <span class="fld-lbl">How would you prefer AERA to contact you? Check all that is applicable.</span>
+          <div class="check-grid cols-2">
+            <label class="opt"><input type="checkbox" name="contactChannels" value="SMS"><span>SMS</span></label>
+            <label class="opt"><input type="checkbox" name="contactChannels" value="Phone Call"><span>Phone Call</span></label>
+            <label class="opt"><input type="checkbox" name="contactChannels" value="Facebook Messenger"><span>Facebook Messenger</span></label>
+            <label class="opt"><input type="checkbox" name="contactChannels" value="Email"><span>Email</span></label>
+            <label class="opt"><input type="checkbox" name="contactChannels" value="Viber"><span>Viber</span></label>
+            <label class="opt"><input type="checkbox" name="contactChannels" value="Other" id="chkContactOther"><span>Other</span></label>
+          </div>
+          <div class="inline-extra" id="wrapContactOther">
+            <input id="contactChannelOther" type="text" placeholder="Please specify other preferred contact channel">
+          </div>
+        </div>
+        <div class="fld span-2">
+          <label class="fld-lbl" for="contactChannelDetails">Contact details for your preferred channel, if different from above</label>
+          <input id="contactChannelDetails" type="text" placeholder="For Facebook Messenger, please provide your profile name or link">
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION B -->
+    <section class="sec">
+      <h2 class="sec-title"><span class="sec-badge">B</span> Your Selling Plans</h2>
+      <p class="sec-sub">Tell us about your current business or where you plan to sell AERA products.</p>
+
+      <div class="fld">
+        <span class="fld-lbl">Do you currently sell products or operate a business? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="currentlySelling" value="yes" required><span>Yes</span></label>
+          <label class="opt"><input type="radio" name="currentlySelling" value="no" required><span>No, I am starting a new business</span></label>
+        </div>
+        <div class="inline-extra" id="wrapExistingShop">
+          <label class="fld-lbl" for="existingShopName" style="display:block;margin-bottom:.35rem">Shop or Business Name</label>
+          <input id="existingShopName" type="text" placeholder="Enter your shop or business name">
+        </div>
+      </div>
+
+      <div class="fld">
+        <label class="fld-lbl" for="currentProductsSold">What products do you currently sell, if any?</label>
+        <input id="currentProductsSold" type="text" placeholder="e.g. Fragrances, skincare, lifestyle items, or N/A">
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">Where do you plan to sell AERA products? Check all that is applicable.</span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Friends, family, or personal contacts"><span>To friends, family, or personal contacts</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Facebook"><span>Facebook</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Instagram"><span>Instagram</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="TikTok / TikTok Shop"><span>TikTok / TikTok Shop</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Shopee"><span>Shopee</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Lazada"><span>Lazada</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Own website"><span>Own website</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Physical shop, salon, or other establishment"><span>Physical shop, salon, or other establishment</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Bazaars, pop-ups, or events"><span>Bazaars, pop-ups, or events</span></label>
+          <label class="opt"><input type="checkbox" name="sellingChannels" value="Other" id="chkSellingOther"><span>Other</span></label>
+        </div>
+        <div class="inline-extra" id="wrapSellingOther">
+          <input id="sellingChannelOther" type="text" placeholder="Please specify other selling channel">
+        </div>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">Are you applying for yourself or on behalf of a registered business?</span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="applyingFor" value="self" checked><span>For myself</span></label>
+          <label class="opt"><input type="radio" name="applyingFor" value="business"><span>On behalf of a registered business</span></label>
+        </div>
+        <div class="inline-extra" id="wrapBusinessInfo" style="padding:1rem;border:1px solid var(--line);border-radius:12px;background:#faf9f7;margin-top:.75rem">
+          <div class="grid-2">
+            <div class="fld">
+              <label class="fld-lbl" for="registeredBusinessName">Registered business name</label>
+              <input id="registeredBusinessName" type="text" placeholder="Registered business name">
+            </div>
+            <div class="fld">
+              <label class="fld-lbl" for="businessRole">Your position or role</label>
+              <input id="businessRole" type="text" placeholder="e.g. Owner, Managing Partner, Buyer">
+            </div>
+          </div>
+          <label class="opt" style="margin-top:.75rem;background:#fff">
+            <input type="checkbox" id="businessAuthorized">
+            <span>I confirm that I am authorized to submit this application on behalf of the business.</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION C -->
+    <section class="sec">
+      <h2 class="sec-title"><span class="sec-badge">C</span> Preferred Reseller Tier</h2>
+      <p class="sec-sub">Reseller discounts are applied to AERA’s suggested retail prices. Minimum purchases refer to the net merchandise value after the reseller discount. Shipping is charged separately and does not count toward the minimum.</p>
+
+      <div class="tbl-scroll">
+        <table>
+          <thead><tr><th>Tier</th><th>Discount from SRP</th><th>Minimum Initial Order</th><th>Monthly Purchase Requirement</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Tier 1: AERA Member</strong></td><td>15%</td><td>Php 6,000</td><td>Php 6,000</td></tr>
+            <tr><td><strong>Tier 2: AERA Partner</strong></td><td>20%</td><td>Php 15,000</td><td>Php 15,000</td></tr>
+            <tr><td><strong>Tier 3: AERA Stockist</strong></td><td>30%</td><td>Php 25,000</td><td>Php 25,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">Which tier would you like to apply for? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="preferredTier" value="tier1" required><span>Tier 1 — ₱6,000 minimum net purchase</span></label>
+          <label class="opt"><input type="radio" name="preferredTier" value="tier2" required><span>Tier 2 — ₱15,000 minimum net purchase</span></label>
+          <label class="opt"><input type="radio" name="preferredTier" value="tier3" required><span>Tier 3 — ₱25,000 minimum net purchase</span></label>
+          <label class="opt"><input type="radio" name="preferredTier" value="assist" required><span>I would like assistance choosing a tier</span></label>
+        </div>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">When would you like to place your initial order? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="initialOrderTiming" value="As soon as my application is approved" required><span>As soon as my application is approved</span></label>
+          <label class="opt"><input type="radio" name="initialOrderTiming" value="Within the next two weeks" required><span>Within the next two weeks</span></label>
+          <label class="opt"><input type="radio" name="initialOrderTiming" value="Within the next month" required><span>Within the next month</span></label>
+          <label class="opt"><input type="radio" name="initialOrderTiming" value="Preferred date" id="radPrefDate" required><span>Preferred date</span></label>
+          <label class="opt"><input type="radio" name="initialOrderTiming" value="I would like to discuss this with AERA" required><span>I would like to discuss this with AERA</span></label>
+        </div>
+        <div class="inline-extra" id="wrapPrefDate">
+          <label class="fld-lbl" for="preferredOrderDate" style="display:block;margin-bottom:.35rem">Select preferred date</label>
+          <input id="preferredOrderDate" type="date">
+        </div>
+        <p class="hint">Your initial order must meet the selected tier’s minimum in one order. After the initial qualifying period, smaller orders may be combined to meet the monthly requirement, as explained in the <a href="reseller-terms.html" target="_blank" rel="noopener" class="inline-link">Reseller Terms &amp; Conditions</a>.</p>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">Which products are you interested in selling? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="Hair & Body Mists"><span>Hair &amp; Body Mists</span></label>
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="Body Serum"><span>Body Serum</span></label>
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="Tea Tree Soap"><span>Tea Tree Soap</span></label>
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="Triple Whitening Soap"><span>Triple Whitening Soap</span></label>
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="All available products"><span>All available products</span></label>
+          <label class="opt"><input type="checkbox" name="interestedProducts" value="I would like product guidance first"><span>I would like product guidance first</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION D -->
+    <section class="sec">
+      <h2 class="sec-title"><span class="sec-badge">D</span> Delivery and Support</h2>
+      <p class="sec-sub">Help us prepare the right fulfillment and onboarding support for your store.</p>
+
+      <div class="fld">
+        <span class="fld-lbl">How do you expect to receive your orders? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="deliveryExpectation" value="Delivery" required><span>Delivery</span></label>
+          <label class="opt"><input type="radio" name="deliveryExpectation" value="Pickup, if available" required><span>Pickup, if available</span></label>
+          <label class="opt"><input type="radio" name="deliveryExpectation" value="I would like to discuss the options" required><span>I would like to discuss the options</span></label>
+        </div>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">What assistance would help you get started? Select all that apply.</span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Product information"><span>Product information</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Choosing products and variants"><span>Choosing products and variants</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Understanding prices and reseller tiers"><span>Understanding prices and reseller tiers</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Taking and managing customer orders"><span>Taking and managing customer orders</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Creating social media content"><span>Creating social media content</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Using AERA-provided promotional materials"><span>Using AERA-provided promotional materials</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Selling through online marketplaces"><span>Selling through online marketplaces</span></label>
+          <label class="opt"><input type="checkbox" name="assistanceNeeded" value="Other" id="chkAssistOther"><span>Other</span></label>
+        </div>
+        <div class="inline-extra" id="wrapAssistOther">
+          <input id="assistanceOther" type="text" placeholder="Please specify other assistance needed">
+        </div>
+      </div>
+
+      <div class="fld">
+        <span class="fld-lbl">Will you need a reseller authorization letter for a selling platform? <span class="req">*</span></span>
+        <div class="check-grid cols-2">
+          <label class="opt"><input type="radio" name="needsAuthLetter" value="yes" id="radAuthYes" required><span>Yes (specify platform)</span></label>
+          <label class="opt"><input type="radio" name="needsAuthLetter" value="no" required><span>No</span></label>
+          <label class="opt"><input type="radio" name="needsAuthLetter" value="not_sure" required><span>Not sure yet</span></label>
+        </div>
+        <div class="inline-extra" id="wrapAuthPlatform">
+          <input id="authLetterPlatform" type="text" placeholder="Platform (e.g. Shopee, Lazada, TikTok Shop)">
+        </div>
+        <p class="hint">Authorization letters are issued separately after approval and verification of the relevant seller account details.</p>
+      </div>
+
+      <div class="fld">
+        <label class="fld-lbl" for="additionalNotes">Is there anything else you would like us to know, or any question you would like to ask?</label>
+        <textarea id="additionalNotes" rows="3" placeholder="Optional notes or questions"></textarea>
+      </div>
+    </section>
+
+    <!-- SECTION E -->
+    <section class="sec">
+      <h2 class="sec-title"><span class="sec-badge">E</span> Identity Verification and Profile Photo</h2>
+      <p class="sec-sub"><strong>Required for reseller verification.</strong> Please provide two valid IDs and one recent 2 × 2-inch profile photo.</p>
+
+      <div class="notice-banner" style="margin-bottom:1.1rem">
+        <p style="margin:0 0 .5rem"><strong>Applying on site?</strong> Bring both original IDs and your profile photo. An AERA team member will check your IDs, photograph the front and back where applicable, and return the originals to you immediately.</p>
+        <p style="margin:0 0 .5rem"><strong>Applying online?</strong> Upload clear images of both sides of each ID, where applicable, and a recent square profile photo below (or opt to send them after submitting).</p>
+        <p style="margin:0">AERA uses your ID images to verify your identity and your profile photo to personalize your private reseller account. If approved, you can sign in to see your profile, submit documents while they are retained, order balances, and progress toward your monthly purchase requirement. Access is limited to you and authorized personnel who need it for verification or account support. See our <a href="privacy-notice.html" target="_blank" rel="noopener" class="inline-link">Privacy Notice</a> for full details.</p>
+      </div>
+
+      <label class="opt" style="margin-bottom:1rem;background:#faf9f7">
+        <input type="checkbox" id="idSubmitLater">
+        <span><strong>I don’t have my ID / photo files ready on this device right now</strong> — I will submit them separately via email (<a href="mailto:contactaeraofficial@gmail.com" class="inline-link">contactaeraofficial@gmail.com</a>) or Facebook Messenger after submitting this form.</span>
+      </label>
+
+      <div id="uploadSection">
+        <div class="upload-grid">
+          <div class="up-box">
+            <strong>Valid ID #1 — Front <span class="req">*</span></strong>
+            <small>JPG, PNG, WebP, or PDF (max 5MB)</small>
+            <div class="up-pick">
+              <span class="up-pick-btn">Choose File</span>
+              <span class="up-pick-name">No file chosen</span>
+              <input type="file" accept="image/*,application/pdf" data-dock="id1_front" aria-label="Valid ID 1 Front">
+            </div>
+            <img class="up-prev" alt="Valid ID 1 Front preview">
+            <span class="up-status"></span>
+          </div>
+          <div class="up-box">
+            <strong>Valid ID #1 — Back <small>(if applicable)</small></strong>
+            <small>JPG, PNG, WebP, or PDF (max 5MB)</small>
+            <div class="up-pick">
+              <span class="up-pick-btn">Choose File</span>
+              <span class="up-pick-name">No file chosen</span>
+              <input type="file" accept="image/*,application/pdf" data-dock="id1_back" aria-label="Valid ID 1 Back">
+            </div>
+            <img class="up-prev" alt="Valid ID 1 Back preview">
+            <span class="up-status"></span>
+          </div>
+          <div class="up-box">
+            <strong>Valid ID #2 — Front <span class="req">*</span></strong>
+            <small>JPG, PNG, WebP, or PDF (max 5MB)</small>
+            <div class="up-pick">
+              <span class="up-pick-btn">Choose File</span>
+              <span class="up-pick-name">No file chosen</span>
+              <input type="file" accept="image/*,application/pdf" data-dock="id2_front" aria-label="Valid ID 2 Front">
+            </div>
+            <img class="up-prev" alt="Valid ID 2 Front preview">
+            <span class="up-status"></span>
+          </div>
+          <div class="up-box">
+            <strong>Valid ID #2 — Back <small>(if applicable)</small></strong>
+            <small>JPG, PNG, WebP, or PDF (max 5MB)</small>
+            <div class="up-pick">
+              <span class="up-pick-btn">Choose File</span>
+              <span class="up-pick-name">No file chosen</span>
+              <input type="file" accept="image/*,application/pdf" data-dock="id2_back" aria-label="Valid ID 2 Back">
+            </div>
+            <img class="up-prev" alt="Valid ID 2 Back preview">
+            <span class="up-status"></span>
+          </div>
+          <div class="up-box up-box--full">
+            <strong>Recent 2×2 Profile Photo <span class="req">*</span></strong>
+            <small>Square photo, JPG or PNG (max 5MB)</small>
+            <div class="up-pick">
+              <span class="up-pick-btn">Choose File</span>
+              <span class="up-pick-name">No file chosen</span>
+              <input type="file" accept="image/*" data-dock="profile_photo" aria-label="Recent 2x2 Profile Photo">
+            </div>
+            <img class="up-prev" alt="Profile Photo preview">
+            <span class="up-status"></span>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.05rem;margin:1.5rem 0 .6rem">Please read and check each statement before signing. <span class="req">*</span></h3>
+      <div class="consent-list">
+        <label class="opt"><input type="checkbox" id="cAccurate" required><span>I confirm that the information I provided is accurate to the best of my knowledge.</span></label>
+        <label class="opt"><input type="checkbox" id="cApproval" required><span>I understand that AERA will notify me of its decision and that I may represent myself as an authorized AERA reseller only after approval.</span></label>
+        <label class="opt"><input type="checkbox" id="cTerms" required><span>I have reviewed and agree to the <a href="reseller-terms.html" target="_blank" rel="noopener" class="inline-link">AERA Reseller Terms &amp; Conditions</a>. I understand the initial and monthly purchase requirements for my tier, including the rules for counting purchases, the grace period, and inactive status.</span></label>
+        <label class="opt"><input type="checkbox" id="cConfirmPay" required><span>I understand that AERA will confirm the products, quantities, amounts payable, and delivery arrangements separately before I make a payment.</span></label>
+        <label class="opt"><input type="checkbox" id="cIdReq" required><span>I understand that I must provide two valid IDs and a recent 2 × 2-inch profile photo to complete verification.</span></label>
+        <label class="opt"><input type="checkbox" id="cPrivacy" required><span>I have received or been given access to the <a href="privacy-notice.html" target="_blank" rel="noopener" class="inline-link">AERA Privacy Notice</a>.</span></label>
+      </div>
+
+      <p class="fld-lbl" style="margin:1rem 0 .4rem">Required for reseller verification <span class="req">*</span></p>
+      <label class="opt">
+        <input type="checkbox" id="cIdConsent" required>
+        <span>I consent to AERA photographing or receiving images of my IDs and using the information needed to verify my identity. I have been informed who may access the images, how long AERA will keep them, and how to withdraw my consent or exercise my privacy rights (see our <a href="privacy-notice.html" target="_blank" rel="noopener" class="inline-link">Privacy Notice</a>). I can contact <a href="mailto:contactaeraofficial@gmail.com" class="inline-link">contactaeraofficial@gmail.com</a> with any questions or requests.</span>
+      </label>
+
+      <div class="sig-box">
+        <div class="grid-2">
+          <div class="fld">
+            <label class="fld-lbl" for="printedName">Applicant’s printed name <span class="req">*</span></label>
+            <input id="printedName" type="text" placeholder="Full printed name" required>
+          </div>
+          <div class="fld">
+            <label class="fld-lbl" for="signedDate">Date <span class="req">*</span></label>
+            <input id="signedDate" type="date" required>
+          </div>
+          <div class="fld span-2">
+            <label class="fld-lbl">Applicant’s signature (draw with mouse/touch or upload image) <span class="req">*</span></label>
+            <div class="sig-tabs" role="tablist" aria-label="Signature method">
+              <button type="button" class="sig-tab active" data-sig-mode="draw">Draw Signature</button>
+              <button type="button" class="sig-tab" data-sig-mode="upload">Upload Signature Image</button>
+            </div>
+            <div id="sigDrawPanel">
+              <div class="sig-pad-wrap">
+                <canvas id="sigCanvas" class="sig-canvas" aria-label="Draw your signature"></canvas>
+              </div>
+              <div class="sig-pad-foot">
+                <span>Sign inside the box using your mouse, trackpad, or finger.</span>
+                <button type="button" class="sig-clear" id="sigClearBtn">Clear</button>
+              </div>
+            </div>
+            <div id="sigUploadPanel" style="display:none">
+              <div class="sig-upload-box">
+                <div class="up-row">
+                  <button type="button" class="up-pick" id="sigPickBtn">Choose Signature Image</button>
+                  <span class="up-name" id="sigFileName">No file chosen</span>
+                </div>
+                <input type="file" id="sigFileInput" accept="image/jpeg,image/png,image/webp">
+                <small style="display:block;margin-top:.35rem;color:rgba(56,65,104,.65)">JPG, PNG, or WebP (max 5MB)</small>
+                <img id="sigPreview" class="sig-preview" alt="Uploaded signature preview">
+              </div>
+            </div>
+          </div>
+        </div>
+        <label class="opt" style="margin-top:.85rem;background:#fff">
+          <input type="checkbox" id="eSigConsent" required>
+          <span>I confirm that this drawn or uploaded signature serves as my electronic signature for this application.</span>
+        </label>
+      </div>
+
+      <div class="submit-bar">
+        <p class="form-err" id="formErr" role="alert"></p>
+        <button type="submit" class="btn" id="submitBtn">Submit Reseller Application</button>
+      </div>
+    </section>
+  </form>
+</main>
+
+<!-- PRINT / PDF DOCUMENT VIEW (Matches the 3-page official PDF layout 100%) -->
+<div class="doc-print-view" id="docPrintView" aria-hidden="true">
+  <!-- PAGE 1 -->
+  <div class="print-page print-page-1">
+    <img src="images/aera-logo-black.png" class="p-logo" alt="AERA">
+    <h1 class="p-title">Reseller Application Form</h1>
+    <p class="p-intro">Thank you for your interest in becoming an AERA reseller. Tell us a little about yourself and how you would like to sell AERA products. Please write clearly or select the applicable answers. If a question does not apply, write “N/A.” You may ask an AERA team member for assistance. <strong>Submitting this form does not guarantee approval. Please wait for AERA’s written approval and order confirmation before making a payment.</strong></p>
+
+    <h2 class="p-sec-head">A. Applicant Information</h2>
+    <table class="p-table">
+      <tr>
+        <td colspan="2">
+          <div class="p-lbl">*Full Name (Last Name, First Name, Middle Name):</div>
+          <div class="p-line" id="pvFullName">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="width:50%">
+          <div class="p-lbl">*Mobile Number:</div>
+          <div class="p-line" id="pvMobile">&nbsp;</div>
+        </td>
+        <td style="width:50%">
+          <div class="p-lbl">*Email Address:</div>
+          <div class="p-line" id="pvEmail">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div class="p-lbl">*Current Address:</div>
+          <div class="p-line" id="pvAddress1">&nbsp;</div>
+          <div class="p-line" id="pvAddress2" style="margin-top:4px">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div class="p-lbl">*Delivery Address/Physical Selling Location (Write “Same as above” if same with current address):</div>
+          <div class="p-line" id="pvDelivery1">&nbsp;</div>
+          <div class="p-line" id="pvDelivery2" style="margin-top:4px">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="width:50%">
+          <div class="p-lbl">How would you prefer AERA to contact you?</div>
+          <div class="p-sub">Check all that is applicable.</div>
+          <div class="p-chk-grid">
+            <div class="p-chk"><span class="p-box" id="pvContactSms"></span> SMS</div>
+            <div class="p-chk"><span class="p-box" id="pvContactPhone"></span> Phone Call</div>
+            <div class="p-chk"><span class="p-box" id="pvContactMessenger"></span> Facebook Messenger</div>
+            <div class="p-chk"><span class="p-box" id="pvContactEmail"></span> Email</div>
+            <div class="p-chk"><span class="p-box" id="pvContactViber"></span> Viber</div>
+            <div class="p-chk"><span class="p-box" id="pvContactOther"></span> Other: <span class="p-inline-line" style="min-width:140px" id="pvContactOtherTxt"></span></div>
+          </div>
+        </td>
+        <td style="width:50%">
+          <div class="p-lbl">Contact details for your preferred channel, if different from above. For Facebook Messenger, please provide your profile name or link.</div>
+          <div class="p-line" id="pvContactDetails1" style="margin-top:14px">&nbsp;</div>
+          <div class="p-line" id="pvContactDetails2" style="margin-top:4px">&nbsp;</div>
+        </td>
+      </tr>
+    </table>
+
+    <h2 class="p-sec-head">B. Your Selling Plans</h2>
+    <table class="p-table">
+      <tr>
+        <td style="width:55%">
+          <div class="p-lbl">*Do you currently sell products or operate a business?</div>
+          <div style="margin-top:6px">
+            <div class="p-chk"><span class="p-box" id="pvSellingYes"></span> Yes (Shop or Business Name: <span class="p-inline-line" style="min-width:170px" id="pvShopName"></span>)</div>
+            <div class="p-chk" style="margin-top:3px"><span class="p-box" id="pvSellingNo"></span> No, I am starting a new business</div>
+          </div>
+        </td>
+        <td style="width:45%">
+          <div class="p-lbl">What products do you currently sell, if any?</div>
+          <div class="p-line" id="pvCurrentProducts1" style="margin-top:14px">&nbsp;</div>
+          <div class="p-line" id="pvCurrentProducts2" style="margin-top:4px">&nbsp;</div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="p-lbl">How would you prefer AERA to contact you?</div>
+          <div class="p-sub">Check all that is applicable.</div>
+          <div class="p-chk-grid" style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvChanContacts"></span> To friends, family, or personal contacts</div>
+            <div class="p-chk"><span class="p-box" id="pvChanFb"></span> Facebook</div>
+            <div class="p-chk"><span class="p-box" id="pvChanIg"></span> Instagram</div>
+            <div class="p-chk"><span class="p-box" id="pvChanTiktok"></span> TikTok / TikTok Shop</div>
+            <div class="p-chk"><span class="p-box" id="pvChanShopee"></span> Shopee</div>
+            <div class="p-chk"><span class="p-box" id="pvChanLazada"></span> Lazada</div>
+            <div class="p-chk"><span class="p-box" id="pvChanWeb"></span> Own website</div>
+            <div class="p-chk"><span class="p-box" id="pvChanPhysical"></span> Physical shop, salon, or other establishment</div>
+            <div class="p-chk"><span class="p-box" id="pvChanEvents"></span> Bazaars, pop-ups, or events</div>
+            <div class="p-chk"><span class="p-box" id="pvChanOther"></span> Other: <span class="p-inline-line" style="min-width:140px" id="pvChanOtherTxt"></span></div>
+          </div>
+        </td>
+        <td>
+          <div class="p-lbl">Are you applying for yourself or on behalf of a registered business?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvAppSelf"></span> For myself</div>
+            <div class="p-chk" style="margin-top:3px"><span class="p-box" id="pvAppBiz"></span> On behalf of a registered business</div>
+          </div>
+          <div style="margin-top:8px;font-style:italic;font-size:8pt">If you’re applying on behalf of a business:</div>
+          <div style="margin-top:4px">
+            Registered business name: <span class="p-inline-line" style="min-width:160px" id="pvBizName"></span>
+          </div>
+          <div style="margin-top:4px">
+            Your position or role: <span class="p-inline-line" style="min-width:160px" id="pvBizRole"></span>
+          </div>
+          <div class="p-chk" style="margin-top:8px">
+            <span class="p-box" id="pvBizAuth"></span> I confirm that I am authorized to submit this application on behalf of the business.
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="print-page print-page-2">
+    <h2 class="p-sec-head" style="margin-top:0">C. Preferred Reseller Tier</h2>
+    <p class="p-text">Reseller discounts are applied to AERA’s suggested retail prices. Minimum purchases refer to the net merchandise value after the reseller discount. Shipping is charged separately and does not count toward the minimum.</p>
+
+    <table class="p-table p-navy-table">
+      <thead>
+        <tr>
+          <th style="width:25%">Tier</th>
+          <th style="width:20%">Discount from SRP</th>
+          <th style="width:27%">Minimum Initial Order</th>
+          <th style="width:28%">Monthly Purchase Requirement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tier 1: AERA Member</td>
+          <td>15%</td>
+          <td>Php 6,000</td>
+          <td>Php 6,000</td>
+        </tr>
+        <tr>
+          <td>Tier 2: AERA Partner</td>
+          <td>20%</td>
+          <td>Php 15,000</td>
+          <td>Php 15,000</td>
+        </tr>
+        <tr>
+          <td>Tier 3: AERA Stockist</td>
+          <td>30%</td>
+          <td>Php 25,000</td>
+          <td>Php 25,000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="p-table" style="margin-top:6px">
+      <tr>
+        <td style="width:50%">
+          <div class="p-lbl">*Which tier would you like to apply for?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvTier1"></span> Tier 1 — ₱6,000 minimum net purchase</div>
+            <div class="p-chk"><span class="p-box" id="pvTier2"></span> Tier 2 — ₱15,000 minimum net purchase</div>
+            <div class="p-chk"><span class="p-box" id="pvTier3"></span> Tier 3 — ₱25,000 minimum net purchase</div>
+            <div class="p-chk"><span class="p-box" id="pvTierAssist"></span> I would like assistance choosing a tier</div>
+          </div>
+        </td>
+        <td style="width:50%">
+          <div class="p-lbl">*When would you like to place your initial order?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvTimingApproved"></span> As soon as my application is approved</div>
+            <div class="p-chk"><span class="p-box" id="pvTiming2weeks"></span> Within the next two weeks</div>
+            <div class="p-chk"><span class="p-box" id="pvTimingMonth"></span> Within the next month</div>
+            <div class="p-chk"><span class="p-box" id="pvTimingPref"></span> Preferred date: <span class="p-inline-line" style="min-width:140px" id="pvPrefDate"></span></div>
+            <div class="p-chk"><span class="p-box" id="pvTimingDiscuss"></span> I would like to discuss this with AERA</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <p class="p-text" style="margin:6px 0">Your initial order must meet the selected tier’s minimum in one order. After the initial qualifying period, smaller orders may be combined to meet the monthly requirement, as explained in the Reseller Terms &amp; Conditions.</p>
+
+    <table class="p-table">
+      <tr>
+        <td>
+          <div class="p-lbl">*Which products are you interested in selling?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvProdMist"></span> Hair &amp; Body Mists</div>
+            <div class="p-chk"><span class="p-box" id="pvProdSerum"></span> Body Serum</div>
+            <div class="p-chk"><span class="p-box" id="pvProdTeaTree"></span> Tea Tree Soap</div>
+            <div class="p-chk"><span class="p-box" id="pvProdWhite"></span> Triple Whitening Soap</div>
+            <div class="p-chk"><span class="p-box" id="pvProdAll"></span> All available products</div>
+            <div class="p-chk"><span class="p-box" id="pvProdGuide"></span> I would like product guidance first</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <h2 class="p-sec-head" style="margin-top:8px">D. Delivery and Support</h2>
+    <table class="p-table">
+      <tr>
+        <td style="width:40%">
+          <div class="p-lbl">*How do you expect to receive your orders?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvDelDelivery"></span> Delivery</div>
+            <div class="p-chk"><span class="p-box" id="pvDelPickup"></span> Pickup, if available</div>
+            <div class="p-chk"><span class="p-box" id="pvDelDiscuss"></span> I would like to discuss the options</div>
+          </div>
+        </td>
+        <td style="width:60%">
+          <div class="p-lbl">*What assistance would help you get started? Select all that apply.</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvAsstProd"></span> Product information</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstVariants"></span> Choosing products and variants</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstTiers"></span> Understanding prices and reseller tiers</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstOrders"></span> Taking and managing customer orders</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstContent"></span> Creating social media content</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstPromo"></span> Using AERA-provided promotional materials</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstMkt"></span> Selling through online marketplaces</div>
+            <div class="p-chk"><span class="p-box" id="pvAsstOther"></span> Other: <span class="p-inline-line" style="min-width:170px" id="pvAsstOtherTxt"></span></div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="p-lbl">*Will you need a reseller authorization letter for a selling platform?</div>
+          <div style="margin-top:4px">
+            <div class="p-chk"><span class="p-box" id="pvAuthYes"></span> Yes — Platform: <span class="p-inline-line" style="min-width:80px" id="pvAuthPlatform"></span></div>
+            <div class="p-chk"><span class="p-box" id="pvAuthNo"></span> No</div>
+            <div class="p-chk"><span class="p-box" id="pvAuthNotSure"></span> Not sure yet</div>
+          </div>
+          <div style="margin-top:6px;font-size:7.5pt;color:#334155;line-height:1.25">Authorization letters are issued separately after approval and verification of the relevant seller account details.</div>
+        </td>
+        <td>
+          <div class="p-lbl">Is there anything else you would like us to know, or any question you would like to ask?</div>
+          <div class="p-line" id="pvNotes1" style="margin-top:14px">&nbsp;</div>
+          <div class="p-line" id="pvNotes2" style="margin-top:4px">&nbsp;</div>
+        </td>
+      </tr>
+    </table>
+
+    <h2 class="p-sec-head" style="margin-top:8px">E. Identity Verification and Profile Photo</h2>
+    <p style="margin:2px 0 3px"><strong>Required for reseller verification</strong></p>
+    <p class="p-text" style="margin-bottom:4px">Please provide two valid IDs and one recent 2 × 2-inch profile photo.</p>
+    <p class="p-text" style="margin-bottom:4px"><strong>Applying on site?</strong> Bring both original IDs and your profile photo. An AERA team member will check your IDs, photograph the front and back where applicable, and return the originals to you immediately.</p>
+    <p class="p-text" style="margin-bottom:0"><strong>Applying online?</strong> AERA will provide instructions for securely submitting clear images of both sides of each ID, where applicable, and a recent square profile photo.</p>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="print-page print-page-3">
+    <p class="p-text" style="margin:0 0 10px">AERA uses your ID images to verify your identity and your profile photo to personalize your private reseller account. If approved, you can sign in to see your profile, submit documents while they are retained, order balances, and progress toward your monthly purchase requirement. Access is limited to you and authorized personnel who need it for verification or account support.</p>
+
+    <p style="margin:0 0 8px"><em><strong>Please read and check each statement before signing.</strong></em></p>
+    <div class="p-chk" style="margin-bottom:7px"><span class="p-box" id="pvCAccept"></span> I confirm that the information I provided is accurate to the best of my knowledge.</div>
+    <div class="p-chk" style="margin-bottom:7px"><span class="p-box" id="pvCApproval"></span> I understand that AERA will notify me of its decision and that I may represent myself as an authorized AERA reseller only after approval.</div>
+    <div class="p-chk" style="margin-bottom:7px"><span class="p-box" id="pvCTerms"></span> I have reviewed and agree to the AERA Reseller Terms &amp; Conditions. I understand the initial and monthly purchase requirements for my tier, including the rules for counting purchases, the grace period, and inactive status.</div>
+    <div class="p-chk" style="margin-bottom:7px"><span class="p-box" id="pvCPay"></span> I understand that AERA will confirm the products, quantities, amounts payable, and delivery arrangements separately before I make a payment.</div>
+    <div class="p-chk" style="margin-bottom:7px"><span class="p-box" id="pvCIdReq"></span> I understand that I must provide two valid IDs and a recent 2 × 2-inch profile photo to complete verification.</div>
+    <div class="p-chk" style="margin-bottom:12px"><span class="p-box" id="pvCPrivacy"></span> I have received or been given access to the AERA Privacy Notice.</div>
+
+    <p style="margin:0 0 6px"><em><strong>Required for reseller verification</strong></em></p>
+    <div class="p-chk" style="margin-bottom:20px;line-height:1.4"><span class="p-box" id="pvCIdConsent"></span> I consent to AERA photographing or receiving images of my IDs and using the information needed to verify my identity. I have been informed who may access the images, how long AERA will keep them, and how to withdraw my consent or exercise my privacy rights. I can contact contactaeraofficial@gmail.com with any questions or requests.</div>
+
+    <div style="margin-top:24px;line-height:2.4">
+      <div>Applicant’s printed name <span class="p-inline-line" style="min-width:380px" id="pvPrintedName"></span></div>
+      <div style="position:relative">Applicant’s signature <span class="p-inline-line" style="min-width:408px" id="pvSigLine"><img id="pvSigImg" style="display:none;max-height:36px;vertical-align:middle;margin-left:8px" alt="Signature"><span id="pvSigTyped"></span></span></div>
+      <div>Date <span class="p-inline-line" style="min-width:480px" id="pvSignedDate"></span></div>
+    </div>
+
+    <p style="margin:24px 0 8px"><em><strong>For online applications, type your full name in the signature field and check the statement below.</strong></em></p>
+    <div class="p-chk"><span class="p-box" id="pvCESig"></span> I intend my typed name to serve as my electronic signature for this application.</div>
+  </div>
+</div>
+
+<footer class="contact">
+  <div class="ct-bottom">
+    <span>&#169; 2026 AERA. All rights reserved.</span>
+    <nav>
+      <a href="privacy-notice.html">Privacy Notice</a>
+      <a href="shipping-delivery.html">Shipping &amp; Delivery</a>
+      <a href="reseller-terms.html">Reseller Terms &amp; Conditions</a>
+      <a href="about.html">About Us</a>
+      <a href="circle.html">AERA Circle</a>
+      <a href="index.html#faq">FAQs</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var SUPA_URL = 'https://vhyveinrqamzycixhjsu.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoeXZlaW5ycWFtenljaXhoanN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDk3ODUsImV4cCI6MjEwODkyNTc4NX0.dQDb_5JD7ZUstWoOMdeDWVOynQ_ut9_mNu8yCO5XmPE';
+  var API = SUPA_URL + '/functions/v1/aera-api';
+
+  // Mobile drawer
+  var b = document.getElementById('mBurger'), c = document.getElementById('mClose'), d = document.getElementById('mDrawer');
+  if(b && d) b.onclick = function(){ d.classList.add('open'); d.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; };
+  if(c && d) c.onclick = function(){ d.classList.remove('open'); d.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+
+  // Default date to today
+  var dateInput = document.getElementById('signedDate');
+  if(dateInput && !dateInput.value){
+    var now = new Date();
+    dateInput.value = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  }
+
+  // Same as current address shortcut
+  var sameChk = document.getElementById('sameAsCurrent');
+  var curAddr = document.getElementById('currentAddress');
+  var delAddr = document.getElementById('deliveryAddress');
+  if(sameChk && curAddr && delAddr){
+    sameChk.addEventListener('change', function(){
+      if(sameChk.checked){
+        delAddr.value = curAddr.value;
+      }
+    });
+    curAddr.addEventListener('input', function(){
+      if(sameChk.checked) delAddr.value = curAddr.value;
+    });
+  }
+
+  // Conditional field toggles
+  function wireToggle(triggerEl, wrapEl, checkFn){
+    if(!triggerEl || !wrapEl) return;
+    var update = function(){ wrapEl.classList.toggle('show', checkFn()); };
+    triggerEl.addEventListener('change', update);
+    update();
+  }
+  wireToggle(document.getElementById('chkContactOther'), document.getElementById('wrapContactOther'), function(){ return document.getElementById('chkContactOther').checked; });
+  wireToggle(document.getElementById('chkSellingOther'), document.getElementById('wrapSellingOther'), function(){ return document.getElementById('chkSellingOther').checked; });
+  wireToggle(document.getElementById('chkAssistOther'), document.getElementById('wrapAssistOther'), function(){ return document.getElementById('chkAssistOther').checked; });
+
+  document.querySelectorAll('input[name="currentlySelling"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      document.getElementById('wrapExistingShop').classList.toggle('show', this.value === 'yes');
+    });
+  });
+  document.querySelectorAll('input[name="applyingFor"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      document.getElementById('wrapBusinessInfo').classList.toggle('show', this.value === 'business');
+    });
+  });
+  document.querySelectorAll('input[name="initialOrderTiming"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      document.getElementById('wrapPrefDate').classList.toggle('show', document.getElementById('radPrefDate').checked);
+    });
+  });
+  document.querySelectorAll('input[name="needsAuthLetter"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      document.getElementById('wrapAuthPlatform').classList.toggle('show', document.getElementById('radAuthYes').checked);
+    });
+  });
+
+  var idLaterChk = document.getElementById('idSubmitLater');
+  var uploadSec = document.getElementById('uploadSection');
+  if(idLaterChk && uploadSec){
+    idLaterChk.addEventListener('change', function(){
+      uploadSec.style.opacity = idLaterChk.checked ? '0.5' : '1';
+    });
+  }
+
+  // Image resize/read helper
+  function fileToDataUrl(file){
+    return new Promise(function(resolve, reject){
+      if(file.size > 5 * 1024 * 1024){
+        reject(new Error(file.name + ' is larger than 5MB.'));
+        return;
+      }
+      if(file.type === 'application/pdf' || file.size <= 900 * 1024){
+        var reader = new FileReader();
+        reader.onload = function(){ resolve(reader.result); };
+        reader.onerror = function(){ reject(new Error('Failed to read ' + file.name)); };
+        reader.readAsDataURL(file);
+        return;
+      }
+      // Compress large images client-side so upload is fast on mobile
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function(){
+        URL.revokeObjectURL(url);
+        var maxDim = 1600;
+        var w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = function(){
+        URL.revokeObjectURL(url);
+        reject(new Error('Invalid image file: ' + file.name));
+      };
+      img.src = url;
+    });
+  }
+
+  var sigMode = 'draw';
+  var sigHasInk = false;
+  var pendingSigFile = null;
+  var sigCanvas = document.getElementById('sigCanvas');
+  var sigCtx = sigCanvas ? sigCanvas.getContext('2d') : null;
+
+  function resizeSigCanvas(){
+    if(!sigCanvas || !sigCtx) return;
+    var rect = sigCanvas.getBoundingClientRect();
+    if(!rect.width || !rect.height) return;
+    var dpr = Math.max(window.devicePixelRatio || 1, 1);
+    var snapshot = sigHasInk ? sigCanvas.toDataURL('image/png') : null;
+    sigCanvas.width = Math.round(rect.width * dpr);
+    sigCanvas.height = Math.round(rect.height * dpr);
+    sigCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sigCtx.fillStyle = '#ffffff';
+    sigCtx.fillRect(0, 0, rect.width, rect.height);
+    sigCtx.strokeStyle = '#1f2544';
+    sigCtx.lineWidth = 2.2;
+    sigCtx.lineCap = 'round';
+    sigCtx.lineJoin = 'round';
+    if(snapshot){
+      var img = new Image();
+      img.onload = function(){ sigCtx.drawImage(img, 0, 0, rect.width, rect.height); };
+      img.src = snapshot;
+    }
+  }
+  resizeSigCanvas();
+  window.addEventListener('resize', resizeSigCanvas);
+
+  if(sigCanvas && sigCtx){
+    var drawing = false;
+    var lastPt = null;
+    function getPt(e){
+      var r = sigCanvas.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+    sigCanvas.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      sigCanvas.setPointerCapture(e.pointerId);
+      drawing = true;
+      lastPt = getPt(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(lastPt.x, lastPt.y);
+      sigCtx.lineTo(lastPt.x + 0.01, lastPt.y + 0.01);
+      sigCtx.stroke();
+      sigHasInk = true;
+    });
+    sigCanvas.addEventListener('pointermove', function(e){
+      if(!drawing) return;
+      e.preventDefault();
+      var pt = getPt(e);
+      sigCtx.beginPath();
+      sigCtx.moveTo(lastPt.x, lastPt.y);
+      sigCtx.lineTo(pt.x, pt.y);
+      sigCtx.stroke();
+      lastPt = pt;
+      sigHasInk = true;
+    });
+    function stopDraw(){ drawing = false; lastPt = null; }
+    sigCanvas.addEventListener('pointerup', stopDraw);
+    sigCanvas.addEventListener('pointercancel', stopDraw);
+  }
+
+  document.getElementById('sigClearBtn').addEventListener('click', function(){
+    if(!sigCanvas || !sigCtx) return;
+    var rect = sigCanvas.getBoundingClientRect();
+    sigCtx.fillStyle = '#ffffff';
+    sigCtx.fillRect(0, 0, rect.width || sigCanvas.width, rect.height || sigCanvas.height);
+    sigHasInk = false;
+  });
+
+  document.querySelectorAll('[data-sig-mode]').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      sigMode = tab.dataset.sigMode;
+      document.querySelectorAll('[data-sig-mode]').forEach(function(t){
+        t.classList.toggle('active', t === tab);
+      });
+      document.getElementById('sigDrawPanel').style.display = sigMode === 'draw' ? '' : 'none';
+      document.getElementById('sigUploadPanel').style.display = sigMode === 'upload' ? '' : 'none';
+      if(sigMode === 'draw') resizeSigCanvas();
+    });
+  });
+
+  document.getElementById('sigPickBtn').addEventListener('click', function(){
+    document.getElementById('sigFileInput').click();
+  });
+  document.getElementById('sigFileInput').addEventListener('change', function(){
+    var f = this.files && this.files[0];
+    var nameEl = document.getElementById('sigFileName');
+    var prevEl = document.getElementById('sigPreview');
+    if(!f){
+      pendingSigFile = null;
+      nameEl.textContent = 'No file chosen';
+      prevEl.style.display = 'none';
+      return;
+    }
+    if(f.size > 5 * 1024 * 1024){
+      pendingSigFile = null;
+      this.value = '';
+      nameEl.textContent = 'File too large (max 5MB)';
+      prevEl.style.display = 'none';
+      return;
+    }
+    pendingSigFile = f;
+    nameEl.textContent = f.name;
+    prevEl.src = URL.createObjectURL(f);
+    prevEl.style.display = 'block';
+  });
+
+  var pendingFiles = {};
+  document.querySelectorAll('input[type="file"][data-dock]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var key = inp.dataset.dock;
+      var box = inp.closest('.up-box');
+      var prev = box.querySelector('.up-prev');
+      var st = box.querySelector('.up-status');
+      var nameEl = box.querySelector('.up-pick-name');
+      var f = inp.files && inp.files[0];
+      if(!f){
+        delete pendingFiles[key];
+        prev.classList.remove('show');
+        st.textContent = '';
+        if(nameEl) nameEl.textContent = 'No file chosen';
+        return;
+      }
+      if(f.size > 5 * 1024 * 1024){
+        st.style.color = 'var(--danger)';
+        st.textContent = 'Max 5MB allowed';
+        if(nameEl) nameEl.textContent = 'No file chosen';
+        inp.value = '';
+        delete pendingFiles[key];
+        return;
+      }
+      pendingFiles[key] = f;
+      if(nameEl) nameEl.textContent = f.name;
+      st.style.color = 'var(--ok)';
+      st.textContent = 'Ready to upload';
+      if(f.type.indexOf('image/') === 0){
+        prev.src = URL.createObjectURL(f);
+        prev.classList.add('show');
+      } else {
+        prev.classList.remove('show');
+      }
+    });
+  });
+
+  function getCheckedValues(name){
+    return Array.prototype.slice.call(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function(x){ return x.value; });
+  }
+  function getRadioValue(name){
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  var form = document.getElementById('resellerApplyForm');
+  var errEl = document.getElementById('formErr');
+  var btn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    errEl.textContent = '';
+
+    var fullName = document.getElementById('fullName').value.trim();
+    var mobileNumber = document.getElementById('mobileNumber').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var currentAddress = document.getElementById('currentAddress').value.trim();
+    var deliveryAddress = document.getElementById('deliveryAddress').value.trim();
+    var currentlySelling = getRadioValue('currentlySelling');
+    var preferredTier = getRadioValue('preferredTier');
+    var initialOrderTiming = getRadioValue('initialOrderTiming');
+    var interestedProducts = getCheckedValues('interestedProducts');
+    var deliveryExpectation = getRadioValue('deliveryExpectation');
+    var needsAuthLetter = getRadioValue('needsAuthLetter');
+    var applyingFor = getRadioValue('applyingFor') || 'self';
+    var printedName = document.getElementById('printedName').value.trim();
+    var signatureName = printedName;
+    var signedDate = document.getElementById('signedDate').value.trim();
+    var eSigConsent = document.getElementById('eSigConsent').checked;
+
+    if(!fullName || !mobileNumber || !email || email.indexOf('@') < 1 || !currentAddress || !deliveryAddress){
+      errEl.textContent = 'Please fill in all required fields in Section A (Applicant Information).';
+      return;
+    }
+    if(!currentlySelling){
+      errEl.textContent = 'Please indicate if you currently sell products or operate a business in Section B.';
+      return;
+    }
+    if(applyingFor === 'business' && !document.getElementById('businessAuthorized').checked){
+      errEl.textContent = 'Please confirm that you are authorized to apply on behalf of the registered business in Section B.';
+      return;
+    }
+    if(!preferredTier || !initialOrderTiming || !interestedProducts.length){
+      errEl.textContent = 'Please select your preferred tier, initial order timing, and interested products in Section C.';
+      return;
+    }
+    if(!deliveryExpectation || !needsAuthLetter){
+      errEl.textContent = 'Please complete the required delivery and authorization letter questions in Section D.';
+      return;
+    }
+
+    var idSubmitLater = document.getElementById('idSubmitLater').checked;
+    if(!idSubmitLater && (!pendingFiles.id1_front || !pendingFiles.id2_front || !pendingFiles.profile_photo)){
+      errEl.textContent = 'Please upload Valid ID #1 (Front), Valid ID #2 (Front), and your 2×2 Profile Photo, or check the option to submit them separately.';
+      return;
+    }
+
+    var consents = {
+      accurate: document.getElementById('cAccurate').checked,
+      approvalOnly: document.getElementById('cApproval').checked,
+      termsAgreed: document.getElementById('cTerms').checked,
+      confirmBeforePay: document.getElementById('cConfirmPay').checked,
+      idRequirement: document.getElementById('cIdReq').checked,
+      privacyNotice: document.getElementById('cPrivacy').checked,
+      idConsent: document.getElementById('cIdConsent').checked
+    };
+    if(!Object.keys(consents).every(function(k){ return consents[k]; })){
+      errEl.textContent = 'Please check all required confirmation and consent boxes in Section E.';
+      return;
+    }
+    if(!printedName || !signedDate || !eSigConsent){
+      errEl.textContent = 'Please complete your printed name, date, and e-signature confirmation in Section E.';
+      return;
+    }
+    if(sigMode === 'draw' && !sigHasInk){
+      errEl.textContent = 'Please draw your signature in Section E (or switch to Upload Signature Image).';
+      return;
+    }
+    if(sigMode === 'upload' && !pendingSigFile){
+      errEl.textContent = 'Please upload your signature image in Section E (or switch to Draw Signature).';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting application…';
+
+    try {
+      var tempId = 'app-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+      var idDocPaths = {};
+      var profilePhotoPath = null;
+
+      var uploadKeys = Object.keys(pendingFiles);
+      if(uploadKeys.length && !idSubmitLater){
+        btn.textContent = 'Uploading verification files…';
+        for(var i = 0; i < uploadKeys.length; i++){
+          var key = uploadKeys[i];
+          var dataUrl = await fileToDataUrl(pendingFiles[key]);
+          var upRes = await fetch(API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+            body: JSON.stringify({
+              action: 'upload-reseller-doc',
+              tempId: tempId,
+              docKey: key,
+              dataUrl: dataUrl
+            })
+          });
+          var upJson = await upRes.json();
+          if(!upRes.ok) throw new Error(upJson.error || 'Failed to upload ' + key);
+          if(key === 'profile_photo') profilePhotoPath = upJson.path;
+          else idDocPaths[key] = upJson.path;
+        }
+      }
+
+      btn.textContent = 'Uploading signature…';
+      var sigDataUrl = sigMode === 'draw' ? sigCanvas.toDataURL('image/png') : await fileToDataUrl(pendingSigFile);
+      var sigUpRes = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+        body: JSON.stringify({
+          action: 'upload-reseller-doc',
+          tempId: tempId,
+          docKey: 'signature',
+          dataUrl: sigDataUrl
+        })
+      });
+      var sigUpJson = await sigUpRes.json();
+      if(!sigUpRes.ok) throw new Error(sigUpJson.error || 'Failed to upload signature');
+      idDocPaths.signature = sigUpJson.path;
+
+      btn.textContent = 'Saving application…';
+      var payload = {
+        action: 'submit-reseller-application',
+        fullName: fullName,
+        mobileNumber: mobileNumber,
+        email: email,
+        currentAddress: currentAddress,
+        deliveryAddress: deliveryAddress,
+        contactChannels: getCheckedValues('contactChannels'),
+        contactChannelOther: document.getElementById('contactChannelOther').value.trim(),
+        contactChannelDetails: document.getElementById('contactChannelDetails').value.trim(),
+        currentlySelling: currentlySelling === 'yes',
+        existingShopName: document.getElementById('existingShopName').value.trim(),
+        currentProductsSold: document.getElementById('currentProductsSold').value.trim(),
+        sellingChannels: getCheckedValues('sellingChannels'),
+        sellingChannelOther: document.getElementById('sellingChannelOther').value.trim(),
+        applyingFor: applyingFor,
+        registeredBusinessName: document.getElementById('registeredBusinessName').value.trim(),
+        businessRole: document.getElementById('businessRole').value.trim(),
+        businessAuthorized: document.getElementById('businessAuthorized').checked,
+        preferredTier: preferredTier,
+        initialOrderTiming: initialOrderTiming,
+        preferredOrderDate: document.getElementById('preferredOrderDate').value.trim(),
+        interestedProducts: interestedProducts,
+        deliveryExpectation: deliveryExpectation,
+        assistanceNeeded: getCheckedValues('assistanceNeeded'),
+        assistanceOther: document.getElementById('assistanceOther').value.trim(),
+        needsAuthLetter: needsAuthLetter,
+        authLetterPlatform: document.getElementById('authLetterPlatform').value.trim(),
+        additionalNotes: document.getElementById('additionalNotes').value.trim(),
+        idSubmitLater: idSubmitLater,
+        idDocPaths: idDocPaths,
+        profilePhotoPath: profilePhotoPath,
+        consents: consents,
+        printedName: printedName,
+        signatureName: signatureName,
+        signedDate: signedDate,
+        electronicSignatureConsent: eSigConsent
+      };
+
+      var res = await fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+      if(!res.ok) throw new Error(data.error || 'Could not submit application.');
+
+      document.getElementById('refCodeDisplay').textContent = data.referenceCode || 'Submitted';
+      if(idSubmitLater) document.getElementById('laterReminder').style.display = 'block';
+      form.style.display = 'none';
+      document.getElementById('successCard').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch(err){
+      errEl.textContent = err.message || 'Unable to submit application right now. Please try again.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Reseller Application';
+    }
+  });
+
+  function syncPrintDoc(){
+    var setVal = function(id, val){
+      var el = document.getElementById(id);
+      if(el) el.textContent = val ? val : '\u00a0';
+    };
+    var setBox = function(id, checked){
+      var el = document.getElementById(id);
+      if(el) el.classList.toggle('checked', !!checked);
+    };
+    var getVal = function(id){
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    };
+    var getChk = function(id){
+      var el = document.getElementById(id);
+      return el ? el.checked : false;
+    };
+
+    setVal('pvFullName', getVal('fullName'));
+    setVal('pvMobile', getVal('mobileNumber'));
+    setVal('pvEmail', getVal('email'));
+
+    var addr = getVal('currentAddress');
+    if(addr.length > 55){
+      setVal('pvAddress1', addr.slice(0, 55));
+      setVal('pvAddress2', addr.slice(55));
+    } else {
+      setVal('pvAddress1', addr);
+      setVal('pvAddress2', '');
+    }
+
+    var delAddr = getVal('deliveryAddress');
+    if(delAddr.length > 55){
+      setVal('pvDelivery1', delAddr.slice(0, 55));
+      setVal('pvDelivery2', delAddr.slice(55));
+    } else {
+      setVal('pvDelivery1', delAddr);
+      setVal('pvDelivery2', '');
+    }
+
+    var contactChans = getCheckedValues('contactChannels');
+    setBox('pvContactSms', contactChans.includes('sms'));
+    setBox('pvContactPhone', contactChans.includes('phone'));
+    setBox('pvContactMessenger', contactChans.includes('messenger'));
+    setBox('pvContactEmail', contactChans.includes('email'));
+    setBox('pvContactViber', contactChans.includes('viber'));
+    setBox('pvContactOther', contactChans.includes('other'));
+    setVal('pvContactOtherTxt', getVal('contactChannelOther'));
+
+    var cd = getVal('contactChannelDetails');
+    if(cd.length > 55){
+      setVal('pvContactDetails1', cd.slice(0, 55));
+      setVal('pvContactDetails2', cd.slice(55));
+    } else {
+      setVal('pvContactDetails1', cd);
+      setVal('pvContactDetails2', '');
+    }
+
+    var sell = getRadioValue('currentlySelling');
+    setBox('pvSellingYes', sell === 'yes');
+    setBox('pvSellingNo', sell === 'no');
+    setVal('pvShopName', getVal('existingShopName'));
+
+    var prods = getVal('currentProductsSold');
+    if(prods.length > 45){
+      setVal('pvCurrentProducts1', prods.slice(0, 45));
+      setVal('pvCurrentProducts2', prods.slice(45));
+    } else {
+      setVal('pvCurrentProducts1', prods);
+      setVal('pvCurrentProducts2', '');
+    }
+
+    var sellChans = getCheckedValues('sellingChannels');
+    setBox('pvChanContacts', sellChans.includes('contacts'));
+    setBox('pvChanFb', sellChans.includes('fb'));
+    setBox('pvChanIg', sellChans.includes('ig'));
+    setBox('pvChanTiktok', sellChans.includes('tiktok'));
+    setBox('pvChanShopee', sellChans.includes('shopee'));
+    setBox('pvChanLazada', sellChans.includes('lazada'));
+    setBox('pvChanWeb', sellChans.includes('website'));
+    setBox('pvChanPhysical', sellChans.includes('physical'));
+    setBox('pvChanEvents', sellChans.includes('events'));
+    setBox('pvChanOther', sellChans.includes('other'));
+    setVal('pvChanOtherTxt', getVal('sellingChannelOther'));
+
+    var appFor = getRadioValue('applyingFor') || 'self';
+    setBox('pvAppSelf', appFor === 'self');
+    setBox('pvAppBiz', appFor === 'business');
+    setVal('pvBizName', getVal('registeredBusinessName'));
+    setVal('pvBizRole', getVal('businessRole'));
+    setBox('pvBizAuth', getChk('businessAuthorized'));
+
+    var tier = getRadioValue('preferredTier');
+    setBox('pvTier1', tier === 'tier1');
+    setBox('pvTier2', tier === 'tier2');
+    setBox('pvTier3', tier === 'tier3');
+    setBox('pvTierAssist', tier === 'assist');
+
+    var timing = getRadioValue('initialOrderTiming');
+    setBox('pvTimingApproved', timing === 'asap');
+    setBox('pvTiming2weeks', timing === '2weeks');
+    setBox('pvTimingMonth', timing === 'month');
+    setBox('pvTimingPref', timing === 'date');
+    setVal('pvPrefDate', getVal('preferredOrderDate'));
+    setBox('pvTimingDiscuss', timing === 'discuss');
+
+    var intProds = getCheckedValues('interestedProducts');
+    setBox('pvProdMist', intProds.includes('mist'));
+    setBox('pvProdSerum', intProds.includes('serum'));
+    setBox('pvProdTeaTree', intProds.includes('teatree'));
+    setBox('pvProdWhite', intProds.includes('whitening'));
+    setBox('pvProdAll', intProds.includes('all'));
+    setBox('pvProdGuide', intProds.includes('guidance'));
+
+    var del = getRadioValue('deliveryExpectation');
+    setBox('pvDelDelivery', del === 'delivery');
+    setBox('pvDelPickup', del === 'pickup');
+    setBox('pvDelDiscuss', del === 'discuss');
+
+    var asst = getCheckedValues('assistanceNeeded');
+    setBox('pvAsstProd', asst.includes('product_info'));
+    setBox('pvAsstVariants', asst.includes('variants'));
+    setBox('pvAsstTiers', asst.includes('pricing_tiers'));
+    setBox('pvAsstOrders', asst.includes('orders'));
+    setBox('pvAsstContent', asst.includes('content'));
+    setBox('pvAsstPromo', asst.includes('promo'));
+    setBox('pvAsstMkt', asst.includes('marketplaces'));
+    setBox('pvAsstOther', asst.includes('other'));
+    setVal('pvAsstOtherTxt', getVal('assistanceOther'));
+
+    var authL = getRadioValue('needsAuthLetter');
+    setBox('pvAuthYes', authL === 'yes');
+    setBox('pvAuthNo', authL === 'no');
+    setBox('pvAuthNotSure', authL === 'not_sure');
+    setVal('pvAuthPlatform', getVal('authLetterPlatform'));
+
+    var notes = getVal('additionalNotes');
+    if(notes.length > 50){
+      setVal('pvNotes1', notes.slice(0, 50));
+      setVal('pvNotes2', notes.slice(50));
+    } else {
+      setVal('pvNotes1', notes);
+      setVal('pvNotes2', '');
+    }
+
+    setBox('pvCAccept', getChk('cAccurate'));
+    setBox('pvCApproval', getChk('cApproval'));
+    setBox('pvCTerms', getChk('cTerms'));
+    setBox('pvCPay', getChk('cConfirmPay'));
+    setBox('pvCIdReq', getChk('cIdReq'));
+    setBox('pvCPrivacy', getChk('cPrivacy'));
+    setBox('pvCIdConsent', getChk('cIdConsent'));
+
+    setVal('pvPrintedName', getVal('printedName'));
+    setVal('pvSignedDate', getVal('signedDate'));
+    setBox('pvCESig', getChk('eSigConsent'));
+
+    var sigImg = document.getElementById('pvSigImg');
+    var sigTyped = document.getElementById('pvSigTyped');
+    if(sigMode === 'draw' && sigHasInk && sigCanvas){
+      sigImg.src = sigCanvas.toDataURL('image/png');
+      sigImg.style.display = 'inline-block';
+      sigTyped.textContent = '';
+    } else if(sigMode === 'upload' && pendingSigFile){
+      sigImg.src = URL.createObjectURL(pendingSigFile);
+      sigImg.style.display = 'inline-block';
+      sigTyped.textContent = '';
+    } else {
+      sigImg.style.display = 'none';
+      sigTyped.textContent = getVal('printedName') || '';
+      sigTyped.style.fontStyle = 'italic';
+    }
+  }
+
+  window.syncPrintDoc = syncPrintDoc;
+  window.triggerPrintDoc = function(){
+    syncPrintDoc();
+    window.print();
+  };
+  window.addEventListener('beforeprint', syncPrintDoc);
+})();
+</script>
+</body></html>
+

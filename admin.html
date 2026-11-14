@@ -238,6 +238,29 @@ button:focus:not(:focus-visible){outline:none}
 }
 .admin-tab:hover,.admin-tab:focus-visible{color:#fff;background:rgba(255,255,255,.1)}
 .admin-tab.on{color:#fff;border-bottom-color:#fff}
+
+/* Mobile, Tablet & Portrait responsiveness polish */
+.tbl-wrap{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ra-grid{display:grid;grid-template-columns:1fr;gap:.85rem;margin-bottom:1.1rem}
+@media(min-width:600px){.ra-grid{grid-template-columns:1fr 1fr}}
+.ra-item{background:#faf9f7;border:1px solid var(--line);border-radius:10px;padding:.7rem .85rem}
+.ra-item small{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem;font-weight:700}
+.ra-item div{font-size:.875rem;color:var(--brown);word-break:break-word}
+.ra-docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-top:.6rem}
+.ra-doc-card{border:1px solid var(--line);border-radius:10px;padding:.5rem;background:#fff;text-align:center}
+.ra-doc-card img{width:100%;height:110px;object-fit:cover;border-radius:6px;display:block;margin-bottom:.4rem}
+.ra-doc-card a{font-size:.75rem;font-weight:600;color:var(--brown);text-decoration:underline}
+@media(max-width:640px){
+  .modal-ov{padding:.5rem}
+  .modal{max-height:94vh;border-radius:16px}
+  .modal-h,.modal-b,.modal-f{padding:1rem}
+  .modal-f{flex-direction:column;align-items:stretch;gap:.6rem}
+  .modal-f>div{display:flex;flex-wrap:wrap;gap:.5rem}
+  .modal-f .btn{flex:1;justify-content:center;min-height:42px}
+  .toolbar{gap:.6rem}
+  .toolbar input,.toolbar select{min-width:0;width:100%}
+  .prod-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -762,7 +785,27 @@ button:focus:not(:focus-visible){outline:none}
     </div>
 
     <div class="tab-panel" id="panel-resellers">
-      <div class="toolbar"><h2 style="margin:0;font-family:var(--head)">Resellers</h2><div style="flex:1"></div><button class="btn sm" id="newResellerBtn">Add reseller</button></div>
+      <div class="toolbar" style="margin-bottom:.75rem">
+        <h2 style="margin:0;font-family:var(--head)">Reseller Applications</h2>
+        <div style="flex:1"></div>
+        <select id="raStatusFilter" style="padding:.45rem .8rem;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit;color:var(--brown)">
+          <option value="all">All statuses</option>
+          <option value="pending" selected>Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn sm ghost" id="refreshRaBtn">Refresh</button>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:2rem">
+        <table>
+          <thead><tr><th>Reference</th><th>Applicant</th><th>Tier</th><th>Selling Channels</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="resellerAppTbody">
+            <tr class="skeleton-row"><td><span class="skeleton-box" style="width:80%;height:14px"></span></td><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:65%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:70px;height:24px;border-radius:6px"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toolbar"><h2 style="margin:0;font-family:var(--head)">Active Resellers</h2><div style="flex:1"></div><button class="btn sm" id="newResellerBtn">Add reseller</button></div>
       <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Business</th><th>Contact</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody id="resellerTbody">
         <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
         <tr class="skeleton-row"><td><span class="skeleton-box" style="width:70%;height:14px"></span></td><td><span class="skeleton-box" style="width:55%;height:14px"></span></td><td><span class="skeleton-box" style="width:50%;height:14px"></span></td><td><span class="skeleton-box" style="width:40%;height:14px"></span></td><td><span class="skeleton-box" style="width:60px;height:20px;border-radius:999px"></span></td><td><span class="skeleton-box" style="width:80px;height:24px;border-radius:6px"></span></td></tr>
@@ -985,6 +1028,27 @@ button:focus:not(:focus-visible){outline:none}
         <button class="btn sm" id="prodModalSave">Save product</button>
         <button class="btn sm ghost" id="prodModalCancel">Cancel</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESELLER APPLICATION REVIEW MODAL ── -->
+<div class="modal-ov" id="resellerAppOv" aria-hidden="true">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-h">
+      <div>
+        <h2 id="raModalTitle">Reseller Application</h2>
+        <small id="raModalSub" style="color:var(--muted)"></small>
+      </div>
+      <button class="btn sm ghost" id="raModalClose">✕</button>
+    </div>
+    <div class="modal-b" id="raModalBody"></div>
+    <div class="modal-f">
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn sm" id="raApproveBtn" style="background:#1b6e44;color:#fff">Approve &amp; Create Account</button>
+        <button class="btn sm danger" id="raRejectBtn">Reject</button>
+      </div>
+      <button class="btn sm ghost" id="raCloseFootBtn">Close</button>
     </div>
   </div>
 </div>
@@ -2658,7 +2722,141 @@ document.getElementById('saveContentBtn').addEventListener('click', function(){
    RESELLERS
    ══════════════════════════════ */
 var resellerRows = [], editingResellerId = null;
+var resellerApps = [], activeRaId = null;
+var TIER_LABELS = {
+  tier1: 'Tier 1: AERA Member (15% / ₱6,000)',
+  tier2: 'Tier 2: AERA Partner (20% / ₱15,000)',
+  tier3: 'Tier 3: AERA Stockist (30% / ₱25,000)',
+  assist: 'Needs tier assistance'
+};
+
+function loadResellerApplications(){
+  if(!resellerApps.length) renderTableSkeleton('resellerAppTbody', 3, 7);
+  aeraApi('admin-list-reseller-applications').then(function(data){
+    resellerApps = data.applications || [];
+    renderResellerApplications();
+  }).catch(function(err){
+    var tbody = $('resellerAppTbody');
+    if(tbody){
+      tbody.innerHTML = '<tr><td colspan="7"><div class="tbl-empty">' + esc(formatUserError(err)) + '</div></td></tr>';
+    }
+  });
+}
+
+function renderResellerApplications(){
+  var tbody = $('resellerAppTbody');
+  if(!tbody) return;
+  var filterVal = $('raStatusFilter') ? $('raStatusFilter').value : 'pending';
+  var rows = resellerApps.filter(function(a){ return filterVal === 'all' || a.status === filterVal; });
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="7"><div class="tbl-empty">No reseller applications matching "' + esc(filterVal) + '".</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(function(a){
+    var stBadge = a.status === 'approved' ? 'confirmed' : a.status === 'rejected' ? 'cancelled' : 'pending';
+    var channels = Array.isArray(a.selling_channels) && a.selling_channels.length ? a.selling_channels.slice(0, 2).join(', ') + (a.selling_channels.length > 2 ? ' +' + (a.selling_channels.length - 2) : '') : '—';
+    var dt = a.created_at ? new Date(a.created_at).toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' }) : '—';
+    return '<tr>' +
+      '<td><strong>' + esc(a.reference_code) + '</strong></td>' +
+      '<td><strong>' + esc(a.full_name) + '</strong><br><small style="color:var(--muted)">' + esc(a.email) + ' · ' + esc(a.mobile_number) + '</small></td>' +
+      '<td>' + esc(TIER_LABELS[a.preferred_tier] || a.preferred_tier) + '</td>' +
+      '<td>' + esc(channels) + '</td>' +
+      '<td>' + esc(dt) + '</td>' +
+      '<td><span class="badge ' + stBadge + '">' + esc(a.status) + '</span></td>' +
+      '<td><button class="btn sm ghost" data-ra-view="' + esc(a.id) + '">Review</button></td>' +
+    '</tr>';
+  }).join('');
+  tbody.querySelectorAll('[data-ra-view]').forEach(function(btn){
+    btn.onclick = function(){ openResellerAppModal(btn.dataset.raView); };
+  });
+}
+
+function openResellerAppModal(id){
+  var a = resellerApps.find(function(x){ return x.id === id; });
+  if(!a) return;
+  activeRaId = id;
+  $('raModalTitle').textContent = a.full_name + ' (' + a.reference_code + ')';
+  $('raModalSub').textContent = 'Submitted ' + (a.created_at ? new Date(a.created_at).toLocaleString('en-PH') : '') + ' · Status: ' + a.status.toUpperCase();
+
+  var docsHtml = '';
+  if(a.profilePhotoUrl){
+    docsHtml += '<div class="ra-doc-card"><img src="' + esc(a.profilePhotoUrl) + '" alt="2x2 Photo"><a href="' + esc(a.profilePhotoUrl) + '" target="_blank" rel="noopener">2×2 Profile Photo</a></div>';
+  }
+  if(a.signedDocs){
+    Object.keys(a.signedDocs).forEach(function(k){
+      var u = a.signedDocs[k];
+      var lbl = k === 'signature' ? 'Applicant Signature' : k.replace('_',' ').toUpperCase();
+      docsHtml += '<div class="ra-doc-card"><img src="' + esc(u) + '" alt="' + esc(lbl) + '" onerror="this.style.display=\'none\'"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(lbl) + '</a></div>';
+    });
+  }
+  if(!docsHtml){
+    docsHtml = '<p style="font-size:.85rem;color:var(--muted);margin:.25rem 0">' + (a.id_submit_later ? 'Applicant opted to submit IDs & 2×2 photo separately via email/Messenger.' : 'No verification files attached.') + '</p>';
+  }
+
+  $('raModalBody').innerHTML =
+    '<div class="ra-grid">' +
+      '<div class="ra-item"><small>Email &amp; Mobile</small><div>' + esc(a.email) + '<br>' + esc(a.mobile_number) + '</div></div>' +
+      '<div class="ra-item"><small>Preferred Contact</small><div>' + esc((a.contact_channels || []).join(', ') || '—') + (a.contact_channel_details ? '<br>' + esc(a.contact_channel_details) : '') + '</div></div>' +
+      '<div class="ra-item"><small>Current Address</small><div>' + esc(a.current_address) + '</div></div>' +
+      '<div class="ra-item"><small>Delivery / Selling Location</small><div>' + esc(a.delivery_address) + '</div></div>' +
+      '<div class="ra-item"><small>Business / Selling Status</small><div>' + (a.currently_selling ? 'Currently selling: ' + esc(a.existing_shop_name || 'Yes') : 'New business') + (a.applying_for === 'business' ? '<br>Registered: ' + esc(a.registered_business_name || '') + ' (' + esc(a.business_role || '') + ')' : '') + '</div></div>' +
+      '<div class="ra-item"><small>Selling Channels</small><div>' + esc((a.selling_channels || []).join(', ') || '—') + (a.selling_channel_other ? ' (' + esc(a.selling_channel_other) + ')' : '') + '</div></div>' +
+      '<div class="ra-item"><small>Preferred Tier &amp; Timing</small><div>' + esc(TIER_LABELS[a.preferred_tier] || a.preferred_tier) + '<br>Timing: ' + esc(a.initial_order_timing) + (a.preferred_order_date ? ' (' + esc(a.preferred_order_date) + ')' : '') + '</div></div>' +
+      '<div class="ra-item"><small>Interested Products &amp; Delivery</small><div>' + esc((a.interested_products || []).join(', ') || '—') + '<br>Delivery: ' + esc(a.delivery_expectation) + '</div></div>' +
+      '<div class="ra-item"><small>Auth Letter Needed</small><div>' + esc(a.needs_auth_letter) + (a.auth_letter_platform ? ' (' + esc(a.auth_letter_platform) + ')' : '') + '</div></div>' +
+      '<div class="ra-item"><small>Signature &amp; Date</small><div>Signed: <em>' + esc(a.signature_name) + '</em><br>Date: ' + esc(a.signed_date) + '</div></div>' +
+    '</div>' +
+    (a.additional_notes ? '<div class="ra-item" style="margin-bottom:1rem"><small>Additional Notes / Questions</small><div>' + esc(a.additional_notes) + '</div></div>' : '') +
+    '<div style="margin-bottom:1rem"><strong style="font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Verification Documents</strong><div class="ra-docs">' + docsHtml + '</div></div>' +
+    '<div class="fld"><label>Admin Notes (optional)</label><input id="raAdminNotes" type="text" value="' + esc(a.admin_notes || '') + '" placeholder="Internal review notes..."></div>';
+
+  $('resellerAppOv').classList.add('open');
+  $('resellerAppOv').setAttribute('aria-hidden', 'false');
+}
+
+function closeResellerAppModal(){
+  $('resellerAppOv').classList.remove('open');
+  $('resellerAppOv').setAttribute('aria-hidden', 'true');
+  activeRaId = null;
+}
+
+function updateResellerAppStatus(status, prefillAccount){
+  if(!activeRaId) return;
+  var a = resellerApps.find(function(x){ return x.id === activeRaId; });
+  var notes = $('raAdminNotes') ? $('raAdminNotes').value.trim() : '';
+  aeraApi('admin-update-reseller-application', {
+    applicationId: activeRaId,
+    status: status,
+    adminNotes: notes
+  }).then(function(){
+    toast('Application marked as ' + status + '.');
+    closeResellerAppModal();
+    loadResellerApplications();
+    if(prefillAccount && a){
+      openReseller(null);
+      $('rFullName').value = a.full_name || '';
+      $('rBusiness').value = a.registered_business_name || a.existing_shop_name || '';
+      $('rEmail').value = a.email || '';
+      $('rContact').value = a.mobile_number || '';
+      $('rAddress').value = a.delivery_address || a.current_address || '';
+      $('resellerEditor').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      toast('Pre-filled Reseller Account form — set a temporary password and save.');
+    }
+  }).catch(function(err){
+    toast(formatUserError(err));
+  });
+}
+
+if($('raStatusFilter')) $('raStatusFilter').onchange = renderResellerApplications;
+if($('refreshRaBtn')) $('refreshRaBtn').onclick = loadResellerApplications;
+if($('raModalClose')) $('raModalClose').onclick = closeResellerAppModal;
+if($('raCloseFootBtn')) $('raCloseFootBtn').onclick = closeResellerAppModal;
+if($('resellerAppOv')) $('resellerAppOv').onclick = function(e){ if(e.target === this) closeResellerAppModal(); };
+if($('raApproveBtn')) $('raApproveBtn').onclick = function(){ updateResellerAppStatus('approved', true); };
+if($('raRejectBtn')) $('raRejectBtn').onclick = function(){ updateResellerAppStatus('rejected', false); };
+
 function loadResellers(){
+  loadResellerApplications();
   if(!resellerRows.length) renderTableSkeleton('resellerTbody', 4, 6);
   aeraApi('admin-list-resellers').then(function(data){
     resellerRows = data.resellers || [];

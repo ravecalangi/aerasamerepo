@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="images/aera-favicon.svg">
+<title>Shipping &amp; Delivery | AERA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--brown:#384168;--deep:#2a3152;--cream:#f0ede8;--line:rgba(56,65,104,.16);--muted:rgba(56,65,104,.68);--px:clamp(1rem,5vw,4rem)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--brown);font-family:"Instrument Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.75}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:Urbanist,Arial,sans-serif;font-weight:600;margin:0;color:var(--deep)}
+.topbar{background:var(--brown);color:var(--cream);font-size:.8125rem;padding:.55rem 2.75rem;display:flex;align-items:center;justify-content:center;min-height:36px;text-align:center}
+.topbar a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(240,237,232,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);height:72px;padding:0 var(--px);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.logo{display:block;width:60px;height:auto;filter:brightness(0) saturate(100%) invert(25%) sepia(40%) saturate(600%) hue-rotate(200deg) brightness(80%) contrast(95%)}
+.nav-links{display:flex;gap:1.5rem;align-items:center;font-size:.875rem;font-weight:500}
+.nav-links a:hover{text-decoration:underline;text-underline-offset:4px}
+.m-burger{display:none;background:none;border:0;color:var(--brown);padding:.5rem;cursor:pointer;min-width:44px;min-height:44px;align-items:center;justify-content:center}
+.m-drawer{display:none;position:fixed;inset:0;z-index:200;background:var(--cream);padding:1.5rem var(--px);flex-direction:column;gap:1.25rem;overflow-y:auto}
+.m-drawer.open{display:flex}
+.m-drawer-top{display:flex;justify-content:space-between;align-items:center}
+.m-drawer a{font-family:Urbanist,sans-serif;font-size:1.35rem;font-weight:500;padding:.6rem 0;border-bottom:1px solid var(--line)}
+@media(max-width:860px){.nav-links{display:none}.m-burger{display:inline-flex}}
+.wrap{max-width:56rem;margin:0 auto;padding:clamp(2rem,5vw,4rem) var(--px) 5rem}
+.doc-head{text-align:center;max-width:40rem;margin:0 auto 2.25rem}
+.lbl{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 .6rem;font-weight:600}
+.doc-head h1{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.03em;line-height:1.1;margin-bottom:.85rem}
+.doc-head p{color:var(--muted);margin:0}
+.doc-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:clamp(1.35rem,4vw,3rem);box-shadow:0 10px 30px rgba(56,65,104,.04)}
+.doc-section{padding:1.5rem 0;border-bottom:1px solid var(--line)}
+.doc-section:first-child{padding-top:0}
+.doc-section:last-child{border-bottom:0;padding-bottom:0}
+.doc-section h2{font-size:clamp(1.2rem,3vw,1.5rem);margin-bottom:.75rem}
+.doc-section p{margin:0 0 .85rem;color:rgba(56,65,104,.88);font-size:.96rem}
+.doc-section ul{margin:.4rem 0 .9rem;padding-left:1.35rem;color:rgba(56,65,104,.88);font-size:.96rem}
+.doc-section li{margin-bottom:.4rem}
+.doc-section a.inline-link{color:var(--deep);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.tbl-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1rem 0;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:400px;font-size:.92rem;background:#fff}
+th,td{padding:.75rem 1rem;text-align:left;border-bottom:1px solid var(--line)}
+th{background:rgba(56,65,104,.06);font-family:Urbanist,sans-serif;font-weight:600;color:var(--deep);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+.contact{background:var(--brown);color:var(--cream);padding:3.5rem var(--px) 0;margin-top:2rem}
+.ct-bottom{max-width:80rem;margin:0 auto;padding:1.5rem 0 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.8125rem;color:rgba(240,237,232,.72)}
+.ct-bottom nav{display:flex;gap:1.15rem;flex-wrap:wrap}
+.ct-bottom a:hover{color:#fff;text-decoration:underline}
+@media(max-width:639px){.ct-bottom{flex-direction:column;align-items:flex-start}}
+</style></head>
+<body>
+<div class="topbar"><a href="shop.html">Bloom is here: our garden-party launch collection</a></div>
+<header class="nav">
+  <a href="index.html" aria-label="AERA home"><img src="images/aera-logo-black.png" class="logo" alt="AERA"></a>
+  <nav class="nav-links" aria-label="Primary navigation">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">About Us</a>
+    <a href="circle.html">AERA Circle</a>
+    <a href="track-order.html">Track my order</a>
+  </nav>
+  <button class="m-burger" id="mBurger" type="button" aria-label="Open menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
+
+<div class="m-drawer" id="mDrawer" aria-hidden="true">
+  <div class="m-drawer-top">
+    <img src="images/aera-logo-black.png" class="logo" alt="AERA">
+    <button class="m-burger" id="mClose" type="button" aria-label="Close menu" style="display:inline-flex">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <a href="index.html">Home</a>
+  <a href="shop.html">Shop</a>
+  <a href="about.html">About Us</a>
+  <a href="circle.html">AERA Circle</a>
+  <a href="track-order.html">Track my order</a>
+</div>
+
+<main class="wrap">
+  <div class="doc-head">
+    <p class="lbl">AERA Policies</p>
+    <h1>Shipping &amp; Delivery</h1>
+    <p>Everything you need to know about order preparation, delivery areas, shipping fees, and order tracking.</p>
+  </div>
+
+  <article class="doc-card">
+    <section class="doc-section">
+      <h2>1. Order Confirmation &amp; Processing</h2>
+      <p>Retail orders are confirmed once payment verification is completed. Standard retail orders are packed within <strong>3–5 business days</strong> (Monday to Friday, excluding Philippine public holidays).</p>
+      <p>Once your parcel is handed over to our courier partner, you can track its status and courier waybill reference anytime on our <a href="track-order.html" class="inline-link">Track My Order</a> page using your Order ID and checkout email.</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>2. Standard Retail Shipping Rates</h2>
+      <p>Shipping fees are calculated automatically at checkout based on your delivery region:</p>
+      <div class="tbl-scroll">
+        <table>
+          <thead><tr><th>Delivery Area</th><th>Standard Rate</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Metro Manila (all cities)</strong></td><td>₱80</td></tr>
+            <tr><td><strong>Greater Metro Manila / Luzon (Cavite, Rizal, Bulacan &amp; other Luzon)</strong></td><td>₱150</td></tr>
+            <tr><td><strong>Visayas</strong></td><td>₱180</td></tr>
+            <tr><td><strong>Mindanao</strong></td><td>₱200</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Please ensure your delivery address and mobile number are complete and accurate so our courier can contact you without delay.</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>3. Order Concerns &amp; Damaged Items</h2>
+      <p>Please inspect your parcel upon delivery. If you receive a damaged, leaking, or incorrect item, contact us within <strong>7 days of delivery</strong> at <a href="mailto:contactaeraofficial@gmail.com" class="inline-link">contactaeraofficial@gmail.com</a> with your Order ID, description of the issue, and clear photos (and unboxing video if available).</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>4. Reseller Shipments</h2>
+      <p>For AERA Circle reseller orders, shipping and delivery terms—including 2-business-day preparation after 50% down payment verification, Metro Manila same-day courier options, and provincial bulk freight—are governed by Section 5 of the <a href="reseller-terms.html" class="inline-link">AERA Reseller Terms &amp; Conditions</a>.</p>
+    </section>
+  </article>
+</main>
+
+<footer class="contact">
+  <div class="ct-bottom">
+    <span>&#169; 2026 AERA. All rights reserved.</span>
+    <nav>
+      <a href="privacy-notice.html">Privacy Notice</a>
+      <a href="shipping-delivery.html">Shipping &amp; Delivery</a>
+      <a href="reseller-terms.html">Reseller Terms &amp; Conditions</a>
+      <a href="about.html">About Us</a>
+      <a href="circle.html">AERA Circle</a>
+      <a href="index.html#faq">FAQs</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('mBurger'),c=document.getElementById('mClose'),d=document.getElementById('mDrawer');
+  if(b&&d){b.onclick=function(){d.classList.add('open');d.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';};}
+  if(c&&d){c.onclick=function(){d.classList.remove('open');d.setAttribute('aria-hidden','true');document.body.style.overflow='';};}
+})();
+</script>
+</body></html>
+

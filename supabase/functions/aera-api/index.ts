@@ -1096,6 +1096,183 @@ Deno.serve(async (req) => {
       return json({ ok: true, count: sentCount, message: `Newsletter broadcast sent to ${sentCount} subscriber(s).` });
     }
 
+    if (action === "upload-reseller-doc") {
+      const tempId = clean(body.tempId, 80).replace(/[^a-zA-Z0-9_-]/g, "") || crypto.randomUUID();
+      const docKey = clean(body.docKey, 40);
+      const allowedKeys = ["id1_front", "id1_back", "id2_front", "id2_back", "profile_photo", "signature"];
+      if (!allowedKeys.includes(docKey)) {
+        return json({ error: "Invalid document type." }, 400);
+      }
+      const dataUrl = String(body.dataUrl || "");
+      const match = dataUrl.match(/^data:(image\/(?:jpeg|png|webp)|application\/pdf);base64,([A-Za-z0-9+/=]+)$/);
+      if (!match) {
+        return json({ error: "Please upload a valid JPG, PNG, WebP, or PDF file." }, 400);
+      }
+      const contentType = match[1];
+      const b64 = match[2];
+      const binaryStr = atob(b64);
+      if (binaryStr.length > 5 * 1024 * 1024) {
+        return json({ error: "File size must be 5 MB or smaller." }, 400);
+      }
+      const bytes = new Uint8Array(binaryStr.length);
+      for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+      const ext = contentType === "application/pdf" ? "pdf" : contentType.split("/")[1];
+      const path = `${tempId}/${docKey}-${Date.now()}.${ext}`;
+      const { error: uploadError } = await db.storage.from("reseller-documents").upload(path, bytes, {
+        contentType,
+        upsert: true
+      });
+      if (uploadError) throw uploadError;
+      return json({ ok: true, path });
+    }
+
+    if (action === "submit-reseller-application") {
+      const fullName = clean(body.fullName, 160);
+      const mobileNumber = clean(body.mobileNumber, 40);
+      const email = clean(body.email, 254).toLowerCase();
+      const currentAddress = clean(body.currentAddress, 500);
+      const deliveryAddress = clean(body.deliveryAddress, 500);
+      const preferredTier = clean(body.preferredTier, 20);
+      const initialOrderTiming = clean(body.initialOrderTiming, 80);
+      const deliveryExpectation = clean(body.deliveryExpectation, 80);
+      const printedName = clean(body.printedName, 160);
+      const signatureName = clean(body.signatureName, 160);
+      const signedDate = clean(body.signedDate, 40);
+      const eSigConsent = body.electronicSignatureConsent === true;
+      const consents = (body.consents && typeof body.consents === "object") ? body.consents : {};
+
+      if (fullName.length < 2 || !mobileNumber || !emailOk(email) || !currentAddress || !deliveryAddress) {
+        return json({ error: "Please complete all required applicant information in Section A." }, 400);
+      }
+      if (!["tier1", "tier2", "tier3", "assist"].includes(preferredTier) || !initialOrderTiming) {
+        return json({ error: "Please select your preferred reseller tier and initial order timing in Section C." }, 400);
+      }
+      if (!deliveryExpectation) {
+        return json({ error: "Please select how you expect to receive your orders in Section D." }, 400);
+      }
+      const requiredConsents = ["accurate", "approvalOnly", "termsAgreed", "confirmBeforePay", "idRequirement", "privacyNotice", "idConsent"];
+      if (!requiredConsents.every((k) => consents[k] === true)) {
+        return json({ error: "Please check all required confirmation and consent boxes in Section E." }, 400);
+      }
+      if (!printedName || !signatureName || !signedDate || !eSigConsent) {
+        return json({ error: "Please complete your printed name, electronic signature, date, and e-signature confirmation." }, 400);
+      }
+
+      const idSubmitLater = body.idSubmitLater === true;
+      const idDocPaths = (body.idDocPaths && typeof body.idDocPaths === "object") ? body.idDocPaths : {};
+      const profilePhotoPath = clean(body.profilePhotoPath, 300) || null;
+      if (!idSubmitLater && (!idDocPaths.id1_front || !idDocPaths.id2_front || !profilePhotoPath)) {
+        return json({ error: "Please upload both Valid IDs and your 2x2 profile photo, or check the option to submit them separately." }, 400);
+      }
+
+      const referenceCode = `AERA-RES-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 6).toUpperCase()}`;
+      const row = {
+        reference_code: referenceCode,
+        full_name: fullName,
+        mobile_number: mobileNumber,
+        email,
+        current_address: currentAddress,
+        delivery_address: deliveryAddress,
+        contact_channels: Array.isArray(body.contactChannels) ? body.contactChannels.map((x: unknown) => clean(x, 60)).filter(Boolean) : [],
+        contact_channel_other: clean(body.contactChannelOther, 120) || null,
+        contact_channel_details: clean(body.contactChannelDetails, 300) || null,
+        currently_selling: body.currentlySelling === true,
+        existing_shop_name: clean(body.existingShopName, 160) || null,
+        current_products_sold: clean(body.currentProductsSold, 500) || null,
+        selling_channels: Array.isArray(body.sellingChannels) ? body.sellingChannels.map((x: unknown) => clean(x, 80)).filter(Boolean) : [],
+        selling_channel_other: clean(body.sellingChannelOther, 120) || null,
+        applying_for: body.applyingFor === "business" ? "business" : "self",
+        registered_business_name: clean(body.registeredBusinessName, 160) || null,
+        business_role: clean(body.businessRole, 120) || null,
+        business_authorized: body.businessAuthorized === true,
+        preferred_tier: preferredTier,
+        initial_order_timing: initialOrderTiming,
+        preferred_order_date: clean(body.preferredOrderDate, 40) || null,
+        interested_products: Array.isArray(body.interestedProducts) ? body.interestedProducts.map((x: unknown) => clean(x, 80)).filter(Boolean) : [],
+        delivery_expectation: deliveryExpectation,
+        assistance_needed: Array.isArray(body.assistanceNeeded) ? body.assistanceNeeded.map((x: unknown) => clean(x, 100)).filter(Boolean) : [],
+        assistance_other: clean(body.assistanceOther, 200) || null,
+        needs_auth_letter: ["yes", "no", "not_sure"].includes(clean(body.needsAuthLetter, 20)) ? clean(body.needsAuthLetter, 20) : "no",
+        auth_letter_platform: clean(body.authLetterPlatform, 160) || null,
+        additional_notes: clean(body.additionalNotes, 2000) || null,
+        id_submit_later: idSubmitLater,
+        id_doc_paths: idDocPaths,
+        profile_photo_path: profilePhotoPath,
+        consents,
+        printed_name: printedName,
+        signature_name: signatureName,
+        signed_date: signedDate,
+        electronic_signature_consent: eSigConsent,
+        status: "pending"
+      };
+
+      const { data: inserted, error: insertError } = await db.from("reseller_applications").insert(row).select("id,reference_code").single();
+      if (insertError) throw insertError;
+
+      // Send confirmation email to applicant if Brevo is configured
+      try {
+        await sendBrevo({
+          sender: sender(),
+          to: [{ email, name: fullName }],
+          subject: `AERA Circle Reseller Application Received (${referenceCode})`,
+          htmlContent: `<div style="font-family:sans-serif;max-width:560px;margin:auto;color:#384168;line-height:1.6">
+            <h2 style="margin-bottom:8px">Thank you for applying to AERA Circle!</h2>
+            <p>Hi ${esc(fullName)},</p>
+            <p>We have received your reseller application (Reference: <strong>${esc(referenceCode)}</strong>).</p>
+            <p>Submitting this form does not guarantee approval yet. Our team will review your details and reach out through your preferred contact channel with next steps before any payment is required.</p>
+            ${idSubmitLater ? '<p><strong>Reminder:</strong> Since you opted to submit your 2 valid IDs and 2×2 profile photo separately, please send clear photos via email to <a href="mailto:contactaeraofficial@gmail.com">contactaeraofficial@gmail.com</a> or Facebook Messenger referencing your code above.</p>' : ''}
+            <p style="margin-top:20px;font-size:13px;color:#666">Questions? Contact us at contactaeraofficial@gmail.com.</p>
+          </div>`
+        });
+      } catch (mailErr) {
+        console.warn("Reseller application confirmation email skipped:", mailErr);
+      }
+
+      return json({ ok: true, id: inserted.id, referenceCode: inserted.reference_code }, 201);
+    }
+
+    if (action === "admin-list-reseller-applications") {
+      await requireAdmin(req);
+      const { data, error } = await db.from("reseller_applications").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+
+      const applications = await Promise.all((data || []).map(async (app: Record<string, unknown>) => {
+        const signedDocs: Record<string, string> = {};
+        const docPaths = (app.id_doc_paths && typeof app.id_doc_paths === "object") ? app.id_doc_paths as Record<string, string> : {};
+        for (const [k, p] of Object.entries(docPaths)) {
+          if (typeof p === "string" && p) {
+            const { data: s } = await db.storage.from("reseller-documents").createSignedUrl(p, 3600);
+            if (s?.signedUrl) signedDocs[k] = s.signedUrl;
+          }
+        }
+        let profilePhotoUrl: string | null = null;
+        if (typeof app.profile_photo_path === "string" && app.profile_photo_path) {
+          const { data: s } = await db.storage.from("reseller-documents").createSignedUrl(app.profile_photo_path, 3600);
+          if (s?.signedUrl) profilePhotoUrl = s.signedUrl;
+        }
+        return { ...app, signedDocs, profilePhotoUrl };
+      }));
+
+      return json({ applications });
+    }
+
+    if (action === "admin-update-reseller-application") {
+      const admin = await requireAdmin(req);
+      const id = clean(body.applicationId, 80);
+      const status = clean(body.status, 20);
+      if (!id || !["pending", "approved", "rejected"].includes(status)) {
+        return json({ error: "Invalid application ID or status." }, 400);
+      }
+      const { error } = await db.from("reseller_applications").update({
+        status,
+        admin_notes: clean(body.adminNotes, 1000) || null,
+        reviewed_by: admin.id,
+        reviewed_at: new Date().toISOString()
+      }).eq("id", id);
+      if (error) throw error;
+      return json({ ok: true });
+    }
+
     return json({ error: "Unknown action." }, 400);
   } catch (error) {
     console.error(error);
